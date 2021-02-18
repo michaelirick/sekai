@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  adjective: MyString
+  world_id: 1
+  primary_color: MyString
+  secondary_color: MyString
+
+two:
+  name: MyString
+  adjective: MyString
+  world_id: 1
+  primary_color: MyString
+  secondary_color: MyString

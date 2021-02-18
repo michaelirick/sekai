@@ -1,0 +1,2 @@
+class Hex < ApplicationRecord
+end
