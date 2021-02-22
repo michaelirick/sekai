@@ -332,4 +332,18 @@ ActiveAdmin.setup do |config|
   # You can switch to using Webpacker here.
   #
   # config.use_webpacker = true
+
+  config.namespace :admin do |admin|
+    admin.build_menu do |menu|
+      menu.add label: 'Geography', id: 'geography', priority: 1
+    end
+
+    # admin.build_menu :utility_navigation do |menu|
+    #   menu.add id: 'utility', label: proc{current_user.email} do |t|
+    #     t.add label: 'Player Portal', url: '/player'
+    #     t.add label: 'Exit Admin Portal', url: '/'
+    #     admin.add_logout_button_to_menu t
+    #   end
+    # end
+  end
 end
