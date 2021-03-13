@@ -19,4 +19,5 @@ class World < ApplicationRecord
 
   def subcontinents
     continents.map(&:subcontinents)
+  end
 end
