@@ -1,6 +1,10 @@
 # README
 
-This is a Rails/React app to help organize my worldbuilding. I am a big user of WorldAnvil (highly recommend) but have more specific needs. This application will heavily leverage what was developed in my conlang app, Lehintos.
+有世界 (Yūsekai, 'existing-world') is a Rails/React app to help organize my worldbuilding. I am a big user of WorldAnvil (highly recommend) but have more specific needs. This application will heavily leverage what was developed in my conlang app, Lehintos.
+
+## 有世界
+
+All software names come from someone trying to be overly clever; 有世界 (Yūsekai) is no exception. It initially came from attempts to pun the Japanese genre of 異世界 (isekai, 'other-world') with a further pun on Yū sounding sort of like English 'you'.
 
 ## Major Concepts
 
