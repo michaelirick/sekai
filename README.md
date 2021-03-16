@@ -16,7 +16,7 @@ Perhaps the most important feature is the Map. In WorldAnvil and other tools, th
 
 ### History
 
-Next is the History. WorldAnvil has a very nice concept of history with its timeline feature. I really like the concept of Timelines and Eras, combining this with a Clausewitz style historical event tracking, the state of the World at any time can be deduced at anytime in a way that can help visualize potential plot-lines and discover plot-holes. I would like this visible in the Map above as well as a Gantt-chart-esque timeline view.
+Next is the History. WorldAnvil has a very nice concept of history with its timeline feature. I really like the concept of Timelines and Eras, combining this with a Clausewitz style historical event tracking, the state of the World at any time can be deduced in a way that can help visualize potential plot-lines and discover plot-holes. I would like this visible in the Map above as well as a Gantt-chart-esque timeline view.
 
 ## Minor Concepts
 
