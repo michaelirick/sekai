@@ -21,3 +21,23 @@ Next is the History. WorldAnvil has a very nice concept of history with its time
 ## Minor Concepts
 
 Minor concepts include languages, cultures, states, and settlements.
+
+### Languages
+
+Languages play a major role in how things are named. A collection of words and relationships to other languages. A lot of this functionality comes from the Lehintos application and the diachronr gem.
+
+### Cultures
+
+Cultures more or less tie languages to actual representations of a population in the world.
+
+### Religions
+
+More to come.
+
+### Settlements
+
+Settlements represent largely non-food producing population centers. These form the base of most States. While they can exist in only one Hex, they exert influence to their neighbors, mostly economic, though some cultural and religious as well. Further influence requires a State.
+
+### States
+
+States are collections of Settlements and Hexes under a single overarching authority, no matter how loose or cohesive. This represents kingdoms, tribal confederations, hordes of monsters.
