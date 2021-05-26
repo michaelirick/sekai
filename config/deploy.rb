@@ -1,8 +1,8 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.11.0"
+lock "~> 3.16.0"
 
-set :application, "lehintos"
-set :repo_url, "git@github.com:michaelirick/lehintos.git"
+set :application, "yuusekai"
+set :repo_url, "git@github.com:michaelirick/yuusekai.git"
 
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
