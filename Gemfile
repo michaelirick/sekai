@@ -59,6 +59,7 @@ gem 'devise'
 gem 'cancancan'
 gem 'activeadmin'
 
+gem 'marcel' # needed because GPL is the devil
 group :development do
   gem "capistrano", "~> 3.10", require: false
   gem "capistrano-rails", "~> 1.6", require: false
