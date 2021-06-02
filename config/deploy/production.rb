@@ -6,7 +6,7 @@ set :stage, :production
 
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
-server "yuusekai.michaelirick.com", user: "ubuntu", roles: %w{app web db}
+server "yuusekai.hatchie.studio", user: "ubuntu", roles: %w{app web db}
 
 
 
@@ -18,7 +18,7 @@ server "yuusekai.michaelirick.com", user: "ubuntu", roles: %w{app web db}
 # property set. Specify the username and a domain or IP for the server.
 # Don't use `:all`, it's a meta role.
 
-role :app, %w{ubuntu@yuusekai.michaelirick.com}
-role :web, %w{ubuntu@yuusekai.michaelirick.com}
-role :db, %w{ubuntu@yuusekai.michaelirick.com}
+role :app, %w{ubuntu@yuusekai.hatchie.studio}
+role :web, %w{ubuntu@yuusekai.hatchie.studio}
+role :db, %w{ubuntu@yuusekai.hatchie.studio}
 
