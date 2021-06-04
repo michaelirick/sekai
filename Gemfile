@@ -58,6 +58,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'devise'
 gem 'cancancan'
 gem 'activeadmin'
+gem 'figaro'
 
 gem 'marcel' # needed because GPL is the devil
 group :development do

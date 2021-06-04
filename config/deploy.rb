@@ -6,7 +6,7 @@ set :repo_url, "git@github.com:michaelirick/yuusekai.git"
 
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/application.yml', 'config/secrets.yml')
 
 set :passenger_restart_with_touch, true
 set :rbenv_type, :user
@@ -19,10 +19,10 @@ set :pty, true
 # set :puma_bind, 'tcp://0.0.0.0:8181'
 
 # Default branch is :master
-# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, "/ebs/www/yuusekai"
+set :deploy_to, "/var/www/yuusekai"
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
@@ -35,10 +35,10 @@ set :deploy_to, "/ebs/www/yuusekai"
 # set :pty, true
 
 # Default value for :linked_files is []
-# append :linked_files, "config/database.yml"
+append :linked_files, "config/database.yml"
 
 # Default value for linked_dirs is []
-# append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
+append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -54,5 +54,28 @@ set :deploy_to, "/ebs/www/yuusekai"
 set :ssh_options, {
   forward_agent: true,
   auth_methods: %w[publickey],
-  keys: %w[~/Downloads/web01.pem]
+  keys: %w[~/Downloads/lots.pem]
 }
+
+before "deploy:assets:precompile", "deploy:yarn_install"
+namespace :deploy do
+  desc "Run rake yarn install"
+  task :yarn_install do
+    on roles(:web) do
+      within release_path do
+        execute("cd #{release_path} && yarn install --silent --no-progress --no-audit --no-optional")
+      end
+    end
+  end
+end
+
+
+# capistrano-rails config
+set :assets_roles, %i[webpack] # Give the webpack role to a single server  
+set :assets_prefix, 'packs' # Assets are located in /packs/
+set :keep_assets, 10 # Automatically remove stale assets
+set :assets_manifests, lambda { # Tell Capistrano-Rails how to find the Webpacker manifests
+  [release_path.join('public', fetch(:assets_prefix), 'manifest.json*')]
+}
+
+set :conditionally_migrate, true # Only attempt migration if db/migrate changed - not related to Webpacker, but a nice thing
