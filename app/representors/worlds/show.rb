@@ -8,7 +8,8 @@ class Worlds::Show < ApplicationRepresentor
       {
         id: ml.id,
         title: ml.title,
-        url: ml.image.try(:url)
+        url: ml.image.try(:url),
+        metadata: ml.image.metadata
       }
     end
   end
