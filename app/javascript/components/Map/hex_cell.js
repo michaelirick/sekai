@@ -1,9 +1,12 @@
 import {Polygon} from 'react-leaflet'
 import html from 'utils/html'
-import {extendHex} from 'honeycomb-grid'
+import {extendHex, Point} from 'honeycomb-grid'
 
 const HexCell = (props) => {
-  const point = props.hex.toPoint();
+  // console.log('HexCell', props)
+  let point = props.hex.toPoint();
+  if (props.originPoint)
+    point = point.add(Point(props.originPoint))
   const hex = extendHex({
     ...props.options
   })(point.x, point.y);

@@ -18,7 +18,7 @@ const Map = (props) => {
       props.world.map_layers.map((layer, i) => {
         return mapLayer(layer, i);
       }),
-      html.tag(HexGrid, 'hex-grid', {})
+      html.tag(HexGrid, 'hex-grid', {center: [0, 0], zoom: 0})
     );
   }
 
