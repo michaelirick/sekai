@@ -12,7 +12,7 @@ const hexOptions = {
   strokeWidth: 1
 }
 
-const gridOptions  ={
+const gridOptions  = {
   width: 64,
   height: 48
 };
@@ -21,7 +21,8 @@ const HexFactory = extendHex(hexOptions);
 const Grid = defineGrid(HexFactory);
 
 const HexGrid = (props) => {
-  const [grid, setGrid] = useState(Grid.rectangle(gridOptions));
+  const [grid, setGrid] = useState(Grid(HexFactory(100,15))); // TODO: empty grid, make api call to populate from center and zoom
+  // const [grid, setGrid] = useState(Grid.rectangle(gridOptions));
   const [center, setCenter] = useState(props.center);
   const [zoom, setZoom] = useState(props.zoom);
   const map = useMapEvents({
@@ -45,14 +46,14 @@ const HexGrid = (props) => {
   const hexes = () => {
     console.log('hexes', zoom, center)
     // hexes ain't useful at larger zooms
-    if (zoom < 2)
-      return '';
+    //if (zoom < 2)
+      //return '';
 
     return grid.map((h, i) => {
       return html.tag(HexCell, i, {
         hex: h,
         options: hexOptions,
-        originPoint: center
+        //originPoint: center
       });
     });
   }
