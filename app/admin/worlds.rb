@@ -30,7 +30,7 @@ ActiveAdmin.register World do
         end
       end
       tab 'Map' do
-        react_component 'Map/index', { name: 'Friend' }
+        react_component 'Map/index', { world: w }
       end
     end
   end
