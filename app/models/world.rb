@@ -1,6 +1,7 @@
 class World < ApplicationRecord
   has_many :states
   has_many :continents
+  has_many :map_layers
   # has_many :hexes
 
 
