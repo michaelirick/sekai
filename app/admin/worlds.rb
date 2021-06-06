@@ -29,6 +29,9 @@ ActiveAdmin.register World do
           column :name
         end
       end
+      tab 'Map' do
+        react_component 'Map/index', { world: w }
+      end
     end
   end
 
