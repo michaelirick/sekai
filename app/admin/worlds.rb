@@ -30,8 +30,7 @@ ActiveAdmin.register World do
         end
       end
       tab 'Map' do
-        script src: asset_pack_path("active_admin.js")
-        react_component 'test', { name: 'Friend' }
+        react_component 'Map/index', { name: 'Friend' }
       end
     end
   end
