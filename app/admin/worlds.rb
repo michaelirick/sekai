@@ -29,6 +29,10 @@ ActiveAdmin.register World do
           column :name
         end
       end
+      tab 'Map' do
+        script src: asset_pack_path("active_admin.js")
+        react_component 'test', { name: 'Friend' }
+      end
     end
   end
 
