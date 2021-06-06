@@ -59,6 +59,7 @@ gem 'devise'
 gem 'cancancan'
 gem 'activeadmin'
 gem 'figaro'
+gem 'react-rails'
 
 gem 'marcel' # needed because GPL is the devil
 group :development do
