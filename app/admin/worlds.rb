@@ -16,6 +16,12 @@ ActiveAdmin.register World do
   #   permitted
   # end
 
+  controller do
+    before_action do
+      ActiveStorage::Current.host = request.base_url
+    end
+  end
+
   show do |w|
     attributes_table do
       row :name
@@ -31,7 +37,7 @@ ActiveAdmin.register World do
       end
 
       tab 'Map' do
-        react_component 'Map/index', { world: w }
+        react_component 'Map/index', { world: Worlds::Show.new(w).to_json }
       end
     end
   end
