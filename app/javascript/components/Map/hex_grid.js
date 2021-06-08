@@ -21,7 +21,7 @@ const HexFactory = extendHex(hexOptions);
 const Grid = defineGrid(HexFactory);
 
 const HexGrid = (props) => {
-  const [grid, setGrid] = useState(Grid(HexFactory(100,15))); // TODO: empty grid, make api call to populate from center and zoom
+  const [grid, setGrid] = useState(Grid()); // TODO: empty grid, make api call to populate from center and zoom
   // const [grid, setGrid] = useState(Grid.rectangle(gridOptions));
   const [center, setCenter] = useState(props.center);
   const [zoom, setZoom] = useState(props.zoom);
@@ -38,10 +38,23 @@ const HexGrid = (props) => {
       const c = map.getCenter();
       console.log('dragend', e, map.getCenter())
       setCenter([c.lat, c.lng]);
+      loadHexes();
       //setGrid(Grid.rectangle(gridOptions))
     }
   });
   console.log('HexGrid', props, grid)
+
+  const loadHexes = (params) => {
+    api.get('/admin/hexes/map', {
+      center: center,
+      zoom: zoom
+    }).then(response => response.json())
+    .then((newHexes) => {
+      setGrid(Grid(newHexes.map((h) => HexFactory(h.x, h.y))));
+    }).catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+  });
+  }
 
   const hexes = () => {
     console.log('hexes', zoom, center)

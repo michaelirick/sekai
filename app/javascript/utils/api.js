@@ -22,6 +22,7 @@ api['post'] = (url, params, options) => {
 };
 
 api['get'] = (url, params, options) => {
+  console.log('get', url)
   return fetch(`${url}${encodeQueryString(params)}`);
 };
 

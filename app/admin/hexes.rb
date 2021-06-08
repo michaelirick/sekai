@@ -15,5 +15,9 @@ ActiveAdmin.register Hex do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-
+  controller do
+    def map
+      render json: Hex.all.to_json
+    end
+  end
 end
