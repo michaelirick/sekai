@@ -28,7 +28,6 @@ ActiveAdmin.register Hex do
         [0 ,0]
       end
 
-      puts "found: #{hexes.count}"
       render json: Hex.viewable_on_map_at(x, y, zoom)
     end
   end
