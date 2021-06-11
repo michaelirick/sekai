@@ -13,19 +13,23 @@ const Map = (props) => {
     return html.tag(MapLayer, `layer-${index}`, layer);
   }
 
+  const viewOptions = {
+    center: [3048, 3800],
+    zoom: 0
+  }
+
   const layers = () => {
     return html.tag(LayerGroup, 'layers', {},
       props.world.map_layers.map((layer, i) => {
         return mapLayer(layer, i);
       }),
-      html.tag(HexGrid, 'hex-grid', {center: [0, 0], zoom: 0})
+      html.tag(HexGrid, 'hex-grid', {...viewOptions})
     );
   }
 
   return html.tag(MapContainer, 'test', {
     key: 'test',
-    center: [0, 0],
-    zoom: 0,
+    ...viewOptions,
     minZoom: -10,
     // scrollWheelZoom: false,
     style: {

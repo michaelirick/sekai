@@ -23,7 +23,7 @@ const Grid = defineGrid(HexFactory);
 const HexGrid = (props) => {
   const [grid, setGrid] = useState(Grid()); // TODO: empty grid, make api call to populate from center and zoom
   // const [grid, setGrid] = useState(Grid.rectangle(gridOptions));
-  const [center, setCenter] = useState(props.center);
+  const [center, setCenter] = useState(HexFactory().fromPoint(props.center)); // these are point cords
   const [zoom, setZoom] = useState(props.zoom);
   const map = useMapEvents({
     click: (e) => {
@@ -33,15 +33,17 @@ const HexGrid = (props) => {
     zoomend: (e, z) => {
       console.log('zoomend', e, map)
       setZoom(e.target._zoom);
+      loadHexes();
     },
     dragend: (e) => {
       const c = map.getCenter();
       console.log('dragend', e, map.getCenter())
-      setCenter([c.lat, c.lng]);
+      setCenter(HexFactory().fromPoint([c.lng, c.lat]));
       loadHexes();
       //setGrid(Grid.rectangle(gridOptions))
     }
   });
+  useEffect(() => loadHexes(), {});
   console.log('HexGrid', props, grid)
 
   const loadHexes = (params) => {
