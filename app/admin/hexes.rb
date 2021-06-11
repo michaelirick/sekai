@@ -15,5 +15,20 @@ ActiveAdmin.register Hex do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
+  controller do
+    def map
+      # TODO: scope to world
+      hexes = Hex.all
+      range = 500
+      zoom = params[:zoom].to_i
 
+      x, y = if params[:center]
+        params[:center].try(:split, ',').map &:to_i
+      else
+        [0 ,0]
+      end
+
+      render json: Hex.viewable_on_map_at(x, y, zoom)
+    end
+  end
 end
