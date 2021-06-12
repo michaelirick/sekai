@@ -24,9 +24,11 @@ const HexGrid = (props) => {
   const [grid, setGrid] = useState(Grid()); // empty grid, make api call to populate from center and zoom
   const [center, setCenter] = useState(HexFactory().fromPoint(props.center)); // these are point cords
   const [zoom, setZoom] = useState(props.zoom);
+  const [selectedHex, setSelectedHex] = useState(null);
   const map = useMapEvents({
     click: (e) => {
       console.log('HexGrid#click', e);
+      selectBlankHex(e, map);
     },
     zoomend: (e, z) => {
       console.log('zoomend', e, map)
@@ -39,16 +41,32 @@ const HexGrid = (props) => {
       loadHexes();
     }
   });
-  useEffect(() => loadHexes(), {});
+  useEffect(() => loadHexes(), []);
+  useEffect(() => refreshGrid(), [selectedHex]);
   // console.log('HexGrid', props, grid)
 
+  const selectBlankHex = (e, map) => {
+    setSelectedHex(HexFactory().fromPoint([e.latlng.lng, e.latlng.lat]));
+    loadHexes();
+    console.log('selectBlankHex', e, map)
+  }
+
+  const refreshGrid = (newHexes = []) => {
+    let newGrid = Grid([
+      HexFactory(selectedHex, {color: 'blue', world_id: props.world.id}),
+      ...newHexes.map((h) => HexFactory(h.x, h.y, {h}))
+    ]);
+    setGrid(newGrid);
+  }
+
   const loadHexes = (params) => {
-    api.get('/admin/hexes/map', {
+    console.log('loadHexes', props)
+    api.get(`/admin/worlds/${props.world.id}/map`, {
       center: center,
       zoom: zoom
     }).then(response => response.json())
     .then((newHexes) => {
-      setGrid(Grid(newHexes.map((h) => HexFactory(h.x, h.y))));
+      refreshGrid(newHexes);
     }).catch(error => {
     console.error('There has been a problem with your fetch operation:', error);
   });

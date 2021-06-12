@@ -14,8 +14,8 @@ const Map = (props) => {
   }
 
   const viewOptions = {
-    center: [3048, 3800],
-    zoom: 0
+    center: [2800, 3700],
+    zoom: 2
   }
 
   const layers = () => {
@@ -23,7 +23,7 @@ const Map = (props) => {
       props.world.map_layers.map((layer, i) => {
         return mapLayer(layer, i);
       }),
-      html.tag(HexGrid, 'hex-grid', {...viewOptions})
+      html.tag(HexGrid, 'hex-grid', {...viewOptions, world: props.world})
     );
   }
 
