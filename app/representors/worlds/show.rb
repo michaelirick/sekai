@@ -1,6 +1,6 @@
 class Worlds::Show < ApplicationRepresentor
   def attributes
-    %i[name]
+    %i[id name]
   end
 
   def map_layers_attributes

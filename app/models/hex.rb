@@ -1,9 +1,11 @@
 class Hex < ApplicationRecord
   belongs_to :province
   belongs_to :owner, class_name: 'State', optional: true
+  belongs_to :world
 
-  scope :viewable_on_map_at, -> (x, y, zoom) do
-    hexes = self
+  scope :viewable_on_map_at, -> (world, x, y, zoom) do
+    return where('1=2') if zoom < 2
+    hexes = where(world: world)
     range = 100
     {x: x, y: y}.each do |c, v| # coord, value
       [-1, 1].each do |m| # multiple

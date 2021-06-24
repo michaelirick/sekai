@@ -2,7 +2,7 @@ class World < ApplicationRecord
   has_many :states
   has_many :continents
   has_many :map_layers
-  # has_many :hexes
+  has_many :hexes
 
 
   # inverse mapping to the relation needed to group
@@ -11,7 +11,6 @@ class World < ApplicationRecord
     regions
     areas
     provinces
-    hexes
   ].each do |sub|
     define_method sub do
       continents.map(&sub).flatten
