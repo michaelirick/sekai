@@ -21,6 +21,10 @@ ActiveAdmin.register World do
       ActiveStorage::Current.host = request.base_url
     end
 
+    def scoped_collection
+      end_of_association_chain.where(user_id: current_user.id)
+    end
+
     def map
       world = World.find params[:id]
       hexes = Hex.all
@@ -60,6 +64,26 @@ ActiveAdmin.register World do
         react_component 'Map/index', { world: Worlds::Show.new(w).to_json }
       end
     end
+  end
+
+  member_action :select_world, method: :get do
+    if resource.user.nil?
+      redirect_to resource_path, notice: 'You cannot select this world.'
+    else
+      u = resource.user
+      u.selected_world = resource
+      if u.save
+        redirect_to resource_path, notice: "You have selected #{resource.name}."
+      else
+        redirect_to resource_path, notice: "There was an error trying to select that world."
+      end
+    end
+  end
+
+  action_item :select_world, only: :show do
+    # if current_user.can?(:select_world, character)
+      link_to 'Select World', select_world_admin_world_path(world)
+    # end
   end
 
 end

@@ -3,6 +3,7 @@ class World < ApplicationRecord
   has_many :continents
   has_many :map_layers
   has_many :hexes
+  belongs_to :user
 
 
   # inverse mapping to the relation needed to group
