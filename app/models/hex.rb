@@ -1,4 +1,5 @@
 class Hex < ApplicationRecord
+  resourcify
   belongs_to :province
   belongs_to :owner, class_name: 'State', optional: true
   belongs_to :world

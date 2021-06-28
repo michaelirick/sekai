@@ -1,4 +1,5 @@
 class Area < ApplicationRecord
+  resourcify
   has_many :provinces
   belongs_to :region
 

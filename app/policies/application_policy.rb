@@ -6,16 +6,22 @@ class ApplicationPolicy
     @record = record
   end
 
+  def admin?
+    return false unless @user
+
+    @user.has_role? :admin, @record
+  end
+
   def index?
-    false
+    admin?
   end
 
   def show?
-    false
+    admin?
   end
 
   def create?
-    false
+    admin?
   end
 
   def new?
@@ -23,7 +29,7 @@ class ApplicationPolicy
   end
 
   def update?
-    false
+    admin?
   end
 
   def edit?
@@ -31,7 +37,11 @@ class ApplicationPolicy
   end
 
   def destroy?
-    false
+    admin?
+  end
+
+  def manage?
+    admin?
   end
 
   class Scope

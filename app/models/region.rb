@@ -1,4 +1,5 @@
 class Region < ApplicationRecord
+  resourcify
   has_many :areas
   belongs_to :subcontinent
 

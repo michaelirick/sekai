@@ -1,5 +1,5 @@
 ActiveAdmin.register Region do
-  menu parent: 'geography', priority: 4
+  menu parent: 'geography', priority: 4, if: proc{true}
 
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters

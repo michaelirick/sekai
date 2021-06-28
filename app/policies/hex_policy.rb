@@ -1,7 +1,7 @@
 class HexPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      scope.all
+      scope.all.for_world(@user.selected_world)
     end
   end
 end

@@ -1,4 +1,5 @@
 class Province < ApplicationRecord
+  resourcify
   has_many :hexes
   belongs_to :area
 

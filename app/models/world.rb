@@ -1,4 +1,5 @@
 class World < ApplicationRecord
+  resourcify
   has_many :states
   has_many :continents
   has_many :map_layers

@@ -5,7 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-admin = User.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
+admin = User.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password', display_name: 'Admin')
+admin.add_role :admin
 
 w = World.create(name: 'Eros', user: admin)
 m = MapLayer.create(title: 'Eros Antique', world: w)

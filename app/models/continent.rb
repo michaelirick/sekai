@@ -1,4 +1,5 @@
 class Continent < ApplicationRecord
+  resourcify
   has_many :subcontinents
   belongs_to :world
 

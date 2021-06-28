@@ -62,6 +62,7 @@ gem 'activeadmin'
 gem 'figaro'
 gem 'react-rails'
 gem 'pundit'
+gem 'rolify'
 
 gem 'marcel' # needed because GPL is the devil
 group :development do

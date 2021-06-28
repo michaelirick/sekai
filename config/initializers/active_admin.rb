@@ -335,8 +335,11 @@ ActiveAdmin.setup do |config|
 
   config.namespace :admin do |admin|
     admin.build_menu do |menu|
-      # menu.add id: 'selected_world', priority: 1, label: proc{"Selected World: #{current_user&.selected_world&.name || 'none'}"}
-      menu.add label: 'Geography', id: 'geography', priority: 2
+      item = ActiveAdmin::MenuItem.new(label: "Jobs", url: "/jobs")
+      menu.add label: 'yoo', if: proc{true}, id: 'yoo', priority: 100, should_display: proc{true} do |t|
+      end
+      menu.add id: 'selected_world', priority: 1, label: proc{puts 'BRUH';"Selected World: #{current_user&.selected_world&.name || 'none'}"}, if: proc{puts 'bruh?';true}
+      menu.add label: 'Geography', id: 'geography', priority: 2, if: proc{true}
     end
 
     # admin.build_menu :utility_navigation do |menu|

@@ -1,5 +1,5 @@
 ActiveAdmin.register Subcontinent do
-  menu parent: 'geography', priority: 5
+  menu parent: 'geography', priority: 5, if: proc{true}
 
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
