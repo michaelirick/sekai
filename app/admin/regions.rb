@@ -1,5 +1,5 @@
 ActiveAdmin.register Region do
-  menu parent: 'geography', priority: 4
+  menu parent: 'geography', priority: 4, if: proc{true}
 
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
@@ -15,5 +15,12 @@ ActiveAdmin.register Region do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-
+  form do |f|
+    f.semantic_errors # shows errors on :base
+    f.inputs do
+      f.input :name
+      f.input :subcontinent, collection: Subcontinent.for_world(current_user.selected_world)
+    end
+    f.actions         # adds the 'Submit' and 'Cancel' buttons
+  end
 end

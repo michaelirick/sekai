@@ -1,8 +1,12 @@
 class World < ApplicationRecord
+  resourcify
   has_many :states
   has_many :continents
   has_many :map_layers
   has_many :hexes
+  belongs_to :user
+
+  scope :for_user, -> (user) { where(user: user) }
 
 
   # inverse mapping to the relation needed to group
