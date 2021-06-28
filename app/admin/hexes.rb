@@ -15,4 +15,18 @@ ActiveAdmin.register Hex do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
+
+  form do |f|
+    f.semantic_errors # shows errors on :base
+    f.inputs do
+      f.input :title
+      f.input :x
+      f.input :y
+      f.input :world
+      f.input :province, collection: Province.for_world(hex.world)
+      f.input :terrain_type
+      f.input :owner, collection: State.for_world(hex.world)
+    end
+    f.actions         # adds the 'Submit' and 'Cancel' buttons
+  end
 end

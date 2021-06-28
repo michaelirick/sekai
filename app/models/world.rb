@@ -6,6 +6,8 @@ class World < ApplicationRecord
   has_many :hexes
   belongs_to :user
 
+  scope :for_user, -> (user) { where(user: user) }
+
 
   # inverse mapping to the relation needed to group
   %i[

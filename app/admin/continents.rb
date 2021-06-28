@@ -16,4 +16,13 @@ ActiveAdmin.register Continent do
   #   permitted
   # end
 
+    form do |f|
+    f.semantic_errors # shows errors on :base
+    f.inputs do
+      f.input :name
+      f.input :world, collection: World.for_user(current_user)
+    end
+    f.actions         # adds the 'Submit' and 'Cancel' buttons
+  end
+
 end

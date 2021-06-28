@@ -16,6 +16,12 @@ ActiveAdmin.register World do
   #   permitted
   # end
 
+  form do |f|
+    f.semantic_errors # shows errors on :base
+    f.inputs          # builds an input field for every attribute
+    f.actions         # adds the 'Submit' and 'Cancel' buttons
+  end
+
   controller do
     before_action do
       ActiveStorage::Current.host = request.base_url
