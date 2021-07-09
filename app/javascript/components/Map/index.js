@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { MapContainer, LayerGroup } from 'react-leaflet'
+import { MapContainer, LayerGroup, LayersControl } from 'react-leaflet'
 import html from 'utils/html'
 import MapLayer from './map_layer'
 import HexGrid from './hex_grid'
@@ -10,7 +10,13 @@ import 'leaflet/dist/leaflet.css';
 const Map = (props) => {
   console.log('Map', props)
   const mapLayer = (layer, index) => {
-    return html.tag(MapLayer, `layer-${index}`, layer);
+    console.log('layer', layer)
+    return html.tag(LayersControl.BaseLayer, `layer-${index}`, {
+      name: layer.title,
+      checked: true // TODO: allow this to be set in DB
+    },
+      html.tag(MapLayer, `layer-${index}`, layer)
+    );
   }
 
   const viewOptions = {
@@ -18,12 +24,21 @@ const Map = (props) => {
     zoom: 2
   }
 
+  const hexes = () => {
+    return html.tag(LayersControl.Overlay, `layer-hexes`, {
+      name: 'Hexes',
+      checked: true // TODO: allow this to be set in DB
+    },
+      html.tag(HexGrid, 'hex-grid', {...viewOptions, world: props.world})
+    );
+  }
+
   const layers = () => {
-    return html.tag(LayerGroup, 'layers', {},
+    return html.tag(LayersControl, 'layers', {},
       props.world.map_layers.map((layer, i) => {
         return mapLayer(layer, i);
       }),
-      html.tag(HexGrid, 'hex-grid', {...viewOptions, world: props.world})
+      hexes()
     );
   }
 
