@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_28_184212) do
+ActiveRecord::Schema.define(version: 2021_07_14_170340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 2021_06_28_184212) do
     t.integer "area_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.json "cached_points"
   end
 
   create_table "regions", force: :cascade do |t|
@@ -158,6 +159,10 @@ ActiveRecord::Schema.define(version: 2021_06_28_184212) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id"
+    t.integer "width"
+    t.integer "height"
+    t.integer "circumference"
+    t.decimal "hex_size"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

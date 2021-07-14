@@ -5,7 +5,7 @@ import HexInfo from './hex_info'
 import coalesce from 'utils/coalesce'
 
 const HexCell = (props) => {
-  console.log('HexCell', props)
+  // console.log('HexCell', props)
   let point = props.hex.toPoint();
 
   const hex = extendHex({

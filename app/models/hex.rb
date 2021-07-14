@@ -1,3 +1,5 @@
+#require 'geometry'
+
 class Hex < ApplicationRecord
   resourcify
   belongs_to :province
@@ -22,5 +24,10 @@ class Hex < ApplicationRecord
     end
 
     hexes
+  end
+
+  def to_shape
+    t = 6.9282
+    Geometry::RegularPolygon.new(sides: 6, radius: t, center: [x, y])
   end
 end
