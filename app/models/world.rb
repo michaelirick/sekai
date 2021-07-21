@@ -41,8 +41,14 @@ class World < ApplicationRecord
     GEO_LAYER_TYPES.map do |glt|
       {
         name: glt,
-        points: send(glt.to_s.pluralize).map(&:to_points)
+        points: send(glt.to_s.pluralize).map do |sub|
+          {name: sub.name, points: sub.to_geojson}
+        end
       }
     end
+  end
+
+  def geo_factory
+    RGeo::Cartesian.preferred_factory()
   end
 end

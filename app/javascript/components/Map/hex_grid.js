@@ -41,7 +41,7 @@ const HexGrid = (props) => {
   // console.log('HexGrid', props, grid)
 
   const selectBlankHex = (e, map) => {
-    setSelectedHex(HexFactory().fromPoint([e.latlng.lng, e.latlng.lat]));
+    setSelectedHex(HexFactory().fromPoint([e.latlng.lat, e.latlng.lng]));
     loadHexes();
     console.log('selectBlankHex', e, map)
   }
