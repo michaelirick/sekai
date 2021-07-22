@@ -4,6 +4,7 @@ import html from 'utils/html'
 import MapLayer from './map_layer'
 import GeoLayer from './geo_layer'
 import HexGrid from './hex_grid'
+import SideBar from './side_bar'
 import 'leaflet/dist/leaflet.css';
 
 //const [container, tileLayer] = html.tagify([MapContainer, TileLayer]);
@@ -61,20 +62,35 @@ const Map = (props) => {
     );
   }
 
-  return html.tag(MapContainer, 'test', {
-    key: 'test',
-    ...viewOptions,
-    minZoom: -10,
-    // scrollWheelZoom: false,
-    style: {
-      height: '600px',
-      maxHeight: '600px',
-      maxWidth: '800px'
-    },
-    crs: L.CRS.Simple
-  }, [
-    layers(),
-  ]);
+  const mapContainer = () => {
+    return html.tag(MapContainer, 'test', {
+      key: 'test',
+      ...viewOptions,
+      minZoom: -10,
+      // scrollWheelZoom: false,
+      style: {
+        height: '600px',
+        maxHeight: '600px',
+        maxWidth: '800px',
+        // float: 'left'
+      },
+      crs: L.CRS.Simple
+    }, [
+      layers(),
+    ]);
+  }
+
+  const sideBar = () => {
+    return html.tag(SideBar, 'sideBar', {
+      ...props,
+      key: 'sideBar'
+    });
+  }
+
+  return html.div('map', {},
+    mapContainer(),
+    sideBar()
+  );
 }
 
 export default Map;
