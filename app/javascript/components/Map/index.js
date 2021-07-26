@@ -52,13 +52,26 @@ const Map = (props) => {
     })
   }
 
+  const Control = (props) => {
+    // <div class="leaflet-control-zoom leaflet-bar leaflet-control">
+    // <a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in">
+    // +
+    // </a>
+    // <a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out">
+    // −
+    // </a>
+    // </div>
+    return html.div('control', {className: 'leaflet-control leaflet-bar'}, 'test');
+  }
+
   const layers = () => {
     return html.tag(LayersControl, 'layers', {},
       props.world.map_layers.map((layer, i) => {
         return mapLayer(layer, i);
       }),
       geoLayers(),
-      hexes()
+      hexes(),
+      // html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
     );
   }
 
@@ -77,6 +90,7 @@ const Map = (props) => {
       crs: L.CRS.Simple
     }, [
       layers(),
+      html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
     ]);
   }
 
