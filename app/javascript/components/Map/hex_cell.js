@@ -5,7 +5,7 @@ import HexInfo from './hex_info'
 import coalesce from 'utils/coalesce'
 
 const HexCell = (props) => {
-  console.log('HexCell', props)
+  // console.log('HexCell', props)
   let point = props.hex.toPoint();
 
   const hex = extendHex({
@@ -14,11 +14,11 @@ const HexCell = (props) => {
 
   const corners = hex.corners().map((pp) => {
     const p = pp.add(point)
-    return [p.y, p.x];
+    return [p.x, p.y];
   });
 
   const content = () => {
-    return html.tag(HexInfo, 'info', {hex: props.hex});
+    return html.tag(HexInfo, 'info', {hex: props.hex, points: corners});
   }
 
   const popup = () => {
@@ -33,7 +33,7 @@ const HexCell = (props) => {
     pathOptions: {color: props.hex.color, ...(coalesce(props.pathOptions, {}))},
     positions: corners,
     eventHandlers: {
-      // click: (e) => console.log('click', props, e)
+      click: (e) => console.log('HexCell#click', props, e)
     }
   }, popup());
 }

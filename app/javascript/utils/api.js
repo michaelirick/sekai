@@ -21,6 +21,17 @@ api['post'] = (url, params, options) => {
   });
 };
 
+api['put'] = (url, params, options) => {
+  return fetch(url, {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute("content")
+    },
+    method: 'PUT',
+    body: JSON.stringify(params)
+  });
+};
+
 api['get'] = (url, params, options) => {
   console.log('get', url)
   return fetch(`${url}${encodeQueryString(params)}`);
