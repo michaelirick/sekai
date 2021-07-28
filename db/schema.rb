@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_16_130602) do
+ActiveRecord::Schema.define(version: 2021_07_28_165719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,16 @@ ActiveRecord::Schema.define(version: 2021_07_16_130602) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "ages", force: :cascade do |t|
+    t.integer "preceding_age_id"
+    t.integer "world_id"
+    t.string "title"
+    t.string "abbreviation"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "start_date_id"
   end
 
   create_table "areas", force: :cascade do |t|
@@ -159,6 +169,16 @@ ActiveRecord::Schema.define(version: 2021_07_16_130602) do
     t.index ["role_id"], name: "index_users_roles_on_role_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
     t.index ["user_id"], name: "index_users_roles_on_user_id"
+  end
+
+  create_table "world_dates", force: :cascade do |t|
+    t.integer "year"
+    t.integer "month"
+    t.integer "day"
+    t.integer "age_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["age_id", "year", "month", "day"], name: "index_world_dates_on_age_id_and_year_and_month_and_day", unique: true
   end
 
   create_table "worlds", force: :cascade do |t|

@@ -340,6 +340,7 @@ ActiveAdmin.setup do |config|
       end
       menu.add id: 'selected_world', priority: 1, label: proc{puts 'BRUH';"Selected World: #{current_user&.selected_world&.name || 'none'}"}, if: proc{puts 'bruh?';true}
       menu.add label: 'Geography', id: 'geography', priority: 2, if: proc{true}
+      menu.add label: 'History', id: 'history', priority: 3, if: proc{true}
     end
 
     # admin.build_menu :utility_navigation do |menu|
