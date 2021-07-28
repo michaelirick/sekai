@@ -75,7 +75,9 @@ const Map = (props) => {
     );
   }
 
+  // yo
   const mapContainer = () => {
+    console.log('mapContainer')
     return html.tag(MapContainer, 'test', {
       key: 'test',
       ...viewOptions,
