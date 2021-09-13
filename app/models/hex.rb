@@ -34,7 +34,7 @@ class Hex < ApplicationRecord
   end
 
   def create_rgeo(points)
-    binding.pry
+#    binding.pry
     factory = world.geo_factory
     points = points.map do |p|
       factory.point *p #[p.last, p.first]

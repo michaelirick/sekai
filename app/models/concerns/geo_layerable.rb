@@ -49,7 +49,7 @@ module GeoLayerable
 
     def compact_boundaries!
       set_boundaries_to_subordinates! unless boundaries
-      binding.pry
+#      binding.pry
 
     end
 
