@@ -61,7 +61,8 @@ const Map = (props) => {
     // −
     // </a>
     // </div>
-    return html.div('control', {className: 'leaflet-control leaflet-bar'}, 'test');
+    return '';
+    //return html.div('control', {className: 'leaflet-control leaflet-bar'}, 'test');
   }
 
   const layers = () => {

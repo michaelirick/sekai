@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  plates: 1
+  width: 1
+  height: 1
+  seed: 1
+  world_id: 1
+
+two:
+  title: MyString
+  plates: 1
+  width: 1
+  height: 1
+  seed: 1
+  world_id: 1

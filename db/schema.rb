@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_28_165719) do
+ActiveRecord::Schema.define(version: 2021_08_30_173538) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,6 +179,18 @@ ActiveRecord::Schema.define(version: 2021_07_28_165719) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["age_id", "year", "month", "day"], name: "index_world_dates_on_age_id_and_year_and_month_and_day", unique: true
+  end
+
+  create_table "world_generators", force: :cascade do |t|
+    t.string "title"
+    t.integer "plates"
+    t.integer "width"
+    t.integer "height"
+    t.integer "seed"
+    t.integer "world_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id"
   end
 
   create_table "worlds", force: :cascade do |t|
