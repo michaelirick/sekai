@@ -4,18 +4,18 @@ import coalesce from 'utils/coalesce'
 import api from 'utils/api'
 
 const HexInfo = (props) => {
-  console.log('HexInfo' , props)
-  const hex = coalesce(props.hex.h, {});
+  console.log('HexInfo', props)
+  const hex = coalesce(props.hex.h, {})
   const header = () => {
-    return html.h3('header', {}, `${hex.title}`);
+    return html.h3('header', {}, `${hex.title}`)
   }
 
   const coords = () => {
-    return html.p('coords', {}, `(${hex.x}, ${hex.y})`);
+    return html.p('coords', {}, `(${hex.x}, ${hex.y})`)
   }
 
   const province = () => {
-    return html.p('province', {}, `Province: ${hex.province_id}`);
+    return html.p('province', {}, `Province: ${hex.province_id}`)
   }
 
   const edit = () => {
@@ -23,18 +23,18 @@ const HexInfo = (props) => {
       href: `/admin/hexes/${hex.id}/edit?hex[boundaries]=${props.points}`,
       target: '_blank',
       className: 'button'
-    }, 'Edit');
+    }, 'Edit')
   }
 
   const updateBoundariesButton = () => {
     return html.a('updateBoundaries', {
       onClick: (e) => updateBoundaries(),
       className: 'button'
-    }, 'Update Boundaries');
+    }, 'Update Boundaries')
   }
 
   const updateBoundaries = () => {
-    api.post(`/admin/hexes/${hex.id}/update_boundaries.json`, {points: props.points.reverse()})
+    api.post(`/admin/hexes/${hex.id}/update_boundaries.json`, { points: props.points.reverse() })
       .then((response) => console.log('updateBoundaries', response))
   }
 
@@ -46,8 +46,7 @@ const HexInfo = (props) => {
   }
 
   const content = () => {
-    if (!truth.isTruthy(hex.id))
-      return create();
+    if (!truth.isTruthy(hex.id)) { return create() }
 
     return [
       header(),
@@ -55,10 +54,10 @@ const HexInfo = (props) => {
       province(),
       edit(),
       updateBoundariesButton()
-    ];
+    ]
   }
 
-  return html.div('info', {}, content());
-};
+  return html.div('info', {}, content())
+}
 
-export default HexInfo;
+export default HexInfo

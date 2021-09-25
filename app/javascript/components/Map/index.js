@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { MapContainer, LayerGroup, LayersControl } from 'react-leaflet'
 import html from 'utils/html'
 import MapLayer from './map_layer'
 import GeoLayer from './geo_layer'
 import HexGrid from './hex_grid'
 import SideBar from './side_bar'
-import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css'
 
-//const [container, tileLayer] = html.tagify([MapContainer, TileLayer]);
+// const [container, tileLayer] = html.tagify([MapContainer, TileLayer]);
 
 const Map = (props) => {
   console.log('Map', props)
@@ -17,23 +17,23 @@ const Map = (props) => {
       name: layer.title,
       checked: true // TODO: allow this to be set in DB
     },
-      html.tag(MapLayer, `layer-${index}`, layer)
-    );
+    html.tag(MapLayer, `layer-${index}`, layer)
+    )
   }
 
   const viewOptions = {
     center: [2800, 3700],
-    //center: [4805, 2100],
+    // center: [4805, 2100],
     zoom: 2
   }
 
   const hexes = () => {
-    return html.tag(LayersControl.Overlay, `layer-hexes`, {
+    return html.tag(LayersControl.Overlay, 'layer-hexes', {
       name: 'Hexes',
       checked: true // TODO: allow this to be set in DB
     },
-      html.tag(HexGrid, 'hex-grid', {...viewOptions, world: props.world})
-    );
+    html.tag(HexGrid, 'hex-grid', { ...viewOptions, world: props.world })
+    )
   }
 
   const geoLayer = (layer, i) => {
@@ -42,13 +42,13 @@ const Map = (props) => {
       name: layer.name,
       checked: false // TODO: allow this to be set in DB or something
     },
-      html.tag(GeoLayer, 'geolayer', layer)
-    );
+    html.tag(GeoLayer, 'geolayer', layer)
+    )
   }
 
   const geoLayers = () => {
     return props.world.geo_layers.map((layer, i) => {
-      return geoLayer(layer, i);
+      return geoLayer(layer, i)
     })
   }
 
@@ -61,18 +61,18 @@ const Map = (props) => {
     // −
     // </a>
     // </div>
-    return html.div('control', {className: 'leaflet-control leaflet-bar'}, 'test');
+    return html.div('control', { className: 'leaflet-control leaflet-bar' }, 'test')
   }
 
   const layers = () => {
     return html.tag(LayersControl, 'layers', {},
       props.world.map_layers.map((layer, i) => {
-        return mapLayer(layer, i);
+        return mapLayer(layer, i)
       }),
       geoLayers(),
-      hexes(),
+      hexes()
       // html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
-    );
+    )
   }
 
   // yo
@@ -86,27 +86,27 @@ const Map = (props) => {
       style: {
         height: '600px',
         maxHeight: '600px',
-        maxWidth: '800px',
+        maxWidth: '800px'
         // float: 'left'
       },
       crs: L.CRS.Simple
     }, [
       layers(),
-      html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
-    ]);
+      html.tag(Control, 'control', { position: 'bottomleft' }, 'test')
+    ])
   }
 
   const sideBar = () => {
     return html.tag(SideBar, 'sideBar', {
       ...props,
       key: 'sideBar'
-    });
+    })
   }
 
   return html.div('map', {},
     mapContainer(),
     sideBar()
-  );
+  )
 }
 
-export default Map;
+export default Map
