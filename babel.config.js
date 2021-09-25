@@ -35,7 +35,8 @@ module.exports = function(api) {
           exclude: ['transform-typeof-symbol']
         }
       ],
-      ['@babel/preset-typescript', { 'allExtensions': true, 'isTSX': true }]
+      ['@babel/preset-typescript', { 'allExtensions': true, 'isTSX': true }],
+      ['@babel/preset-react']
     ].filter(Boolean),
     plugins: [
       'babel-plugin-macros',
@@ -48,6 +49,11 @@ module.exports = function(api) {
           loose: true
         }
       ],
+      [
+        "@babel/plugin-proposal-private-methods",
+        {loose: true}
+      ],
+      ["@babel/plugin-proposal-private-property-in-object", { "loose": true }],
       [
         '@babel/plugin-proposal-object-rest-spread',
         {
