@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import * as React from 'react'
+import * as Leaflet from 'react-leaflet'
 import { MapContainer, LayerGroup, LayersControl } from 'react-leaflet'
 import html from 'utils/html'
 import MapLayer from './map_layer'
@@ -28,22 +29,24 @@ const Map = (props) => {
   }
 
   const hexes = () => {
-    return html.tag(LayersControl.Overlay, 'layer-hexes', {
-      name: 'Hexes',
-      checked: true // TODO: allow this to be set in DB
-    },
-    html.tag(HexGrid, 'hex-grid', { ...viewOptions, world: props.world })
-    )
+    return <LayersControl.Overlay
+      name='Hexes'
+      checked={true}>
+        <HexGrid {...viewOptions} world={props.world}></HexGrid>
+      </LayersControl.Overlay>
+    // return html.tag(LayersControl.Overlay, 'layer-hexes', {
+    //   name: 'Hexes',
+    //   checked: true // TODO: allow this to be set in DB
+    // },
+    // html.tag(HexGrid, 'hex-grid', { ...viewOptions, world: props.world })
+    // )
   }
 
   const geoLayer = (layer, i) => {
     console.log('Map#geoLayer', layer)
-    return html.tag(LayersControl.Overlay, `geo-${i}`, {
-      name: layer.name,
-      checked: false // TODO: allow this to be set in DB or something
-    },
-    html.tag(GeoLayer, 'geolayer', layer)
-    )
+    return <LayersControl.Overlay name={layer.name} checked={false}>
+      <GeoLayer {...layer}></GeoLayer>
+    </LayersControl.Overlay>
   }
 
   const geoLayers = () => {
@@ -53,6 +56,7 @@ const Map = (props) => {
   }
 
   const Control = (props) => {
+    return <div></div>
     // <div class="leaflet-control-zoom leaflet-bar leaflet-control">
     // <a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in">
     // +
@@ -61,7 +65,7 @@ const Map = (props) => {
     // −
     // </a>
     // </div>
-    return html.div('control', { className: 'leaflet-control leaflet-bar' }, 'test')
+    // return html.div('control', { className: 'leaflet-control leaflet-bar' }, 'test')
   }
 
   const layers = () => {
@@ -97,16 +101,13 @@ const Map = (props) => {
   }
 
   const sideBar = () => {
-    return html.tag(SideBar, 'sideBar', {
-      ...props,
-      key: 'sideBar'
-    })
+    return <SideBar></SideBar>
   }
 
-  return html.div('map', {},
-    mapContainer(),
-    sideBar()
-  )
+  return <div>
+    {mapContainer()}
+    {sideBar()}
+  </div>
 }
 
 export default Map

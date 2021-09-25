@@ -1,7 +1,13 @@
 import { extendHex } from 'honeycomb-grid'
 
+type WorldProps = {
+  hexSize: number;
+  circumference: number;
+  width: number;
+}
+
 class World {
-  constructor (props) {
+  constructor (props: WorldProps) {
     console.log('world#new', props)
     Object.assign(this, props)
   }
