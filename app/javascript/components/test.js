@@ -1,5 +1,5 @@
 const Test = (props) => {
-  return 'test';
+  return 'test'
 }
 
-export default Test;
+export default Test
