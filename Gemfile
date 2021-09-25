@@ -60,6 +60,7 @@ gem 'devise'
 gem 'cancancan'
 gem 'activeadmin'
 gem 'figaro'
+
 gem 'react-rails'
 gem 'pundit'
 gem 'rolify'
@@ -69,7 +70,6 @@ gem 'mathn'
 gem 'geometry'
 gem 'activerecord-postgis-adapter'
 gem 'rgeo-geojson'
-
 
 gem 'marcel' # needed because GPL is the devil
 group :development do

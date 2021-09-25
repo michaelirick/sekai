@@ -54,7 +54,7 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 set :ssh_options, {
   forward_agent: true,
   auth_methods: %w[publickey],
-  keys: %w[~/Downloads/lots.pem]
+  keys: %w[~/Downloads/hs01.pem]
 }
 
 before "deploy:assets:precompile", "deploy:yarn_install"
