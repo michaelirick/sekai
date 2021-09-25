@@ -14,12 +14,13 @@ const Map = (props) => {
   console.log('Map', props)
   const mapLayer = (layer, index) => {
     console.log('layer', layer)
-    return html.tag(LayersControl.BaseLayer, `layer-${index}`, {
-      name: layer.title,
-      checked: true // TODO: allow this to be set in DB
-    },
-    html.tag(MapLayer, `layer-${index}`, layer)
-    )
+    return <LayersControl.BaseLayer
+      key={`layer-${index}`}
+      name={layer.title}
+      checked={true}
+    >
+      <MapLayer key={`layer-${index}`} {...layer}></MapLayer>
+    </LayersControl.BaseLayer>
   }
 
   const viewOptions = {
@@ -34,12 +35,6 @@ const Map = (props) => {
       checked={true}>
         <HexGrid {...viewOptions} world={props.world}></HexGrid>
       </LayersControl.Overlay>
-    // return html.tag(LayersControl.Overlay, 'layer-hexes', {
-    //   name: 'Hexes',
-    //   checked: true // TODO: allow this to be set in DB
-    // },
-    // html.tag(HexGrid, 'hex-grid', { ...viewOptions, world: props.world })
-    // )
   }
 
   const geoLayer = (layer, i) => {
@@ -95,8 +90,8 @@ const Map = (props) => {
       },
       crs: L.CRS.Simple
     }, [
-      layers(),
-      html.tag(Control, 'control', { position: 'bottomleft' }, 'test')
+      layers()//,
+      // html.tag(Control, 'control', { position: 'bottomleft' }, 'test')
     ])
   }
 
