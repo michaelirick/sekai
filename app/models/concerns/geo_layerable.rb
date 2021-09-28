@@ -54,6 +54,7 @@ module GeoLayerable
     end
 
     def to_rgeo
+      return []
       return boundaries if boundaries
 
       boundaries = (geo_subordinates || []).map(&:to_rgeo).reduce do |memo, current|

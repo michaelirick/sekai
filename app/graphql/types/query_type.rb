@@ -13,5 +13,11 @@ module Types
     def test_field
       "Hello World!"
     end
+
+    field :hex, [Types::HexType], null: false, description: 'test'
+
+    def hex
+      Hex.all
+    end
   end
 end
