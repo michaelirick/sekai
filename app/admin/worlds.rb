@@ -43,10 +43,11 @@ ActiveAdmin.register World do
         [0 ,0]
       end
 
-      # TODO: scope to world
-      hexes = Hex.viewable_on_map_at(world, x, y, zoom).map do |h|
-        Hexes::Index.new(h).to_json
-      end
+      # # TODO: scope to world
+      # hexes = Hex.viewable_on_map_at(world, x, y, zoom).map do |h|
+      #   Hexes::Index.new(h).to_json
+      # end
+      hexes = []
 
       render json: hexes
     end
@@ -60,9 +61,9 @@ ActiveAdmin.register World do
 
     tabs do
       tab 'Continents' do
-        table_for w.continents do
+        table_for GeoLayer.continents_for(w) do
           column :id
-          column :name
+          column :title
         end
       end
 

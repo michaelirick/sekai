@@ -1,41 +1,21 @@
 ActiveAdmin.register Hex do
   menu parent: 'geography', priority: 1, if: proc{true}
-
-  # See permitted parameters documentation:
-  # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-  #
-  # Uncomment all parameters which should be permitted for assignment
-  #
-  permit_params :world_id, :x, :y, :owner_id, :province_id, :terrain_type, :title, :boundaries
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:world_id, :x, :y, :owner_id, :province_id, :terrain_type]
-  #   permitted << :other if params[:action] == 'create' && current_user.admin?
-  #   permitted
-  # end
+  permit_params :title, :parent_type, :parent_id, :world_id
 
   form do |f|
     f.semantic_errors # shows errors on :base
     f.inputs do
       f.input :title
-      f.input :x
-      f.input :y
-      f.input :world
-      f.input :province, collection: Province.for_world(hex.world)
-      f.input :terrain_type
-      f.input :owner, collection: State.for_world(hex.world)
-      f.input :boundaries, as: :text do
-        params[:boundaries]
-      end
+      f.input :parent_id, as: :select, collection: GeoLayer.subcontinents_for(current_user.selected_world)
+      f.input :parent_type, as: :hidden, input_html: {value: 'GeoLayer'}
+      f.input :world_id, as: :hidden, input_html: {value: current_user.selected_world.id}
     end
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end
 
   member_action :update_boundaries, method: [:post] do
     # binding.pry
-    resource.update_boundaries! params[:points]
+    # resource.update_boundaries! params[:points]
     # resource.update_attributes! foo: params[:foo] || {}
     head :ok
   end
