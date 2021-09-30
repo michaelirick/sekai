@@ -14,10 +14,22 @@ module Types
       "Hello World!"
     end
 
-    field :hex, [Types::HexType], null: false, description: 'test'
+    field :hex, [Types::HexType], null: false, description: 'test' do
+      argument :world_id, Integer, required: true
+      argument :x, Integer, required: false
+      argument :y, Integer, required: false
+      argument :zoom, Integer, required: false
+    end
 
-    def hex
-      Hex.all
+    def hex(args)
+      puts 'get them hexes'
+      # hexes = Hex.all
+      hexes = Hex.where(world_id: args[:world_id])
+      radius = args[:zoom] * 5
+      
+      hexes = hexes.where(x: ((args[:x] - radius)..(args[:x] + radius))) if args[:x]
+      hexes = hexes.where(y: ((args[:y] - radius)..(args[:y] + radius))) if args[:y]
+      hexes
     end
   end
 end

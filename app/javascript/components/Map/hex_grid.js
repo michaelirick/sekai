@@ -47,29 +47,31 @@ const HexGrid = (props) => {
 
   const initCable = () => {
     setSubscription(cable.subscriptions.create(
-      {channel: 'GraphqlChannel', test: 'yo?'}, {
+      { channel: 'GraphqlChannel', test: 'yo?' }, {
         // execute(data) {
         //   console.log('cable#execute', data)
         // },
 
-        received(data) {
+        received (data) {
           console.log('cable#received', data)
           console.log('result', data.result)
+          refreshGrid(data.result.data.hex)
         },
 
-        yo(data) {
+        yo (data) {
           console.log('yo', data)
+          console.log('center', center)
           this.perform('execute', {query: hexQuery()})
         }
       }
-    ));
+    ))
 
-      // s.perform('yo', {query: hexQuery() })
+    // s.perform('yo', {query: hexQuery() })
     // cable.send({test: 'yeet'})
   }
 
   const hexQuery = () => {
-    return "{ hex { title } }"
+    return `{ hex(worldId: ${world.id}, x: ${center.x}, y: ${center.y}, zoom: ${zoom}) { title x y id } }`
   }
 
   const selectBlankHex = (e, map) => {

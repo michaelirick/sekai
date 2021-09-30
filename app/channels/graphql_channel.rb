@@ -9,17 +9,6 @@ class GraphqlChannel < ApplicationCable::Channel
     puts 'yo', params.inspect, args.inspect
   end
 
-  # def send(first, second, third)
-  #   puts 'byaaah', params.inspect, first, second.class, third.class, "\n\n"
-  #   # puts 'send', data.inspect
-  #   # puts 'send', params.inspect
-  #   execute(
-  #     'query' => params['query'],
-  #     # 'variables' => {},
-  #     # 'operationName' => 'test'
-  #   )
-  # end
-
   def execute(data)
     puts 'execute', data.inspect
     query = data["query"]
@@ -34,7 +23,7 @@ class GraphqlChannel < ApplicationCable::Channel
     }
 
     result = SekaiSchema.execute(
-      "{hex {title}}"
+      query: query
       # query: query,
       # context: context,
       # variables: variables,
