@@ -1,5 +1,5 @@
 import { extendHex, defineGrid } from 'honeycomb-grid'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { LayerGroup, Polygon, useMapEvents } from 'react-leaflet'
 import html from 'utils/html'
 import HexCell from './hex_cell'
@@ -30,17 +30,18 @@ const HexGrid = (props) => {
       selectBlankHex(e, map)
     },
     zoomend: (e, z) => {
-      console.log('zoomend', e, map)
+      console.log('zoomend', e.target._zoom, e, z, map)
       setZoom(e.target._zoom)
-      loadHexes()
+      // loadHexes()
     },
     dragend: (e) => {
       const c = map.getCenter()
       setCenter(HexFactory().fromPoint([c.lng, c.lat]))
-      loadHexes()
+      // loadHexes()
     }
   })
   useEffect(() => loadHexes(), [])
+  useEffect(() => loadHexes(), [center, zoom])
   useEffect(() => initCable(), [])
   useEffect(() => refreshGrid(), [selectedHex])
   // console.log('HexGrid', props, grid)
@@ -61,6 +62,7 @@ const HexGrid = (props) => {
         yo (data) {
           console.log('yo', data)
           console.log('center', center)
+          console.log('zoom', zoom)
           this.perform('execute', {query: hexQuery()})
         }
       }
