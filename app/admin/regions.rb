@@ -1,25 +1,14 @@
 ActiveAdmin.register Region do
   menu parent: 'geography', priority: 4, if: proc{true}
+  permit_params :title, :parent_type, :parent_id, :world_id
 
-  # See permitted parameters documentation:
-  # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-  #
-  # Uncomment all parameters which should be permitted for assignment
-  #
-  permit_params :name, :subcontinent_id
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:name, :subcontinent_id]
-  #   permitted << :other if params[:action] == 'create' && current_user.admin?
-  #   permitted
-  # end
   form do |f|
     f.semantic_errors # shows errors on :base
     f.inputs do
-      f.input :name
-      f.input :subcontinent, collection: Subcontinent.for_world(current_user.selected_world)
+      f.input :title
+      f.input :parent_id, as: :select, collection: GeoLayer.subcontinents_for(current_user.selected_world)
+      f.input :parent_type, as: :hidden, input_html: {value: 'GeoLayer'}
+      f.input :world_id, as: :hidden, input_html: {value: current_user.selected_world.id}
     end
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end

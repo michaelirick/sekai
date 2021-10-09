@@ -136,6 +136,10 @@ GEM
     geometry (6.5)
     globalid (0.5.2)
       activesupport (>= 5.0)
+    graphiql-rails (1.8.0)
+      railties
+      sprockets-rails
+    graphql (1.12.16)
     has_scope (0.8.0)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
@@ -330,6 +334,8 @@ DEPENDENCIES
   devise
   figaro
   geometry
+  graphiql-rails
+  graphql
   jbuilder (~> 2.7)
   listen (~> 3.3)
   marcel

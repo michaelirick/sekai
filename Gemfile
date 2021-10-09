@@ -71,6 +71,8 @@ gem 'geometry'
 gem 'activerecord-postgis-adapter'
 gem 'rgeo-geojson'
 
+gem 'graphql'
+
 gem 'marcel' # needed because GPL is the devil
 group :development do
   gem "capistrano", "~> 3.10", require: false
@@ -78,3 +80,4 @@ group :development do
   gem 'capistrano-rbenv'
   gem 'capistrano-passenger'
 end
+gem 'graphiql-rails', group: :development

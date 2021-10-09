@@ -45,9 +45,10 @@ const Map = (props) => {
   }
 
   const geoLayers = () => {
-    return props.world.geo_layers.map((layer, i) => {
-      return geoLayer(layer, i)
-    })
+    return null;
+    // return props.world.geo_layers.map((layer, i) => {
+    //   return geoLayer(layer, i)
+    // })
   }
 
   const Control = (props) => {
