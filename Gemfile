@@ -79,6 +79,7 @@ group :development do
   gem "capistrano-rails", "~> 1.6", require: false
   gem 'capistrano-rbenv'
   gem 'capistrano-passenger'
+  gem 'brakeman'
 end
 gem 'graphiql-rails', group: :development
 
