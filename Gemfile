@@ -81,3 +81,5 @@ group :development do
   gem 'capistrano-passenger'
 end
 gem 'graphiql-rails', group: :development
+
+gem 'bundler-audit'
