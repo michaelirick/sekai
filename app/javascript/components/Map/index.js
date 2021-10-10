@@ -39,13 +39,15 @@ const Map = (props) => {
 
   const geoLayer = (layer, i) => {
     console.log('Map#geoLayer', layer)
-    return <LayersControl.Overlay name={layer.name} checked={false}>
+    return <LayersControl.Overlay name={layer.title} checked={false}>
       <GeoLayer {...layer}></GeoLayer>
     </LayersControl.Overlay>
   }
 
   const geoLayers = () => {
-    return null;
+    return props.world.geo_layers.map((layer, i) => {
+      return geoLayer(layer, i)
+    });
     // return props.world.geo_layers.map((layer, i) => {
     //   return geoLayer(layer, i)
     // })

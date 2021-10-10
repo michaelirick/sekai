@@ -17,8 +17,8 @@ class Worlds::Show < ApplicationRepresentor
   def geo_layers_attributes
     geo_layers.map do |gl|
       {
-        name: gl[:name],
-        points: gl[:points]
+        title: gl[:title],
+        geometry: gl.geometry
       }
     end
   end

@@ -14,4 +14,8 @@ class GeoLayer < ApplicationRecord
   add_geo_layer_level :region
   add_geo_layer_level :area
   add_geo_layer_level :province
+
+  def geometry
+    RGeo::GeoJSON.encode(self[:geometry])
+  end
 end
