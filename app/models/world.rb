@@ -14,13 +14,22 @@ class World < ApplicationRecord
 
   scope :for_user, -> (user) { where(user: user) }
 
-  # GEO_LAYER_TYPES = %i[
-  #   continent
-  #   subcontinent
-  #   region
-  #   area
-  #   province
-  # ].freeze
+  def geo_layer_hierarchy
+  end
+
+  GEO_LAYER_TYPES = %i[
+    continent
+    subcontinent
+    region
+    area
+    province
+  ].freeze
+
+  GEO_LAYER_TYPES.each do |t|
+    define_method t.to_s.pluralize.to_sym do
+      geo_layers.where(type: t.to_s.titleize)
+    end
+  end
 
   # # inverse mapping to the relation needed to group
   # %i[

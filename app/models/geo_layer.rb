@@ -18,4 +18,28 @@ class GeoLayer < ApplicationRecord
   def geometry
     RGeo::GeoJSON.encode(self[:geometry])
   end
+
+  def factory
+    RGeo::Cartesian.preferred_factory
+  end
+
+  def self.factory
+    RGeo::Cartesian.preferred_factory
+  end
+
+  def compose_geometry(options = {recursive: false})
+    return geometry if children.blank?
+
+    child_geometry = children.map do |child|
+      if options[:recursive]
+        child.compose_geometry
+      else
+        child.geometry
+      end
+    end.reject(&:blank?)
+
+    puts child_geometry
+
+    factory.collection child_geometry
+  end
 end
