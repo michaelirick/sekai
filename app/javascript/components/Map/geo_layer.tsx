@@ -19,4 +19,4 @@ const GeoLayer = (props: GeoLayerProps) => {
   return (<LayerGroup>{shapes()}</LayerGroup>)
 }
 
-export default GeoLayer
+export default GeoLayer;
