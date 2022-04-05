@@ -8,6 +8,8 @@ class CreateGeoLayers < ActiveRecord::Migration[6.1]
       t.integer :y
       t.integer :world_id
       t.string :type
+      t.integer :owner_id
+      t.string :owner_type
 
       t.timestamps
     end

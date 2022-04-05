@@ -1,0 +1,513 @@
+academy:
+  id: 1
+  cost: 52
+  lots: 2
+  upgrade: university
+  settlement_bonus:
+    economy: 2
+    loyalty: 2
+    knowledge: 2
+    productivity: 1
+    society: 2
+arena:
+  id: 2
+  cost: 40
+  lots: 4
+  discounts:
+    - brothel
+    - garrison
+    - inn
+    - garage
+    - theater
+  settlement_bonus:
+    fame: 1
+    stability: 4
+    crime: 1
+bank:
+  id: 3
+  lots: 1
+  cost: 28
+  settlement_bonus:
+    economy: 4
+    base_value: 2000
+barracks:
+  id: 4
+  cost: 6
+  lots: 1
+  upgrade: garrison
+  settlement_bonus:
+    stability: 1
+    unrest: -1
+    defense: 2
+    law: 1
+black_market:
+  id: 5
+  cost: 50
+  lots: 1
+  discounts:
+    - brothel
+  settlement_bonus:
+    economy: 2
+    stability: 1
+    unrest: 1
+    base_value: 2000
+    corruption: 2
+    crime: 2
+brewery:
+  id: 6
+  cost: 6
+  lots: 1
+  settlement_bonus:
+    loyalty: 1
+    stability: 1
+bureau:
+  id: 7
+  cost: 10
+  lots: 2
+  settlement_bonus:
+    economy: 1
+    loyalty: -1
+    stability: 1
+    corruption: 1
+    law: 1
+fortress:
+  id: 8
+  cost: 54
+  lots: 4
+  discounts:
+    - villa
+    - government_center
+  settlement_bonus:
+    fame: 1
+    economy: 2
+    loyalty: 2
+    stability: 2
+    unrest: -4
+    defense: 8
+cathedral:
+  id: 9
+  cost: 58
+  lots: 4
+  discounts:
+    - academy
+    - temple
+  settlement_bonus:
+    fame: 1
+    loyalty: 4
+    stability: 4
+    unrest: -4
+    law: 2
+dance_hall:
+  id: 10
+  lots: 1
+  cost: 4
+  settlement_bonus:
+    economy: 1
+    loyalty: 2
+    unrest: 1
+    corruption: 1
+    crime: 1
+junkyard:
+  id: 11
+  cost: 4
+  lots: 1
+  settlement_bonus:
+    stability: 1
+    economy: 1
+luxury_workshop:
+  id: 12
+  cost: 10
+  lots: 1
+  settlement_bonus:
+    economy: 1
+    stability: 1
+foreign_quarter:
+  id: 13
+  cost: 30
+  lots: 4
+  settlement_bonus:
+    economy: 3
+    stability: -1
+    trade: 5
+    crime: 1
+    knowledge: 1
+    society: 2
+foundry:
+  id: 14
+  cost: 16
+  lots: 2
+  discounts:
+    - workshop
+  settlement_bonus:
+    economy: 1
+    stability: 1
+    unrest: 1
+    productivity: 1
+    mine: 1
+garrison:
+  id: 15
+  cost: 28
+  lots: 2
+  discounts:
+    - granary
+    - jail
+  settlement_bonus:
+    loyalty: 2
+    stability: 2
+    unrest: -2
+    defense: 4
+    law: 2
+company_headquarters:
+  id: 16
+  cost: 34
+  lots: 2
+  discounts:
+    - spaceport
+    - garage
+    - trade_shop
+  settlement_bonus:
+    economy: 2
+    loyalty: 2
+    base_value: 1000
+    law: 1
+    productivity: 2
+doctor:
+  id: 17
+  cost: 10
+  lots: 1
+  settlement_bonus:
+    loyalty: 1
+    stability: 1
+hospital:
+  id: 18
+  lots: 2
+  cost: 30
+  settlement_bonus:
+    loyalty: 1
+    stability: 2
+    knowledge: 1
+    productivity: 2
+house:
+  id: 19
+  cost: 3
+  lots: 1
+  settlement_bonus:
+    unrest: -1
+inn:
+  id: 20
+  cost: 10
+  lots: 1
+  settlement_bonus:
+    economy: 1
+    loyalty: 1
+    society: 1
+    base_value: 500
+jail:
+  id: 21
+  cost: 14
+  lots: 1
+  settlement_bonus:
+    loyalty: 2
+    stability: 2
+    unrest: -2
+    crime: -1
+    law: 1
+library:
+  id: 22
+  cost: 6
+  lots: 1
+  upgrade: academy
+  settlement_bonus:
+    knowledge: 1
+luxury_store:
+  id: 23
+  cost: 28
+  lots: 1
+  settlement_bonus:
+    economy: 1
+    base_value: 2000
+mansion:
+  id: 24
+  cost: 10
+  lots: 1
+  settlement_bonus:
+    stability: 1
+    law: 1
+    society: 1
+  upgrade: villa
+market:
+  id: 25
+  cost: 48
+  lots: 2
+  discounts:
+    - black_market
+    - inn
+    - shop
+  settlement_bonus:
+    economy: 2
+    stability: 2
+    base_value: 2000
+zoo:
+  id: 26
+  cost: 16
+  lots: 4
+  settlement_bonus:
+    economy: 1
+    loyalty: 1
+    fame: 1
+military_academy:
+  id: 27
+  cost: 36
+  lots: 2
+  settlement_bonus:
+    law: 1
+    knowledge: 1
+    loyalty: 2
+    stability: 1
+    fame: 1
+  discounts:
+    - barracks
+  limits:
+    count: 1
+mint:
+  id: 28
+  cost: 30
+  lots: 1
+  settlement_bonus:
+    economy: 3
+    loyalty: 3
+    stability: 1
+    fame: 1
+monastery:
+  id: 29
+  cost: 16
+  lots: 2
+  settlement_bonus:
+    stability: 1
+    law: 1
+    knowledge: 1
+monument:
+  id: 30
+  cost: 6
+  lots: 1
+  settlement_bonus:
+    loyalty: 1
+    unrest: -1
+museum:
+  id: 31
+  cost: 30
+  lots: 2
+  settlement_bonus:
+    economy: 1
+    loyalty: 1
+    fame: 1
+    knowledge: 2
+    society: 1
+villa:
+  id: 32
+  cost: 24
+  lots: 2
+  discounts:
+    - luxury_workshop
+    - luxury_store
+    - mansion
+  settlement_bonus:
+    economy: 1
+    loyalty: 1
+    stability: 1
+    fame: 1
+    society: 1
+palace:
+  id: 33
+  lots: 4
+  discounts:
+    - mansion
+    - mint
+    - villa
+  settlement_bonus:
+    economy: 2
+    loyalty: 6
+    stability: 2
+    fame: 1
+    base_value: 1000
+    law: 2
+park:
+  id: 34
+  cost: 4
+  lots: 1
+  settlement_bonus:
+    loyalty: 1
+    unrest: -1
+dock:
+  id: 35
+  cost: 16
+  lots: 1
+  upgrade: seaport
+  settlement_bonus:
+    base_value: 1000
+    economy: 1
+    stability: 1
+    crime: 1
+sewer:
+  id: 36
+  cost: 24
+  discounts:
+    - junkyard
+  limits:
+    count: 1
+  settlement_bonus:
+    loyalty: 1
+    stability: 2
+    crime: 1
+    productivity: 1
+shop:
+  id: 37
+  lots: 1
+  cost: 8
+  upgrade: market
+  settlement_bonus:
+    economy: 1
+    productivity: 1
+    base_value: 500
+shrine:
+  id: 38
+  cost: 8
+  lots: 1
+  upgrade: temple
+  settlement_bonus:
+    loyalty: 1
+    unrest: 1
+    knowledge: 1
+workshop:
+  id: 39
+  cost: 6
+  lots: 1
+  settlement_bonus:
+    economy: 1
+    stability: 1
+garage:
+  id: 40
+  cost: 10
+  lots: 1
+  settlement_bonus:
+    economy: 1
+    loyalty: 1
+    base_value: 500
+restaurant:
+  id: 41
+  cost: 12
+  lots: 1
+  settlement_bonus:
+    economy: 1
+    loyalty: 1
+    corruption: 1
+    base_value: 500
+temple:
+  id: 42
+  cost: 32
+  lots: 2
+  settlement_bonus:
+    loyalty: 2
+    stability: 2
+    unrest: -2
+  discounts:
+    - monument
+    - shrine
+tenement:
+  id: 43
+  cost: 1
+  lots: 1
+  settlement_bonus:
+    unrest: 2
+  upgrade: house
+theater:
+  id: 44
+  cost: 24
+  lots: 2
+  settlement_bonus:
+    economy: 2
+    stability: 2
+  discounts:
+    - brothel
+    - luxury_workshop
+    - inn
+    - park
+    - restaurant
+  upgrade: arena
+government_center:
+  id: 45
+  cost: 22
+  lots: 2
+  settlement_bonus:
+    economy: 1
+    loyalty: 1
+    stability: 1
+    law: 1
+  discounts:
+    - barracks
+    - junkyard
+trade_shop:
+  id: 46
+  cost: 10
+  lots: 1
+  upgrade: company_headquarters
+  settlement_bonus:
+    economy: 1
+    stability: 1
+    base_value: 500
+    productivity: 1
+university:
+  id: 47
+  cost: 78
+  lots: 4
+  settlement_bonus:
+    knowledge: 4
+    economy: 3
+    loyalty: 3
+    fame: 1
+  discounts:
+    - academy
+    - military_academy
+    - museum
+    - library
+seaport:
+  id: 48
+  cost: 90
+  lots: 4
+  discounts:
+    - black_market
+    - company_headquarters
+    - market
+    - spaceport
+  limits:
+    count: 1
+  settlement_bonus:
+    economy: 4
+    base_value: 4000
+    productivity: 2
+farm:
+  id: 49
+  lots: 1
+  cost: 2
+  settlement_bonus:
+    consumption: -2
+fishery:
+  id: 50
+  lots: 1
+  cost: 3
+  settlement_bonus:
+    consumption: -1
+mine:
+  id: 51
+  lots: 1
+  cost: 8
+  settlement_bonus:
+    economy: 1
+brothel:
+  id: 52
+  cost: 10
+  lots: 1
+  settlement_bonus:
+    economy: 1
+    unrest: -1
+    crime: 1

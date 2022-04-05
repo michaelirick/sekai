@@ -87,10 +87,21 @@ ActiveAdmin.register World do
     end
   end
 
-  action_item :select_world, only: :show do
+  action_item :select_world, only: [:show] do
     # if current_user.can?(:select_world, character)
       link_to 'Select World', select_world_admin_world_path(world)
     # end
+  end
+
+  index do
+    selectable_column
+    id_column
+    column :name
+
+    actions defaults: true do |world|
+
+      link_to 'Select World', select_world_admin_world_path(world)
+    end
   end
 
 end

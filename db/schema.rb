@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_29_230814) do
+ActiveRecord::Schema.define(version: 2022_04_05_185358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,39 @@ ActiveRecord::Schema.define(version: 2021_09_29_230814) do
     t.integer "start_date_id"
   end
 
+  create_table "building_types", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.integer "upgrade_id"
+    t.integer "lots"
+    t.integer "cost"
+    t.jsonb "faction_bonus", default: {}
+    t.jsonb "settlement_bonus", default: {}
+    t.string "flags"
+    t.jsonb "limits", default: {}
+    t.jsonb "need_types", default: {}
+    t.jsonb "output_types", default: {}
+    t.jsonb "effects", default: {}
+    t.jsonb "discounts", default: {}
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "buildings", force: :cascade do |t|
+    t.string "name"
+    t.integer "building_type_id"
+    t.string "flags"
+    t.integer "location_id"
+    t.string "location_type"
+    t.integer "owner_id"
+    t.string "owner_type"
+    t.string "owner_name"
+    t.date "completion_date"
+    t.integer "world_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "geo_layers", force: :cascade do |t|
     t.string "title"
     t.integer "parent_id"
@@ -75,6 +108,8 @@ ActiveRecord::Schema.define(version: 2021_09_29_230814) do
     t.integer "y"
     t.integer "world_id"
     t.string "type"
+    t.integer "owner_id"
+    t.string "owner_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
