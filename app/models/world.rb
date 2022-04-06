@@ -12,7 +12,13 @@ class World < ApplicationRecord
   #   subordinates: :continents
   # )
 
+
   scope :for_user, -> (user) { where(user: user) }
+
+  def factory
+    @factory ||= RGeo::Cartesian.factory
+    @factory
+  end
 
   # GEO_LAYER_TYPES = %i[
   #   continent

@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_05_185358) do
+ActiveRecord::Schema.define(version: 2022_04_06_183649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
@@ -112,6 +113,7 @@ ActiveRecord::Schema.define(version: 2022_04_05_185358) do
     t.string "owner_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"multi_polygon"}
   end
 
   create_table "map_layers", force: :cascade do |t|

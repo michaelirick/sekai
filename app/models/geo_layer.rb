@@ -8,6 +8,10 @@ class GeoLayer < ApplicationRecord
     scope :"#{layer.to_s.pluralize}_for", -> (world) { where(type: layer.to_s.classify, world: world) }
   end
 
+  def factory
+    world.factory
+  end
+
   scope :for_world, ->(w) { where world: w }
 
   add_geo_layer_level :continent

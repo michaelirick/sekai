@@ -25,7 +25,36 @@ d1 = WorldDate.create(age: a1, year: 1728, month: 6, day: 6)
 a2 = Age.create(title: 'Second Age', abbreviation: 'SA', world: w, preceding_age: a1, start_date: d1)
 d2 = WorldDate.create(age: a2, year: 87, month: 4, day: 15)
 
+factory = w.factory
+pt1 = factory.point(0, 0)
+pt2 = factory.point(2000, 0)
+pt3 = factory.point(2000, 2000)
+pt4 = factory.point(0, 2000)
 
+pt5 = factory.point(0500, 0500)
+pt6 = factory.point(1500, 0500)
+pt7 = factory.point(1500, 1500)
+pt8 = factory.point(0500, 1500)
+
+pt9 = factory.point(3000, 3000)
+pt10 = factory.point(4000, 3000)
+pt11 = factory.point(4000, 4000)
+pt12 = factory.point(3000, 4000)
+
+outerring1 = factory.linear_ring([pt1, pt2, pt3, pt4, pt1])
+innerring = factory.linear_ring([pt5, pt6, pt7, pt8, pt5])
+
+square_with_hole = factory.polygon(outerring1, [innerring])
+
+outerring2 = factory.linear_ring([pt9, pt10, pt11, pt12])
+square = factory.polygon(outerring2)
+
+multipolygon = factory.multi_polygon([square_with_hole, square])
+c.geometry = multipolygon
+c.save
+
+##
+# Earth
 w = World.create(name: 'Earth', user: admin)
 m = MapLayer.create(title: 'Natural Earth', world: w)
 m.image.attach(io: File.open('public/natural_earth.jpg'), filename: 'natural_earth.jpg' , content_type: 'image/jpeg')
