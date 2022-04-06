@@ -12,4 +12,12 @@ ActiveAdmin.register Province do
     end
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end
+
+  controller do
+    before_action :check_for_world
+
+    def check_for_world
+      redirect_to :admin_worlds, alert: 'You must first select a world.' unless current_user.selected_world
+    end
+  end
 end

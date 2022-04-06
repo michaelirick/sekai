@@ -15,7 +15,7 @@ ActiveAdmin.register MapLayer do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  
+
   form do |f|
     input :title
     input :world, as: :select
@@ -33,6 +33,14 @@ ActiveAdmin.register MapLayer do
       row :image do |ad|
         image_tag url_for(ad.image)
       end
+    end
+  end
+
+  controller do
+    before_action :check_for_world
+
+    def check_for_world
+      redirect_to :admin_worlds, alert: 'You must first select a world.' unless current_user.selected_world
     end
   end
 end

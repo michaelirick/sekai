@@ -1,5 +1,5 @@
 ActiveAdmin.register BuildingType do
-  menu parent: 'misc'
+  menu parent: 'Misc'
   permit_params *%i[
     name
     slug
