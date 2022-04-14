@@ -25,8 +25,8 @@ ActiveAdmin.register Building do
       f.input :building_type
       f.input :owner, collection: State.for_world(current_user.selected_world.id)
       f.input :owner_type, as: :hidden, input_html: {value: 'State'}
-      f.input :location, collection: Hex.for_world(current_user.selected_world.id)
-      f.input :location_type, as: :hidden, input_html: {value: 'GeoLayer'}
+      f.input :location, collection: Settlement.all
+      f.input :location_type, as: :hidden, input_html: {value: 'Settlement'}
       f.input :completion_date
       f.input :world_id, as: :hidden, input_html: {value: current_user.selected_world.id}
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_06_183649) do
+ActiveRecord::Schema.define(version: 2022_04_13_191238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,12 +133,29 @@ ActiveRecord::Schema.define(version: 2022_04_06_183649) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "settlements", force: :cascade do |t|
+    t.string "name"
+    t.integer "hex_id"
+    t.integer "owner_id"
+    t.integer "world_id"
+    t.integer "population"
+    t.string "government_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "states", force: :cascade do |t|
     t.string "name"
     t.string "adjective"
     t.integer "world_id"
     t.string "primary_color"
     t.string "secondary_color"
+    t.float "stability", default: 0.0
+    t.float "economy", default: 0.0
+    t.float "loyalty", default: 0.0
+    t.float "unrest", default: 0.0
+    t.float "money", default: 0.0
+    t.string "government_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

@@ -17,4 +17,6 @@ class Statistic
     trade
     unrest
   ]
+
+  MONEY_PER_BP = 4000.0
 end
