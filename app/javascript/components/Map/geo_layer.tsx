@@ -4,13 +4,14 @@ import { LayerGroup } from 'react-leaflet'
 import GeoLayerCell from './geo_layer_cell'
 
 type GeoLayerProps = {
-  points?: []
+  name: string;
+  cells: []
 }
 
 const GeoLayer = (props: GeoLayerProps) => {
   console.log('GeoLayer', props)
   const shapes = () => {
-    return props.points.map((m, i) => {
+    return props.cells.map((m, i) => {
       console.log('GeoLayer#shapes', m)
       return (<GeoLayerCell key={i} points={m} color="#ff0000"></GeoLayerCell>)
     })

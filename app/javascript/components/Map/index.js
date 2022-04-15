@@ -37,18 +37,18 @@ const Map = (props) => {
       </LayersControl.Overlay>
   }
 
-  const geoLayer = (layer, i) => {
-    console.log('Map#geoLayer', layer)
-    return <LayersControl.Overlay name={layer.name} checked={false}>
-      <GeoLayer {...layer}></GeoLayer>
+  const geoLayer = (name, cells, i) => {
+    console.log('Map#geoLayer', name, cells)
+    return <LayersControl.Overlay name={name} checked={false} key={i}>
+      <GeoLayer name={name} cells={cells}></GeoLayer>
     </LayersControl.Overlay>
   }
 
   const geoLayers = () => {
-    return null;
-    // return props.world.geo_layers.map((layer, i) => {
-    //   return geoLayer(layer, i)
-    // })
+    // return null;
+    return Object.entries(props.world.geo_layers).map(([name, cells], i) => {
+      return geoLayer(name, cells, i)
+    })
   }
 
   const Control = (props) => {
