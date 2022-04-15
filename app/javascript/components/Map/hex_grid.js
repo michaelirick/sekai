@@ -32,11 +32,14 @@ const HexGrid = (props) => {
     zoomend: (e, z) => {
       console.log('zoomend', e.target._zoom, e, z, map)
       setZoom(e.target._zoom)
+      localStorage.setItem('mapZoom', e.target._zoom)
       // loadHexes()
     },
     dragend: (e) => {
       const c = map.getCenter()
       setCenter(HexFactory().fromPoint([c.lng, c.lat]))
+      localStorage.setItem('mapCenterX', c.lng)
+      localStorage.setItem('mapCenterY', c.lat)
       // loadHexes()
     }
   })

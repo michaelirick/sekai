@@ -1,4 +1,4 @@
-class SubcontinentPolicy < ApplicationPolicy
+class SubcontinentPolicy < GeoLayerPolicy
   class Scope < Scope
     def resolve
       scope.all.for_world(@user.selected_world)

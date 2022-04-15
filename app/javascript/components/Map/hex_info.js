@@ -1,19 +1,26 @@
 // import html from 'utils/html'
 // import truth from 'utils/truth'
 // import coalesce from 'utils/coalesce'
-// import api from 'utils/api'
+import api from 'utils/api'
 // eslint-disable-next-line no-use-before-define
 import * as React from 'react'
 
 const HexInfo = (props) => {
   console.log('HexInfo', props)
   const hex = props.hex.h ?? {}
-  // const header = () => {
-  //   return html.h3('header', {}, `${hex.title}`)
-  // }
+  const header = () => {
+    return (
+      <h3>{hex.title}</h3>
+    )
+  }
 
   const coords = () => {
     return <p>{`(${hex.x}, ${hex.y})`}</p>
+  }
+
+  const updateBoundaries = () => {
+    api.post(`/admin/hexes/${hex.id}/update_boundaries.json`, { points: props.points.reverse() })
+      .then((response) => console.log('updateBoundaries', response))
   }
 
   // const province = () => {
@@ -28,17 +35,20 @@ const HexInfo = (props) => {
   //   }, 'Edit')
   // }
 
-  // const updateBoundariesButton = () => {
-  //   return html.a('updateBoundaries', {
-  //     onClick: (e) => updateBoundaries(),
-  //     className: 'button'
-  //   }, 'Update Boundaries')
-  // }
+  const updateBoundariesButton = () => {
+    return (
+      <a
+        onClick={(e) => updateBoundaries()}
+        class='button'
+        >Update Boundaries</a>
+    )
+    // return html.a('updateBoundaries', {
+    //   onClick: (e) => updateBoundaries(),
+    //   className: 'button'
+    // }, 'Update Boundaries')
+  }
 
-  // const updateBoundaries = () => {
-  //   api.post(`/admin/hexes/${hex.id}/update_boundaries.json`, { points: props.points.reverse() })
-  //     .then((response) => console.log('updateBoundaries', response))
-  // }
+
 
   // const create = () => {
   //   return html.a('create', {
@@ -59,7 +69,17 @@ const HexInfo = (props) => {
   //   ]
   // }
 
-  return <div>{coords()}</div>
+  return (
+    <div>
+      {header()}
+      <div>
+        {coords()}
+      </div>
+      <div>
+        {updateBoundariesButton()}
+      </div>
+    </div>
+  )
 
   // return html.div('info', {}, content())
 }

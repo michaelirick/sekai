@@ -16,7 +16,14 @@ class Worlds::Show < ApplicationRepresentor
 
   def geo_layers_attributes
     GeoLayer.for(self.__getobj__).map do |key, values|
-      { key => values.map { |v| { name: v.title, points: RGeo::GeoJSON.encode(v.geometry) } } }
+      values = values.map do |v|
+        {
+          name: v.title,
+          points: RGeo::GeoJSON.encode(v.geometry),
+          layer: key
+        }
+      end
+      { key => values }
     end.reduce :merge
   end
 

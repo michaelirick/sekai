@@ -1,0 +1,9 @@
+.leaflet-tooltip.geo-layer-cell-label {
+    background-color: transparent;
+    border: transparent;
+    box-shadow: none;
+}
+
+.leaflet-tooltip.geo-layer-cell-label.continents-label {
+    font-size: 196pt;
+}

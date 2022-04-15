@@ -100,7 +100,7 @@ ActiveAdmin.register World do
 
     actions defaults: true do |world|
 
-      link_to 'Select World', select_world_admin_world_path(world)
+      link_to 'Select World', select_world_admin_world_path(world), class: 'member_link'
     end
   end
 

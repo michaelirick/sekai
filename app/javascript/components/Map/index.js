@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Leaflet from 'react-leaflet'
-import { MapContainer, LayerGroup, LayersControl } from 'react-leaflet'
+import { MapContainer, LayerGroup, LayersControl, useMapEvents } from 'react-leaflet'
 import html from 'utils/html'
 import MapLayer from './map_layer'
 import GeoLayer from './geo_layer'
@@ -12,6 +12,8 @@ import 'leaflet/dist/leaflet.css'
 
 const Map = (props) => {
   console.log('Map', props)
+  console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
+
   const mapLayer = (layer, index) => {
     console.log('layer', layer)
     return <LayersControl.BaseLayer
@@ -24,9 +26,12 @@ const Map = (props) => {
   }
 
   const viewOptions = {
-    center: [2800, 3700],
+    center: [
+      localStorage.getItem('mapCenterY') ?? 2800,
+      localStorage.getItem('mapCenterX') ?? 3700
+    ],
     // center: [4805, 2100],
-    zoom: 2
+    zoom: localStorage.getItem('mapZoom') ?? 2
   }
 
   const hexes = () => {

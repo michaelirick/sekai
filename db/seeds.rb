@@ -50,7 +50,7 @@ outerring2 = factory.linear_ring([pt9, pt10, pt11, pt12])
 square = factory.polygon(outerring2)
 
 multipolygon = factory.multi_polygon([square_with_hole, square])
-c.geometry = multipolygon
+c.geometry = factory.collection([multipolygon])
 c.save
 
 ##

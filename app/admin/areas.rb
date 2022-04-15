@@ -12,7 +12,21 @@ ActiveAdmin.register Area do
     end
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end
+  member_action :reset_geometry, method: [:post] do
+    resource.reset_geometry!
+    redirect_to admin_areas_path(notice: 'Success')
+  end
 
+  index do
+    selectable_column
+    column :title
+    column :parent
+    column :owner
+
+    actions defaults: true do |h|
+      link_to 'Reset Geometry', reset_geometry_admin_area_path(h), method: 'post', class: 'member_link'
+    end
+  end
   controller do
     before_action :check_for_world
 

@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 2022_04_13_191238) do
     t.string "owner_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.geometry "geometry", limit: {:srid=>0, :type=>"multi_polygon"}
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
   end
 
   create_table "map_layers", force: :cascade do |t|
