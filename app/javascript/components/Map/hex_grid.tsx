@@ -1,4 +1,5 @@
 import { extendHex, defineGrid } from 'honeycomb-grid'
+import * as React from 'react'
 import { useState, useEffect, useCallback } from 'react'
 import { LayerGroup, Polygon, useMapEvents } from 'react-leaflet'
 import html from 'utils/html'
@@ -6,6 +7,7 @@ import HexCell from './hex_cell'
 import api from 'utils/api'
 import World from 'models/world'
 import ActionCable from 'actioncable'
+import { MapSelectionContext } from './map_context'
 
 const HexGrid = (props) => {
   const world = new World(props.world)
@@ -81,6 +83,7 @@ const HexGrid = (props) => {
 
   const selectBlankHex = (e, map) => {
     setSelectedHex(HexFactory().fromPoint([e.latlng.lat, e.latlng.lng]))
+    props.setSelectedObject({blank_hex: HexFactory().fromPoint([e.latlng.lat, e.latlng.lng])});
     loadHexes()
     console.log('selectBlankHex', e, map)
   }
@@ -89,7 +92,7 @@ const HexGrid = (props) => {
     // cable.send({test: 'yeet'})
     // console.log('refreshGrid', cable)
     const newGrid = Grid([
-      HexFactory(selectedHex, { color: 'blue', world_id: props.world.id }),
+      HexFactory(selectedHex, { color: 'red', world_id: props.world.id }),
       ...newHexes.map((h) => HexFactory(h.x, h.y, { h }))
     ])
     setGrid(newGrid)
@@ -119,16 +122,25 @@ const HexGrid = (props) => {
   const hexes = () => {
     // console.log('hexes', zoom, center)
     return grid.map((h, i) => {
-      return html.tag(HexCell, i, {
-        hex: h,
-        options: world.hexOptions()
-      })
+      return <HexCell key={i} hex={h} options={world.hexOptions()}/>
+      // return html.tag(HexCell, i, {
+      //   hex: h,
+      //   options: world.hexOptions()
+      // })
     })
   }
 
-  return html.tag(LayerGroup, 'hexes', {},
-    hexes()
-  )
+  return <MapSelectionContext.Consumer>
+    {({selectedObject, setSelectedObject}) => <LayerGroup>{hexes()}</LayerGroup>}
+  </MapSelectionContext.Consumer>
+
+  // return html.tag(MapSelectionContext.Consumer, 'hexes',
+  //   (
+  //     ({selectedObject, setSelectedObject}) => html.tag(LayerGroup, 'hexes', {}, hexes())
+  //   )
+  // );
+
+
 }
 
 export default HexGrid

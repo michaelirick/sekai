@@ -24,7 +24,7 @@ class World {
 
   // TODO: move to DB
   get hexSize () {
-    return 6.9282
+    return 6.0469
   }
 
   hexOptions () {

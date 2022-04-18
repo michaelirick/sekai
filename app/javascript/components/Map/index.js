@@ -1,18 +1,31 @@
 import * as React from 'react'
 import * as Leaflet from 'react-leaflet'
-import { MapContainer, LayerGroup, LayersControl, useMapEvents } from 'react-leaflet'
+import { MapContainer, LayerGroup, LayersControl, useMapEvents, ScaleControl } from 'react-leaflet'
+import { MapSelectionContext } from './map_context'
 import html from 'utils/html'
 import MapLayer from './map_layer'
 import GeoLayer from './geo_layer'
 import HexGrid from './hex_grid'
 import SideBar from './side_bar'
 import 'leaflet/dist/leaflet.css'
+import './map.css'
+import GeoLayerGrid from './geo_layer_grid'
+import { zoom } from 'leaflet/src/control/Control.Zoom'
 
 // const [container, tileLayer] = html.tagify([MapContainer, TileLayer]);
 
 const Map = (props) => {
   console.log('Map', props)
   console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
+  const [selectedObject, setSelectedObject] = React.useState(null);
+  const [mapMode, setMapMode] = React.useState('continents');
+
+  const selectedObjectContext = () => {
+    return {
+      selectedObject: selectedObject,
+      setSelectedObject: setSelectedObject
+    }
+  }
 
   const mapLayer = (layer, index) => {
     console.log('layer', layer)
@@ -38,7 +51,7 @@ const Map = (props) => {
     return <LayersControl.Overlay
       name='Hexes'
       checked={true}>
-        <HexGrid {...viewOptions} world={props.world}></HexGrid>
+        <HexGrid {...viewOptions} world={props.world} setSelectedObject={setSelectedObject}></HexGrid>
       </LayersControl.Overlay>
   }
 
@@ -57,7 +70,25 @@ const Map = (props) => {
   }
 
   const Control = (props) => {
-    return <div></div>
+    return (
+      <div className="leaflet-control-container">
+        <div className="leaflet-bottom leaflet-left">
+          <div className="leaflet-bar leaflet-control panel">
+            {['continents', 'subcontinents', 'regions', 'areas', 'provinces', 'hexes'].map((layer) => {
+              return (
+                <a
+                  className={mapMode === layer ? 'current' : ''}
+                  onClick={() => setMapMode(layer)}>
+                  {mapMode === layer ? '*' : '' } {layer}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+
+      </div>
+
+    )
     // <div class="leaflet-control-zoom leaflet-bar leaflet-control">
     // <a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in">
     // +
@@ -69,21 +100,28 @@ const Map = (props) => {
     // return html.div('control', { className: 'leaflet-control leaflet-bar' }, 'test')
   }
 
+  const geoLayerGrid = () => {
+    return html.tag(GeoLayerGrid, 'grid', { mapMode: mapMode, world: props.world });
+  }
+
   const layers = () => {
     return html.tag(LayersControl, 'layers', {},
       props.world.map_layers.map((layer, i) => {
         return mapLayer(layer, i)
       }),
-      geoLayers(),
-      hexes()
-      // html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
+      // geoLayers(),
+      geoLayerGrid(),
+      // hexes(),
+      html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
+      // html.tag(ScaleControl, 'scale', {position: 'bottomright'})
     )
   }
 
   // yo
   const mapContainer = () => {
-    console.log('mapContainer')
+    console.log('mapContainer', L.CRS.Simple.scale(1))
     return html.tag(MapContainer, 'test', {
+      className: 'map-container',
       key: 'test',
       ...viewOptions,
       minZoom: -10,
@@ -102,13 +140,21 @@ const Map = (props) => {
   }
 
   const sideBar = () => {
-    return <SideBar></SideBar>
+    return <SideBar
+      class="map-sidebar"
+      setSelectedObject={setSelectedObject}
+      selectedObject={selectedObject}
+    ></SideBar>
   }
 
-  return <div>
-    {mapContainer()}
-    {sideBar()}
-  </div>
+  return (
+    <MapSelectionContext.Provider value={selectedObjectContext()}>
+      <div class="map-component">
+        {mapContainer()}
+        {sideBar()}
+      </div>
+    </MapSelectionContext.Provider>
+  )
 }
 
 export default Map

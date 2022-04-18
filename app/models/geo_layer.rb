@@ -4,6 +4,8 @@ class GeoLayer < ApplicationRecord
   belongs_to :owner, polymorphic: true, optional: true
   has_many :children, class_name: 'GeoLayer', as: :parent
 
+  HEX_RADIUS = 6.0469
+
   def self.add_geo_layer_level(layer)
     @geo_layer_levels = [] unless @geo_layer_levels
     @geo_layer_levels << layer
@@ -28,7 +30,51 @@ class GeoLayer < ApplicationRecord
     (children.map(&:id) + children.map(&:all_children_ids)).flatten.uniq
   end
 
+  def self.reset_geometry_for!(world)
+    [
+      Hex, Province, Area, Region, Subcontinent, Continent
+    ].each { |c| c.where(world: world).each &:reset_geometry! }
+  end
+
+  def self.hex_to_point(x, y)
+    radius = HEX_RADIUS
+    nx = radius * y * 3/4 * 2
+    ny = radius * Math.sqrt(3) * (x + 0.5 * (y & 1))
+    [nx, ny]
+  end
+
+  def self.draw_hex(center)
+    radius = HEX_RADIUS
+    x, y = center
+    sides = 6
+    grade = 2 * Math::PI / sides
+    sides.times.map do |i|
+      [
+        (Math.cos(grade * i) * radius) + x,
+        (Math.sin(grade * i) * radius) + y
+      ]
+    end
+  end
+
+  def reset_hex!
+    points = GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)).map do |p|
+      px, py = p
+      factory.point(px, py)
+    end
+
+    ring = factory.linear_ring points
+    polygon = factory.polygon(ring)
+
+
+    self.geometry = factory.collection([polygon])
+    save!
+  end
+
   def reset_geometry!
+    if type == 'Hex'
+      reset_hex!
+      return
+    end
     new_geometry = GeoLayer.connection.execute(%(
       SELECT st_asgeojson(st_union(a.new_geometry)) AS new_geometry
 from

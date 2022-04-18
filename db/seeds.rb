@@ -17,9 +17,9 @@ s = Subcontinent.create(title: 'West Auson', parent: c, world: w)
 r = Region.create(title: 'Weson', parent: s, world: w)
 a = Area.create(title: 'Arcor', parent: r, world: w)
 p = Province.create(title: 'Arriccar', parent: a, world: w)
-h = Hex.create(world: w, x: 941, y: 840, parent: p, title: 'Arriccar', world: w, owner: state)
-h = Hex.create(world: w, x: 940, y: 840, parent: p, title: 'Neoheim', world: w)
-h = Hex.create(world: w, x: 941, y: 841, parent: p, title: 'North Arriccar', world: w)
+h = Hex.create(world: w, x: 40, y: 41, parent: p, title: 'Arriccar', world: w, owner: state)
+h = Hex.create(world: w, x: 40, y: 40, parent: p, title: 'Neoheim', world: w)
+h = Hex.create(world: w, x: 41, y: 41, parent: p, title: 'North Arriccar', world: w)
 a1 = Age.create(title: 'First Age', abbreviation: 'FA', world: w)
 d1 = WorldDate.create(age: a1, year: 1728, month: 6, day: 6)
 a2 = Age.create(title: 'Second Age', abbreviation: 'SA', world: w, preceding_age: a1, start_date: d1)
@@ -52,6 +52,7 @@ square = factory.polygon(outerring2)
 multipolygon = factory.multi_polygon([square_with_hole, square])
 c.geometry = factory.collection([multipolygon])
 c.save
+GeoLayer.reset_geometry_for! w
 
 ##
 # Earth
@@ -64,6 +65,15 @@ r = Region.create(title: 'Tennessee', parent: s, world: w)
 a = Area.create(title: 'West Tennessee', parent: r, world: w)
 p = Province.create(title: 'Tipton County', parent: a, world: w)
 h = Hex.create(world: w, x: 941, y: 840, parent: p, title: 'Covington', world: w)
+
+
+# [
+#   Province,
+#   Area,
+#   Region,
+#   Subcontinent,
+#   Continent
+# ].each { |c| c.where(world: World.first).each &:reset_geometry! }
 
 SEED_FILES = {
   building_types: BuildingType

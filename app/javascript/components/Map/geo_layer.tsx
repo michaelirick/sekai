@@ -9,11 +9,11 @@ type GeoLayerProps = {
 }
 
 const GeoLayer = (props: GeoLayerProps) => {
-  console.log('GeoLayer', props)
+  // console.log('GeoLayer', props)
   const shapes = () => {
     return props.cells.map((m, i) => {
       // console.log('GeoLayer#shapes', m)
-      return (<GeoLayerCell name={m.name} key={i} points={m.points} color="#ff0000"/>)
+      return (<GeoLayerCell layer={props.name} id={m.id} name={m.name} key={i} points={m.points} color="#ff0000"/>)
     })
   }
 

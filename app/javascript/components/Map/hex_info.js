@@ -18,21 +18,30 @@ const HexInfo = (props) => {
     return <p>{`(${hex.x}, ${hex.y})`}</p>
   }
 
+  const formatPointsForApi = (points) => {
+    return points.map((p, i) => p.reverse()).reverse();
+  }
+
   const updateBoundaries = () => {
-    api.post(`/admin/hexes/${hex.id}/update_boundaries.json`, { points: props.points.reverse() })
+    console.log('points', props.points);
+    api.post(`/admin/hexes/${hex.id}/update_boundaries.json`, {
+      points: formatPointsForApi(props.points)
+    })
       .then((response) => console.log('updateBoundaries', response))
+  }
+
+  const edit = () => {
+    return (
+      <a
+        href={`/admin/hexes/${hex.id}/edit?hex[boundaries]=${props.points}`}
+        target="_blank"
+        class="button"
+        >Edit</a>
+    )
   }
 
   // const province = () => {
   //   return html.p('province', {}, `Province: ${hex.province_id}`)
-  // }
-
-  // const edit = () => {
-  //   return html.a('edit', {
-  //     href: `/admin/hexes/${hex.id}/edit?hex[boundaries]=${props.points}`,
-  //     target: '_blank',
-  //     className: 'button'
-  //   }, 'Edit')
   // }
 
   const updateBoundariesButton = () => {
@@ -49,7 +58,14 @@ const HexInfo = (props) => {
   }
 
 
-
+  const create = () => {
+    return (
+      <a
+        href={`/admin/hexes/new?hex[world_id]=${hex.world_id}&hex[x]=${hex.x}&hex[y]=${hex.y}&hex[boundaries]=${formatPointsForApi(props.points)}`}
+        target="_blank"
+        >New</a>
+    );
+  }
   // const create = () => {
   //   return html.a('create', {
   //     href: `/admin/hexes/new?hex[world_id]=${hex.world_id}&hex[x]=${hex.x}&hex[y]=${hex.y}&hex[boundaries]=${props.points}`,
@@ -57,27 +73,21 @@ const HexInfo = (props) => {
   //   }, 'New')
   // }
 
-  // const content = () => {
-  //   if (!truth.isTruthy(hex.id)) { return create() }
+  const content = () => {
+    if (!truth.isTruthy(hex.id)) { return create() }
 
-  //   return [
-  //     header(),
-  //     coords(),
-  //     province(),
-  //     edit(),
-  //     updateBoundariesButton()
-  //   ]
-  // }
+    return [
+      header(),
+      coords(),
+      // province(),
+      edit(),
+      updateBoundariesButton()
+    ]
+  }
 
   return (
     <div>
-      {header()}
-      <div>
-        {coords()}
-      </div>
-      <div>
-        {updateBoundariesButton()}
-      </div>
+      {content()}
     </div>
   )
 

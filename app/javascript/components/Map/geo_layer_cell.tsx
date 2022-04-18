@@ -1,10 +1,12 @@
 // eslint-disable-next-line no-use-before-define
 import * as React from 'react'
 import { GeoJSON, Popup, Tooltip } from 'react-leaflet'
+import { MapSelectionContext } from './map_context'
 
 import './geo_layer_cell.css'
 
 export type GeoLayerCellProps = {
+  id: number;
   name: string;
   pathOptions?: unknown;
   points: [];
@@ -28,17 +30,30 @@ const GeoLayerLabel = ({ name, layer }: TooltipProps) => {
   )
 }
 
-const GeoLayerCell = ({ layer, name, points }: GeoLayerCellProps) => {
-  // console.log('GeoLayerCell', props);
+const GeoLayerCell = ({ id, layer, name, points }: GeoLayerCellProps) => {
+  console.log('GeoLayerCell', points);
   return (
-    <GeoJSON
-      data={points}
-      eventHandlers={{
-        click: (e) => console.log('GeoLayerCell#click', layer, name, points, e)
+    <MapSelectionContext.Consumer>
+      {({selectedObject, setSelectedObject}) => {
+        return (
+          <GeoJSON
+            data={points}
+            eventHandlers={{
+              click: (e) => {
+                console.log('GeoLayerCell#click', layer, name, points, e)
+                if (setSelectedObject) {
+                  setSelectedObject({[layer]: {id: id}})
+                }
+                return false;
+              }
+            }}
+          >
+            <GeoLayerLabel layer={layer} name={name}/>
+          </GeoJSON>
+        )
       }}
-    >
-      <GeoLayerLabel layer={layer} name={name}/>
-    </GeoJSON>
+    </MapSelectionContext.Consumer>
+
   )
 }
 

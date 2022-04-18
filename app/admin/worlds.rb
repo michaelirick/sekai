@@ -33,15 +33,26 @@ ActiveAdmin.register World do
 
     def map
       world = World.find params[:id]
-      hexes = Hex.all
-      range = 500
-      zoom = params[:zoom].to_i
+      mode = params[:mapMode] || 'continents'
 
-      x, y = if params[:center]
-        params[:center].try(:split, ',').map &:to_i
-      else
-        [0 ,0]
+      geo_layer_type = mode.singularize.titleize
+      cells = world.geo_layers.where(type: geo_layer_type)
+      cells = cells.map do |c|
+        {
+          name: c.title,
+          points: RGeo::GeoJSON.encode(c.geometry),
+          layer: mode
+        }
       end
+      # hexes = Hex.all
+      # range = 500
+      # zoom = params[:zoom].to_i
+
+      # x, y = if params[:center]
+      #   params[:center].try(:split, ',').map &:to_i
+      # else
+      #   [0 ,0]
+      # end
 
       # # TODO: scope to world
       # hexes = Hex.viewable_on_map_at(world, x, y, zoom).map do |h|
@@ -49,7 +60,9 @@ ActiveAdmin.register World do
       # end
       hexes = []
 
-      render json: hexes
+
+
+      render json: {cells: cells}
     end
   end
 
