@@ -34,16 +34,55 @@ ActiveAdmin.register World do
     def map
       world = World.find params[:id]
       mode = params[:mapMode] || 'continents'
-
+      x, y = if params[:center]
+        params[:center].try(:split, ',').map &:to_i
+      else
+        [0 ,0]
+      end
+      zoom = params[:zoom].to_i + 5
+      zoom = 1 if zoom < 1
+      puts "zoom: #{zoom}"
+      w = 4000 / zoom
+      h = 2000 / zoom
+      cells = []
       geo_layer_type = mode.singularize.titleize
-      cells = world.geo_layers.where(type: geo_layer_type)
+      box = world.factory.polygon world.factory.linear_ring([
+        world.factory.point(x - w / 2, y - h / 2),
+        world.factory.point(x - w / 2, y + h / 2),
+        world.factory.point(x + w / 2, y + h / 2),
+        world.factory.point(x + w / 2, y - h / 2)
+                                                            ])
+      if mode == 'hexes'
+        x, y = GeoLayer.point_to_hex x, y
+        if zoom < 5
+          cells = []
+        else
+          # cells = world.geo_layers.where(type: 'Hex').where(
+          #   "x > ? AND x < ? AND y > ? AND y < ?",
+          #   x - 20, x + 20, y - 20, y + 20
+          # )
+          cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+        end
+      else
+        puts box
+
+        geo_layers = GeoLayer.arel_table
+        cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+
+        #.where(geo_layers[:geometry].st_contains(box))
+
+
+      end
       cells = cells.map do |c|
         {
+          id: c.id,
           name: c.title,
           points: RGeo::GeoJSON.encode(c.geometry),
-          layer: mode
+          layer: mode,
+          type: mode.singularize
         }
       end
+      puts cells.count
       # hexes = Hex.all
       # range = 500
       # zoom = params[:zoom].to_i

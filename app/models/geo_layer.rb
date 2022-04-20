@@ -30,16 +30,28 @@ class GeoLayer < ApplicationRecord
     (children.map(&:id) + children.map(&:all_children_ids)).flatten.uniq
   end
 
-  def self.reset_geometry_for!(world)
-    [
-      Hex, Province, Area, Region, Subcontinent, Continent
-    ].each { |c| c.where(world: world).each &:reset_geometry! }
+  def self.reset_geometry_for!(world, options={})
+    classes = [Hex, Province, Area, Region, Subcontinent, Continent]
+    classes -= options[:except] || []
+    classes.each do |c|
+      puts "Resetting #{c}..." if ENV['DEBUG'] == '1'
+      c.where(world: world).each &:reset_geometry!
+    end
   end
 
+  # odd-q hexes
+  def self.point_to_hex(x, y)
+    q = ((2.0/3 * x) / HEX_RADIUS).round
+    r = ((-1.0/3 * x + Math.sqrt(3)/3 * y) / HEX_RADIUS).round
+    y = r + (q - (q & 1))/2
+    [q, y]
+  end
+
+  # odd-q hexes
   def self.hex_to_point(x, y)
     radius = HEX_RADIUS
-    nx = radius * y * 3/4 * 2
-    ny = radius * Math.sqrt(3) * (x + 0.5 * (y & 1))
+    nx = radius * x * 3.0/2
+    ny = radius * Math.sqrt(3) * (y + 0.5 * (x & 1))
     [nx, ny]
   end
 
@@ -56,17 +68,19 @@ class GeoLayer < ApplicationRecord
     end
   end
 
-  def reset_hex!
-    points = GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)).map do |p|
+  def self.hex_geometry(points, factory)
+    points = points.map do |p|
       px, py = p
       factory.point(px, py)
     end
 
     ring = factory.linear_ring points
     polygon = factory.polygon(ring)
+    factory.collection([polygon])
+  end
 
-
-    self.geometry = factory.collection([polygon])
+  def reset_hex!
+    self.geometry = GeoLayer.hex_geometry GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)), factory
     save!
   end
 
@@ -93,6 +107,9 @@ from
     new_geometry = RGeo::GeoJSON.decode new_geometry
     self.geometry = factory.collection [new_geometry].compact
     self.save!
+  rescue => e
+    puts "#{type} #{id} #{title} failed to reset geometry:"
+    puts e.full_message
   end
 
   def update_geometry!(points)

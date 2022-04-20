@@ -21,17 +21,17 @@ const GeoLayerGrid = (props) => {
   // const Grid = defineGrid(HexFactory)
 
   const [grid, setGrid] = useState([]) // empty grid, make api call to populate from center and zoom
-  const [center, setCenter] = useState((props.center)) // these are point cords
-  const [zoom, setZoom] = useState(props.zoom)
+  const [center, setCenter] = useState(props.center ? props.center : [localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY')]) // these are point cords
+  const [zoom, setZoom] = useState(props.zoom ? props.zoom : localStorage.getItem('mapZoom'))
   const [selectedHex, setSelectedHex] = useState(null)
   // const [cable, setCable] = useState(ActionCable.createConsumer('/cable'))
   // const [subscription, setSubscription] = useState(null);
 
   const map = useMapEvents({
-    // click: (e) => {
-    //   console.log('HexGrid#click', e)
-    //   selectBlankHex(e, map)
-    // },
+    click: (e) => {
+      console.log('HexGrid#click', e)
+      // selectBlankHex(e, map)
+    },
     zoomend: (e, z) => {
       console.log('zoomend', e.target._zoom, e, z, map)
       setZoom(e.target._zoom)
@@ -114,7 +114,7 @@ const GeoLayerGrid = (props) => {
     // cable.
     // cable.perform('execute', { query: '{ hex { name } }' })
     api.get(`/admin/worlds/${props.world.id}/map`, {
-      // center: center,
+      center: center,
       zoom: zoom,
       mapMode: props.mapMode
     }).then(response => response.json())
@@ -128,6 +128,7 @@ const GeoLayerGrid = (props) => {
   const hexes = () => {
     // console.log('hexes', zoom, center)
     return grid.map((h, i) => {
+      console.log('cell', h);
       return <GeoLayerCell key={i} {...h}/>
       // return html.tag(HexCell, i, {
       //   hex: h,

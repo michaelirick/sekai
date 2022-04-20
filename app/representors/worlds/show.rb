@@ -15,6 +15,7 @@ class Worlds::Show < ApplicationRepresentor
   end
 
   def geo_layers_attributes
+    return {}
     GeoLayer.for(self.__getobj__).map do |key, values|
       values = values.map do |v|
         {

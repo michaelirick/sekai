@@ -17,13 +17,35 @@ s = Subcontinent.create(title: 'West Auson', parent: c, world: w)
 r = Region.create(title: 'Weson', parent: s, world: w)
 a = Area.create(title: 'Arcor', parent: r, world: w)
 p = Province.create(title: 'Arriccar', parent: a, world: w)
-h = Hex.create(world: w, x: 40, y: 41, parent: p, title: 'Arriccar', world: w, owner: state)
-h = Hex.create(world: w, x: 40, y: 40, parent: p, title: 'Neoheim', world: w)
-h = Hex.create(world: w, x: 41, y: 41, parent: p, title: 'North Arriccar', world: w)
+# h = Hex.create(world: w, x: 40, y: 41, parent: p, title: 'Arriccar', world: w, owner: state)
+# h = Hex.create(world: w, x: 40, y: 40, parent: p, title: 'Neoheim', world: w)
+# h = Hex.create(world: w, x: 41, y: 41, parent: p, title: 'North Arriccar', world: w)
+#
+puts 'Seeding hexes...'
+Hex.transaction do
+  (0..200).to_a.each do |x|
+    puts "Column #{x}"
+    hexes = (0..100).to_a.map do |y|
+      {
+        world: w,
+        x: x,
+        y: y,
+        parent: p,
+        title: "#{x},#{y}",
+        geometry: GeoLayer.hex_geometry(GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)), w.factory)
+      }
+    end
+    Hex.create hexes
+  end
+end
+puts 'done'
+
+puts 'Seeding timeline...'
 a1 = Age.create(title: 'First Age', abbreviation: 'FA', world: w)
 d1 = WorldDate.create(age: a1, year: 1728, month: 6, day: 6)
 a2 = Age.create(title: 'Second Age', abbreviation: 'SA', world: w, preceding_age: a1, start_date: d1)
 d2 = WorldDate.create(age: a2, year: 87, month: 4, day: 15)
+puts 'done'
 
 factory = w.factory
 pt1 = factory.point(0, 0)
@@ -52,7 +74,10 @@ square = factory.polygon(outerring2)
 multipolygon = factory.multi_polygon([square_with_hole, square])
 c.geometry = factory.collection([multipolygon])
 c.save
-GeoLayer.reset_geometry_for! w
+
+puts "Resetting geometry..."
+GeoLayer.reset_geometry_for! w, except: [Hex]
+puts "done"
 
 ##
 # Earth

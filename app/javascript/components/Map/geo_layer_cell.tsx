@@ -30,7 +30,7 @@ const GeoLayerLabel = ({ name, layer }: TooltipProps) => {
   )
 }
 
-const GeoLayerCell = ({ id, layer, name, points }: GeoLayerCellProps) => {
+const GeoLayerCell = ({ id, type, layer, name, points }: GeoLayerCellProps) => {
   console.log('GeoLayerCell', points);
   return (
     <MapSelectionContext.Consumer>
@@ -42,7 +42,7 @@ const GeoLayerCell = ({ id, layer, name, points }: GeoLayerCellProps) => {
               click: (e) => {
                 console.log('GeoLayerCell#click', layer, name, points, e)
                 if (setSelectedObject) {
-                  setSelectedObject({[layer]: {id: id}})
+                  setSelectedObject({[type]: {id: id}})
                 }
                 return false;
               }
