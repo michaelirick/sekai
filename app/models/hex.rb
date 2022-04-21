@@ -1,4 +1,6 @@
 class Hex < GeoLayer
+  after_create :reset_geometry!
+  validates_uniqueness_of :x, scope: %i[y world_id]
 end
 # #require 'geometry'
 

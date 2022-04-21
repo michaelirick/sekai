@@ -17,28 +17,28 @@ s = Subcontinent.create(title: 'West Auson', parent: c, world: w)
 r = Region.create(title: 'Weson', parent: s, world: w)
 a = Area.create(title: 'Arcor', parent: r, world: w)
 p = Province.create(title: 'Arriccar', parent: a, world: w)
-# h = Hex.create(world: w, x: 40, y: 41, parent: p, title: 'Arriccar', world: w, owner: state)
-# h = Hex.create(world: w, x: 40, y: 40, parent: p, title: 'Neoheim', world: w)
-# h = Hex.create(world: w, x: 41, y: 41, parent: p, title: 'North Arriccar', world: w)
+h = Hex.create(world: w, x: 409, y: 274, parent: p, title: 'Arriccar', world: w, owner: state)
+h = Hex.create(world: w, x: 408, y: 273, parent: p, title: 'Neoheim', world: w)
+h = Hex.create(world: w, x: 409, y: 275, parent: p, title: 'North Arriccar', world: w)
 #
-puts 'Seeding hexes...'
-Hex.transaction do
-  (0..200).to_a.each do |x|
-    puts "Column #{x}"
-    hexes = (0..100).to_a.map do |y|
-      {
-        world: w,
-        x: x,
-        y: y,
-        parent: p,
-        title: "#{x},#{y}",
-        geometry: GeoLayer.hex_geometry(GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)), w.factory)
-      }
-    end
-    Hex.create hexes
-  end
-end
-puts 'done'
+# puts 'Seeding hexes...'
+# Hex.transaction do
+#   (0..200).to_a.each do |x|
+#     puts "Column #{x}"
+#     hexes = (0..100).to_a.map do |y|
+#       {
+#         world: w,
+#         x: x,
+#         y: y,
+#         parent: p,
+#         title: "#{x},#{y}",
+#         geometry: GeoLayer.hex_geometry(GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)), w.factory)
+#       }
+#     end
+#     Hex.create hexes
+#   end
+# end
+# puts 'done'
 
 puts 'Seeding timeline...'
 a1 = Age.create(title: 'First Age', abbreviation: 'FA', world: w)

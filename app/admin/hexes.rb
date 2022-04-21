@@ -1,6 +1,6 @@
 ActiveAdmin.register Hex do
   menu parent: 'geography', priority: 1, if: proc{true}
-  permit_params :title, :parent_type, :parent_id, :world_id
+  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -41,7 +41,8 @@ ActiveAdmin.register Hex do
     before_action :check_for_world
 
     def check_for_world
-      redirect_to :admin_worlds, alert: 'You must first select a world.' unless current_user.selected_world
+      puts "current_user: #{current_user.inspect}"
+      # redirect_to :admin_worlds, alert: 'You must first select a world.' unless current_user.selected_world
     end
   end
 end

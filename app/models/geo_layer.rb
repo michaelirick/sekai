@@ -43,8 +43,8 @@ class GeoLayer < ApplicationRecord
   def self.point_to_hex(x, y)
     q = ((2.0/3 * x) / HEX_RADIUS).round
     r = ((-1.0/3 * x + Math.sqrt(3)/3 * y) / HEX_RADIUS).round
-    y = r + (q - (q & 1))/2
-    [q, y]
+    ny = r + (q - (q & 1))/2
+    [q, ny]
   end
 
   # odd-q hexes

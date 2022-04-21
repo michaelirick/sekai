@@ -1,16 +1,18 @@
 import { extendHex, defineGrid } from 'honeycomb-grid'
 import * as React from 'react'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import { LayerGroup, Polygon, useMapEvents } from 'react-leaflet'
 import html from 'utils/html'
 import HexCell from './hex_cell'
 import api from 'utils/api'
 import World from 'models/world'
+import { Hex } from 'models/hex'
 import ActionCable from 'actioncable'
-import { MapSelectionContext } from './map_context'
+import { MapSelectionContext, MapToolContext } from './map_context'
 import GeoLayerCell from './geo_layer_cell'
 
 const GeoLayerGrid = (props) => {
+  const {mapTool} = useContext(MapToolContext);
   const world = new World(props.world)
   const gridOptions = {
     width: 64,
@@ -29,8 +31,30 @@ const GeoLayerGrid = (props) => {
 
   const map = useMapEvents({
     click: (e) => {
-      console.log('HexGrid#click', e)
-      // selectBlankHex(e, map)
+      if (mapTool === 'add') {
+        console.log('GeoLayerGrid#add', e)
+        const [x, y] = Hex.pointToHex(Hex.latLngToXY(e.latlng))
+        api.post('/admin/hexes.json', {
+          hex: {
+            world_id: world.id,
+            x: x,
+            y: y,
+            parent_id: world.id,
+            parent_type: 'World'
+          }
+        }).then(() => loadHexes())
+      }
+      // console.log('HexGrid#click', e)
+      // // selectBlankHex(e, map)
+      // if (props.selectedObject) {
+      //   if (props.selectedObject?.blank_hex) {
+      //     console.log('click prev-blank', props.selectedObject)
+      //   } else {
+      //     console.log('click prev-non-blank', props.selectedObject)
+      //   }
+      // } else {
+      //   selectBlankHex(e, map);
+      // }
     },
     zoomend: (e, z) => {
       console.log('zoomend', e.target._zoom, e, z, map)
@@ -85,8 +109,9 @@ const GeoLayerGrid = (props) => {
   }
 
   const selectBlankHex = (e, map) => {
-    // setSelectedHex(HexFactory().fromPoint([e.latlng.lat, e.latlng.lng]))
-    // props.setSelectedObject({blank_hex: HexFactory().fromPoint([e.latlng.lat, e.latlng.lng])});
+
+    props.setSelectedObject({blank_hex: e.latlng});
+
     // loadHexes()
     // console.log('selectBlankHex', e, map)
   }
@@ -125,10 +150,10 @@ const GeoLayerGrid = (props) => {
       })
   }
 
-  const hexes = () => {
+  const hexes = ({selectedObject, setSelectedObject}) => {
     // console.log('hexes', zoom, center)
     return grid.map((h, i) => {
-      console.log('cell', h);
+      // console.log('cell', h);
       return <GeoLayerCell key={i} {...h}/>
       // return html.tag(HexCell, i, {
       //   hex: h,
@@ -137,8 +162,27 @@ const GeoLayerGrid = (props) => {
     })
   }
 
+  const selectedBlankHex = ({selectedObject}) => {
+    if (!selectedObject?.blank_hex)
+      return '';
+    console.log('blank_hex', selectedObject)
+    console.log('latLngToXY', (((Hex.latLngToXY(selectedObject.blank_hex)))))
+    console.log('pointToHex', ((Hex.pointToHex(Hex.latLngToXY(selectedObject.blank_hex)))))
+    console.log('hexToPoint', (Hex.hexToPoint(Hex.pointToHex(Hex.latLngToXY(selectedObject.blank_hex)))))
+    console.log('drawHex', Hex.drawHex(Hex.hexToPoint(Hex.pointToHex(Hex.latLngToXY(selectedObject.blank_hex)))))
+    const hex = Hex.drawHex(Hex.hexToPoint(Hex.pointToHex(Hex.latLngToXY(selectedObject.blank_hex))));
+    console.log('newHex', hex);
+    return <Polygon
+      pathOptions={{color: 'green'}}
+      positions={hex}
+    />
+  }
+
   return <MapSelectionContext.Consumer>
-    {({selectedObject, setSelectedObject}) => <LayerGroup>{hexes()}</LayerGroup>}
+    {(context) => <LayerGroup>
+      {hexes(context)}
+      {selectedBlankHex(context)}
+    </LayerGroup>}
   </MapSelectionContext.Consumer>
 
   // return html.tag(MapSelectionContext.Consumer, 'hexes',

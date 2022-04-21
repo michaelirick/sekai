@@ -3,6 +3,10 @@ class GeoLayerPolicy < ApplicationPolicy
     admin?
   end
 
+  def show?
+    @record.world == @user.selected_world
+  end
+
   class Scope < Scope
     def resolve
       scope.all.for_world(@user.selected_world)

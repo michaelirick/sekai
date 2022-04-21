@@ -34,7 +34,12 @@ api.put = (url, params, options) => {
 
 api.get = (url, params, options) => {
   console.log('get', url)
-  return fetch(`${url}${encodeQueryString(params)}`)
+  return fetch(`${url}${encodeQueryString(params)}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute('content')
+    }, ...options
+  })
 }
 
 export default api

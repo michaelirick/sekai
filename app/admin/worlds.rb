@@ -54,14 +54,14 @@ ActiveAdmin.register World do
                                                             ])
       if mode == 'hexes'
         x, y = GeoLayer.point_to_hex x, y
-        if zoom < 5
+        if false #zoom < 5
           cells = []
         else
-          # cells = world.geo_layers.where(type: 'Hex').where(
-          #   "x > ? AND x < ? AND y > ? AND y < ?",
-          #   x - 20, x + 20, y - 20, y + 20
-          # )
-          cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+          cells = world.geo_layers.where(type: 'Hex').where(
+            "x > ? AND x < ? AND y > ? AND y < ?",
+            x - 20, x + 20, y - 20, y + 20
+          )
+          # cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
         end
       else
         puts box

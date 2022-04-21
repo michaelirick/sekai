@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Leaflet from 'react-leaflet'
 import { MapContainer, LayerGroup, LayersControl, useMapEvents, ScaleControl } from 'react-leaflet'
-import { MapSelectionContext } from './map_context'
+import { MapSelectionContext, MapToolContext } from './map_context'
 import html from 'utils/html'
 import MapLayer from './map_layer'
 import GeoLayer from './geo_layer'
@@ -11,6 +11,7 @@ import 'leaflet/dist/leaflet.css'
 import './map.css'
 import GeoLayerGrid from './geo_layer_grid'
 import { zoom } from 'leaflet/src/control/Control.Zoom'
+import { ToolBar } from './toolbar'
 
 // const [container, tileLayer] = html.tagify([MapContainer, TileLayer]);
 
@@ -19,7 +20,14 @@ const Map = (props) => {
   console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
   const [selectedObject, setSelectedObject] = React.useState(null);
   const [mapMode, setMapMode] = React.useState('continents');
+  const [mapTool, setMapTool] = React.useState('select');
 
+  const mapToolContext = () => {
+    return {
+      mapTool: mapTool,
+      setMapTool: setMapTool
+    }
+  }
   const selectedObjectContext = () => {
     return {
       selectedObject: selectedObject,
@@ -101,7 +109,12 @@ const Map = (props) => {
   }
 
   const geoLayerGrid = () => {
-    return html.tag(GeoLayerGrid, 'grid', { mapMode: mapMode, world: props.world });
+    return html.tag(GeoLayerGrid, 'grid', {
+      mapMode: mapMode,
+      world: props.world,
+      selectedObject: selectedObject,
+      setSelectedObject: setSelectedObject
+    });
   }
 
   const layers = () => {
@@ -112,7 +125,7 @@ const Map = (props) => {
       // geoLayers(),
       geoLayerGrid(),
       // hexes(),
-      html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
+      // html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
       // html.tag(ScaleControl, 'scale', {position: 'bottomright'})
     )
   }
@@ -149,10 +162,13 @@ const Map = (props) => {
 
   return (
     <MapSelectionContext.Provider value={selectedObjectContext()}>
-      <div class="map-component">
-        {mapContainer()}
-        {sideBar()}
-      </div>
+      <MapToolContext.Provider value={mapToolContext()}>
+        <ToolBar mapMode={mapMode} setMapMode={setMapMode}/>
+        <div className="map-component">
+          {mapContainer()}
+          {sideBar()}
+        </div>
+      </MapToolContext.Provider>
     </MapSelectionContext.Provider>
   )
 }

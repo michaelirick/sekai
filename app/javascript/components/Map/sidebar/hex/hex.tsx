@@ -1,13 +1,14 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import api from 'utils/api'
+import { Grid } from 'semantic-ui-react'
 
 export type HexProps = {
   id: number;
 };
 
 export const Hex = (props: HexProps) => {
-  const [hex, setHex] = useState({ id: props.id });
+  const [hex, setHex] = useState({ id: props.id, ...props });
   const [x, setX] = useState();
   const [y, setY] = useState();
 
@@ -23,7 +24,7 @@ export const Hex = (props: HexProps) => {
     // cable.send({query: '{hex{name}}'})
     // cable.
     // cable.perform('execute', { query: '{ hex { name } }' })
-    api.get(`/admin/hexes/${hex.id}/`, {
+    api.get(`/admin/hexes/${hex.id}.json`, {
 
     }).then(response => response.json())
       .then((newHexes) => {
@@ -34,14 +35,17 @@ export const Hex = (props: HexProps) => {
     })
   }
   const updateHex = () => {
-    api.put(`/admin/hexes/${hex.id}/`, {
+    api.put(`/admin/hexes/${hex.id}.json`, {
       x: x
     });
   }
+
   return (
-    <div>
-      <input value={x} onChange={(e) => setX(e.target.value)}/>
-      <button onClick={(e) => updateHex()}>Update</button>
-    </div>
-  );
+    <Grid divided="vertically">
+      <Grid.Row>
+        <Grid.Column><h3>{hex.title}</h3></Grid.Column>
+      </Grid.Row>
+    </Grid>
+  )
+
 };

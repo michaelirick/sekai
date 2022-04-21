@@ -1,9 +1,10 @@
 // eslint-disable-next-line no-use-before-define
 import * as React from 'react'
 import { GeoJSON, Popup, Tooltip } from 'react-leaflet'
-import { MapSelectionContext } from './map_context'
+import { MapSelectionContext, MapToolContext } from './map_context'
 
 import './geo_layer_cell.css'
+import { useContext } from 'react'
 
 export type GeoLayerCellProps = {
   id: number;
@@ -30,21 +31,32 @@ const GeoLayerLabel = ({ name, layer }: TooltipProps) => {
   )
 }
 
-const GeoLayerCell = ({ id, type, layer, name, points }: GeoLayerCellProps) => {
-  console.log('GeoLayerCell', points);
+const GeoLayerCell = ({ id, type, layer, name, points, color }: GeoLayerCellProps) => {
+  const {mapTool} = useContext(MapToolContext);
+  // console.log('GeoLayerCell', id, type, layer, name, points);
   return (
     <MapSelectionContext.Consumer>
       {({selectedObject, setSelectedObject}) => {
         return (
           <GeoJSON
             data={points}
+            pathOptions={{ color: color }}
             eventHandlers={{
               click: (e) => {
-                console.log('GeoLayerCell#click', layer, name, points, e)
-                if (setSelectedObject) {
-                  setSelectedObject({[type]: {id: id}})
+                if (mapTool === 'select') {
+                  console.log('GeoLayerCell#select', layer, name, points, e)
+                  // e.preventDefault()
+                  if (setSelectedObject) {
+                    setSelectedObject({
+                      [type]: {
+                        layer: layer,
+                        type: type,
+                        id: id,
+                        title: name
+                      }
+                    })
+                  }
                 }
-                return false;
               }
             }}
           >
