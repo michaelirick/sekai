@@ -1,4 +1,8 @@
 class StatePolicy < ApplicationPolicy
+  def reset_geometry?
+    admin?
+  end
+
   class Scope < Scope
     def resolve
       scope.all.for_world(@user.selected_world)

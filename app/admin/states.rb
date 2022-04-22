@@ -12,7 +12,8 @@ ActiveAdmin.register State do
     :loyalty,
     :unrest,
     :money,
-    :government_type
+    :government_type,
+                :owner_id, :owner_type
   )
   #
   # or
@@ -37,15 +38,46 @@ ActiveAdmin.register State do
       f.input :primary_color, as: :color
       f.input :secondary_color, as: :color
       f.input :world_id, as: :hidden, input_html: {value: current_user.selected_world.id}
+      f.input :owner_id, as: :select, collection: State.for_world(current_user.selected_world) - [state]
+      f.input :owner_type, as: :hidden, input_html: {value: 'State'}
+
       f.input :stability
     end
     f.actions
+  end
+
+  member_action :reset_geometry, method: :get do
+    if resource.nil?
+      redirect_to resource_path, notice: 'You cannot reset this geometry.'
+    else
+      begin
+        resource.reset_geometry!
+        redirect_to resource_path, notice: "You have reset #{resource.name}."
+      rescue => e
+        redirect_to resource_path, alert: "There was an error"
+      end
+    end
+  end
+
+  action_item :reset_geometry, only: [:show] do
+    link_to 'Reset Geometry', reset_geometry_admin_state_path(state)
+  end
+
+  index do
+    selectable_column
+    id_column
+    column :name
+    column :owner
+    column :primary_color
+    column :secondary_color
+    actions
   end
 
   show do |s|
     attributes_table do
       row :name
       row :adjective
+      row :owner
       row :government_type
       row :primary_color
       row :secondary_color
@@ -142,6 +174,19 @@ ActiveAdmin.register State do
             row :average
             row :high_estimate
           end
+        end
+      end
+      tab 'Subjects' do
+        table_for s.subjects do
+          column :name do |ss|
+            link_to ss.name, [:admin, ss]
+          end
+        end
+      end
+      tab 'Geometry' do
+        attributes_table do
+          row :geometry
+          row :realm_geometry
         end
       end
     end

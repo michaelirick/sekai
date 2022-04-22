@@ -7,8 +7,9 @@ class GeoLayer < ApplicationRecord
   HEX_RADIUS = 6.0469
 
   after_commit :update_parent_geometry
+  after_commit :update_owner_geometry
 
-  def change_geometry?
+  def change_geometry_for_parent?
     previous_changes[:geometry] || previous_changes[:parent_id] || previous_changes[:parent_type] || destroyed? || previously_new_record? || type == 'Hex'
   end
   def update_parent_geometry
@@ -21,9 +22,30 @@ class GeoLayer < ApplicationRecord
       puts 'parent is World'
     end
 
-    if change_geometry?
+    if change_geometry_for_parent?
       puts 'parent changed'
       parent.reset_geometry!
+    end
+    puts "changes:"
+    # puts self.methods.sort
+  end
+
+  def change_geometry_for_owner?
+    previous_changes[:geometry] || previous_changes[:owner_type] || previous_changes[:owner_id] || destroyed? || previously_new_record? || type == 'Hex'
+  end
+  def update_owner_geometry
+    puts 'update_owner_geometry'
+    unless owner
+      puts "no owner"
+      return
+    end
+    if owner_type == 'World'
+      puts 'owner is World'
+    end
+
+    if change_geometry_for_owner?
+      puts 'owner changed'
+      owner.reset_geometry!
     end
     puts "changes:"
     # puts self.methods.sort

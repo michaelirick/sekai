@@ -5,10 +5,29 @@ class State < ApplicationRecord
   belongs_to :world
   has_many :buildings, as: :owner
   has_many :settlements, foreign_key: :owner_id
+  belongs_to :owner, polymorphic: true, optional: true
+  has_many :subjects, class_name: 'State', as: :owner
 
   scope :for_world, -> (world) { where world: world }
 
   add_reducer :settlements, :+, 'sum'
+
+  after_commit :update_owner_realm_geometry
+
+  def type
+    'State'
+  end
+
+  def top_owner
+    return self if owner.nil?
+
+    owner.top_owner
+  end
+
+  # all subjects and their subjects
+  def realm
+    subjects.map(&:realm).flatten
+  end
 
   def building_bonuses
     bonuses = buildings.map do |b|
@@ -112,5 +131,80 @@ class State < ApplicationRecord
       average: (10.5 + delta) * Statistic::MONEY_PER_BP / 3.0,
       high_estimate: (20 + delta) * Statistic::MONEY_PER_BP / 3.0
     }
+  end
+
+  def factory
+    world.factory
+  end
+
+  def reset_geometry!
+    new_geometry = GeoLayer.connection.execute(%(
+      SELECT st_asgeojson(st_union(a.new_geometry)) AS new_geometry
+from
+      (SELECT st_asgeojson(st_union(geometry)) AS new_geometry
+      FROM geo_layers
+      WHERE owner_id=#{id} AND owner_type='State') a
+                                               )).map(&:to_h).first['new_geometry']
+
+
+    # polygons = subjects.pluck(:geometry).compact.map(&:to_a).flatten
+
+    new_geometry = RGeo::GeoJSON.decode new_geometry
+    self.geometry = factory.collection [new_geometry].compact
+    self.save!
+    reset_realm_geometry!
+  rescue => e
+    puts "State #{id} #{name} failed to reset geometry:"
+    puts e.full_message
+  end
+
+  def reset_realm_geometry!
+    if subjects.empty?
+      self.realm_geometry = geometry
+      self.save!
+      return
+    end
+    new_geometry = GeoLayer.connection.execute(%(
+      SELECT st_asgeojson(st_union(a.new_geometry)) AS new_geometry
+from
+      (SELECT st_asgeojson(st_union(realm_geometry)) AS new_geometry
+      FROM states
+      WHERE owner_id=#{id} AND owner_type='State'
+      UNION ALL SELECT st_asgeojson(st_union(geometry)) AS new_geometry
+      FROM states
+      where id=#{id}
+) a
+                                               )).map(&:to_h).first['new_geometry']
+
+
+    # polygons = subjects.pluck(:geometry).compact.map(&:to_a).flatten
+
+    new_geometry = RGeo::GeoJSON.decode new_geometry
+    self.realm_geometry = factory.collection [new_geometry].compact
+    self.save!
+  rescue => e
+    puts "State #{id} #{name} failed to reset geometry:"
+    puts e.full_message
+  end
+
+  def change_geometry_for_owner?
+    previous_changes[:realm_geometry] ||previous_changes[:geometry] || previous_changes[:owner_type] || previous_changes[:owner_id] || destroyed? || previously_new_record?
+  end
+  def update_owner_realm_geometry
+    puts 'update_owner_geometry'
+    unless owner
+      puts "no owner"
+      return
+    end
+    if owner_type == 'World'
+      puts 'owner is World'
+    end
+
+    if change_geometry_for_owner?
+      puts 'owner changed'
+      owner.reset_realm_geometry!
+    end
+    puts "changes:"
+    # puts self.methods.sort
   end
 end

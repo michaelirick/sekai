@@ -1,6 +1,6 @@
 ActiveAdmin.register Hex do
   menu parent: 'geography', priority: 1, if: proc{true}
-  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y
+  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y, :owner_type, :owner_id
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -49,9 +49,9 @@ ActiveAdmin.register Hex do
     column :y
     column :owner
 
-    # actions defaults: true do |h|
-    #   link_to 'Reset Geometry', update_boundaries_admin_hex_path(h), method: 'post', class: 'member_link'
-    # end
+    actions defaults: true do |h|
+      # link_to 'Reset Geometry', update_boundaries_admin_hex_path(h), method: 'post', class: 'member_link'
+    end
   end
 
   controller do

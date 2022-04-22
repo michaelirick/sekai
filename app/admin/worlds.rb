@@ -52,6 +52,7 @@ ActiveAdmin.register World do
         world.factory.point(x + w / 2, y + h / 2),
         world.factory.point(x + w / 2, y - h / 2)
                                                             ])
+      state = Struct.new(:type, :id, :title, :color, :geometry)
       if mode == 'hexes'
         x, y = GeoLayer.point_to_hex x, y
         if false #zoom < 5
@@ -63,24 +64,32 @@ ActiveAdmin.register World do
           )
           # cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
         end
+      elsif mode == 'states'
+        cells = world.states
+      elsif mode == 'independent_states'
+
+        cells = world.states.where(owner_id: nil).map do |s|
+          state.new('State', s.id, s.name, s.primary_color, s.realm_geometry)
+        end
       else
         puts box
 
         geo_layers = GeoLayer.arel_table
-        cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+        cells = world.geo_layers.where(type: geo_layer_type)#.where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
 
         #.where(geo_layers[:geometry].st_contains(box))
 
 
       end
-      cells = world.geo_layers.where(type: geo_layer_type)
+      # cells = world.geo_layers.where(type: geo_layer_type)
       cells = cells.map do |c|
         {
           id: c.id,
-          name: c.title,
+          name: c.try(:title) || c.try(:name),
           points: RGeo::GeoJSON.encode(c.geometry),
           layer: mode,
-          type: c.class.to_s
+          type: c.type,
+          color: c.try(:color) || c.try(:primary_color)
         }
       end
       puts cells.count

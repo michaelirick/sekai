@@ -11,9 +11,10 @@ import { Area } from '../../models/area'
 import { Region } from '../../models/region'
 import { Subcontinent } from '../../models/subcontinent'
 import { Continent } from '../../models/continent'
+import { State } from '../../models/state'
 
 const GeoLayerTypes = {
-  Hex, Province, Area, Region, Subcontinent, Continent
+  Hex, Province, Area, Region, Subcontinent, Continent, State
 }
 
 export type GeoLayerCellProps = {
@@ -46,9 +47,10 @@ const GeoLayerLabel = ({ id, name, layer, show }: TooltipProps) => {
   )
 }
 
-const GeoLayerCell = ({ id, type, layer, name, points, color, showLabel }: GeoLayerCellProps) => {
+const GeoLayerCell = (props:GeoLayerCellProps) => {
+  const { id, type, layer, name, points, color, showLabel } = props;
   const {mapTool, setMapTool} = useContext(MapToolContext);
-  // console.log('GeoLayerCell', id, type, layer, name, points);
+  console.log('GeoLayerCell', props);
   return (
     <MapSelectionContext.Consumer>
       {({selectedObject, setSelectedObject}) => {
@@ -98,9 +100,14 @@ const GeoLayerCell = ({ id, type, layer, name, points, color, showLabel }: GeoLa
                       title: name,
                       type: type
                     })
+                    if (selectedObject.type === 'State') {
+                      object.owner_id = selectedObject.id
+                      object.owner_type = 'State'
+                    } else {
+                      object.parent_id = selectedObject.id
+                      object.parent_type = 'GeoLayer'
+                    }
 
-                    object.parent_id = selectedObject.id
-                    object.parent_type = 'GeoLayer'
                     object.save()
                       .then(response => console.log('saved', response))
                       .catch(error => console.log('error', error))
