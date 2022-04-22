@@ -31,6 +31,10 @@ export const ToolBar = (props) => {
     </Menu>
     <Menu>
       <MapMode name="continents" label="Continents"/>
+      <MapMode name="subcontinents" label="Subcontinents"/>
+      <MapMode name="regions" label="Regions"/>
+      <MapMode name="areas" label="Areas"/>
+      <MapMode name="provinces" label="Provinces"/>
       <MapMode name="hexes" label="Hexes"/>
     </Menu>
   </div>

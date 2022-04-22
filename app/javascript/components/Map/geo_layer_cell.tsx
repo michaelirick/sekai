@@ -5,6 +5,11 @@ import { MapSelectionContext, MapToolContext } from './map_context'
 
 import './geo_layer_cell.css'
 import { useContext } from 'react'
+import { Hex } from '../../models/hex'
+
+const GeoLayerTypes = {
+  Hex: Hex
+}
 
 export type GeoLayerCellProps = {
   id: number;
@@ -13,54 +18,72 @@ export type GeoLayerCellProps = {
   points: [];
   color?: string;
   layer: string;
+  showLabel: boolean;
 }
 
 type TooltipProps = {
   name: string;
   layer: string;
+  id: number;
+  show: boolean
 }
 
-const GeoLayerLabel = ({ name, layer }: TooltipProps) => {
+const GeoLayerLabel = ({ id, name, layer, show }: TooltipProps) => {
   return (
     <Tooltip
+      permanent={show}
       direction='center'
       className={`geo-layer-cell-label ${layer}-label`}
+      opacity={1}
     >
-      {name}
+      {`[${id}] ${name}`}
     </Tooltip>
   )
 }
 
-const GeoLayerCell = ({ id, type, layer, name, points, color }: GeoLayerCellProps) => {
-  const {mapTool} = useContext(MapToolContext);
+const GeoLayerCell = ({ id, type, layer, name, points, color, showLabel }: GeoLayerCellProps) => {
+  const {mapTool, setMapTool} = useContext(MapToolContext);
   // console.log('GeoLayerCell', id, type, layer, name, points);
   return (
     <MapSelectionContext.Consumer>
       {({selectedObject, setSelectedObject}) => {
+        const isThisSelected = selectedObject && selectedObject?.id === id && selectedObject?.type === type
         return (
           <GeoJSON
             data={points}
-            pathOptions={{ color: color }}
+            pathOptions={{
+              stroke: isThisSelected,
+              color: isThisSelected ? 'yellow' : color,
+              fillColor: color
+            }}
             eventHandlers={{
               click: (e) => {
                 if (mapTool === 'select') {
-                  console.log('GeoLayerCell#select', layer, name, points, e)
+                  console.log('GeoLayerCell#select', layer, id, name, points, e)
                   // e.preventDefault()
                   if (setSelectedObject) {
-                    setSelectedObject({
-                      [type]: {
-                        layer: layer,
-                        type: type,
-                        id: id,
-                        title: name
-                      }
-                    })
+                    setSelectedObject(new GeoLayerTypes[type]({
+                      layer: layer,
+                      type: type,
+                      id: id,
+                      title: name,
+                      type: type
+                    }))
                   }
+                }
+                if (mapTool === 'selectParent') {
+                  selectedObject.parent_id = id;
+                  selectedObject.parent_type = 'GeoLayer';
+                  console.log('selectParent', selectedObject)
+                  setSelectedObject(selectedObject);
+                  selectedObject.save().then(response => console.log('saved'))
+                    .catch(error => console.log('selectParent Error:', error))
+                  setMapTool('select');
                 }
               }
             }}
           >
-            <GeoLayerLabel layer={layer} name={name}/>
+            <GeoLayerLabel id={id} layer={layer} name={name} show={showLabel} />
           </GeoJSON>
         )
       }}

@@ -7,7 +7,7 @@ type MapLayerProps = {
 }
 
 const MapLayer = (props: MapLayerProps) => {
-  console.log('MapLayer', props)
+  // console.log('MapLayer', props)
   return <ImageOverlay bounds={[[0, 0], [4096, 8192]]} url={props.url}></ImageOverlay>
 }
 

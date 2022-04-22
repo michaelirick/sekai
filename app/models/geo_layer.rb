@@ -6,6 +6,16 @@ class GeoLayer < ApplicationRecord
 
   HEX_RADIUS = 6.0469
 
+  after_commit :update_parent_geometry
+
+  def update_parent_geometry
+    return unless parent
+    return if parent.parent_type == 'World'
+
+    puts 'UPDATE'
+    parent.reset_geometry! if previous_changes[:parent_id] || previous_changes[:parent_type]
+  end
+
   def self.add_geo_layer_level(layer)
     @geo_layer_levels = [] unless @geo_layer_levels
     @geo_layer_levels << layer

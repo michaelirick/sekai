@@ -151,10 +151,17 @@ const GeoLayerGrid = (props) => {
   }
 
   const hexes = ({selectedObject, setSelectedObject}) => {
-    // console.log('hexes', zoom, center)
+    console.log('GeoLayerGrid#cells', zoom, center, props.mapMode, props.mapMode === 'hexes' && zoom > 2)
+    let showLabel = false;
+
+    if (props.mapMode === 'hexes' && zoom > 2) {
+      console.log('showLabel')
+      showLabel = true;
+    }
+
     return grid.map((h, i) => {
       // console.log('cell', h);
-      return <GeoLayerCell key={i} {...h}/>
+      return <GeoLayerCell key={i} {...h} showLabel={showLabel}/>
       // return html.tag(HexCell, i, {
       //   hex: h,
       //   options: world.hexOptions()
@@ -162,26 +169,11 @@ const GeoLayerGrid = (props) => {
     })
   }
 
-  const selectedBlankHex = ({selectedObject}) => {
-    if (!selectedObject?.blank_hex)
-      return '';
-    console.log('blank_hex', selectedObject)
-    console.log('latLngToXY', (((Hex.latLngToXY(selectedObject.blank_hex)))))
-    console.log('pointToHex', ((Hex.pointToHex(Hex.latLngToXY(selectedObject.blank_hex)))))
-    console.log('hexToPoint', (Hex.hexToPoint(Hex.pointToHex(Hex.latLngToXY(selectedObject.blank_hex)))))
-    console.log('drawHex', Hex.drawHex(Hex.hexToPoint(Hex.pointToHex(Hex.latLngToXY(selectedObject.blank_hex)))))
-    const hex = Hex.drawHex(Hex.hexToPoint(Hex.pointToHex(Hex.latLngToXY(selectedObject.blank_hex))));
-    console.log('newHex', hex);
-    return <Polygon
-      pathOptions={{color: 'green'}}
-      positions={hex}
-    />
-  }
+
 
   return <MapSelectionContext.Consumer>
     {(context) => <LayerGroup>
       {hexes(context)}
-      {selectedBlankHex(context)}
     </LayerGroup>}
   </MapSelectionContext.Consumer>
 

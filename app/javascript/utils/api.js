@@ -34,6 +34,8 @@ api.put = (url, params, options) => {
 
 api.get = (url, params, options) => {
   console.log('get', url)
+  params = params || {}
+  options = options || {}
   return fetch(`${url}${encodeQueryString(params)}`, {
     headers: {
       'Content-Type': 'application/json',

@@ -79,7 +79,7 @@ ActiveAdmin.register World do
           name: c.title,
           points: RGeo::GeoJSON.encode(c.geometry),
           layer: mode,
-          type: mode.singularize
+          type: c.class.to_s
         }
       end
       puts cells.count

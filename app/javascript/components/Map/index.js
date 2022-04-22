@@ -17,9 +17,9 @@ import { ToolBar } from './toolbar'
 
 const Map = (props) => {
   console.log('Map', props)
-  console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
+  // console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
   const [selectedObject, setSelectedObject] = React.useState(null);
-  const [mapMode, setMapMode] = React.useState('continents');
+  const [mapMode, setMapMode] = React.useState('hexes');
   const [mapTool, setMapTool] = React.useState('select');
 
   const mapToolContext = () => {
@@ -36,7 +36,7 @@ const Map = (props) => {
   }
 
   const mapLayer = (layer, index) => {
-    console.log('layer', layer)
+    // console.log('layer', layer)
     return <LayersControl.BaseLayer
       key={`layer-${index}`}
       name={layer.title}
@@ -61,51 +61,6 @@ const Map = (props) => {
       checked={true}>
         <HexGrid {...viewOptions} world={props.world} setSelectedObject={setSelectedObject}></HexGrid>
       </LayersControl.Overlay>
-  }
-
-  const geoLayer = (name, cells, i) => {
-    console.log('Map#geoLayer', name, cells)
-    return <LayersControl.Overlay name={name} checked={false} key={i}>
-      <GeoLayer name={name} cells={cells}></GeoLayer>
-    </LayersControl.Overlay>
-  }
-
-  const geoLayers = () => {
-    // return null;
-    return Object.entries(props.world.geo_layers).map(([name, cells], i) => {
-      return geoLayer(name, cells, i)
-    })
-  }
-
-  const Control = (props) => {
-    return (
-      <div className="leaflet-control-container">
-        <div className="leaflet-bottom leaflet-left">
-          <div className="leaflet-bar leaflet-control panel">
-            {['continents', 'subcontinents', 'regions', 'areas', 'provinces', 'hexes'].map((layer) => {
-              return (
-                <a
-                  className={mapMode === layer ? 'current' : ''}
-                  onClick={() => setMapMode(layer)}>
-                  {mapMode === layer ? '*' : '' } {layer}
-                </a>
-              );
-            })}
-          </div>
-        </div>
-
-      </div>
-
-    )
-    // <div class="leaflet-control-zoom leaflet-bar leaflet-control">
-    // <a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in">
-    // +
-    // </a>
-    // <a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out">
-    // −
-    // </a>
-    // </div>
-    // return html.div('control', { className: 'leaflet-control leaflet-bar' }, 'test')
   }
 
   const geoLayerGrid = () => {
