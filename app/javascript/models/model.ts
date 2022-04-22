@@ -34,4 +34,8 @@ export class Model {
 
     return api.put(endpoint, { [this.constructor.model_name()]: this });
   }
+
+  delete () {
+    return api.delete(this.constructor.endpointPrefix() + this.id + '.json')
+  }
 }

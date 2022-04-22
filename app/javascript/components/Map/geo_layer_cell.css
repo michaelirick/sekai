@@ -7,3 +7,20 @@
 .leaflet-tooltip.geo-layer-cell-label.continents-label {
     font-size: 36pt;
 }
+.leaflet-tooltip.geo-layer-cell-label.subcontinents-label {
+    font-size: 30pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.regions-label {
+    font-size: 24pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.areas-label {
+    font-size: 20pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.provinces-label {
+    font-size: 18pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.hexes-label {
+    font-size: 16pt;
+}
+
+

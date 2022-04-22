@@ -1,26 +1,31 @@
 import * as React from "react";
 import { Icon, Menu } from 'semantic-ui-react'
-import { MapToolContext } from './map_context'
+import { MapModeContext, MapToolContext, MapViewContext } from './map_context'
 import { useContext } from 'react'
 
 export const ToolBar = (props) => {
-  const {mapTool, setMapTool} = useContext(MapToolContext);
+  const mapTool = useContext(MapToolContext);
+  const mapMode = useContext(MapModeContext);
+  const mapView = useContext(MapViewContext);
   console.log('ToolBar', props)
   const MapMode = ({name, label}) => {
     return (<Menu.Item
       name={name}
-      active={props.mapMode === name}
+      active={mapMode.mapMode === name}
       content={label}
-      onClick={() => props.setMapMode(name)}
+      onClick={() => {
+        localStorage.setItem('mapMode', name)
+        mapMode.setMapMode(name)
+      }}
     />)
   }
 
   const MapTool = ({name, label}) => {
     return (<Menu.Item
       name={name}
-      active={mapTool === name}
+      active={mapTool.mapTool === name}
       content={(<Icon name={label}/>)}
-      onClick={() => setMapTool(name)}
+      onClick={() => mapTool.setMapTool(name)}
     />)
   }
 
@@ -28,6 +33,8 @@ export const ToolBar = (props) => {
     <Menu>
       <MapTool name="select" label="mouse pointer"/>
       <MapTool name="add" label="plus"/>
+      <MapTool name="delete" label="delete"/>
+      <MapTool name="editPoints" label="edit"/>
     </Menu>
     <Menu>
       <MapMode name="continents" label="Continents"/>

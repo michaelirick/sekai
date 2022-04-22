@@ -73,6 +73,7 @@ ActiveAdmin.register World do
 
 
       end
+      cells = world.geo_layers.where(type: geo_layer_type)
       cells = cells.map do |c|
         {
           id: c.id,

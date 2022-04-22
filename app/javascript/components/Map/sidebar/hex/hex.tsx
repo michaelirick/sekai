@@ -103,7 +103,7 @@ export const HexShow = (props: HexProps) => {
         <Grid.Column><h3>[{selectedObject?.id}] {selectedObject?.title} ({selectedObject?.x}, {selectedObject?.y})</h3></Grid.Column>
       </Grid.Row>
       <Grid.Row>
-        <Grid.Column>{hexForm.withLayout(['title', 'parent_id', 'submit'])}</Grid.Column>
+        <Grid.Column>{hexForm.withLayout(['title', 'parent_id', 'parent_type', 'submit'])}</Grid.Column>
       </Grid.Row>
       <Grid.Row>
         <Grid.Column><Button onClick={() => setMapTool('selectParent')}>Set Parent</Button></Grid.Column>

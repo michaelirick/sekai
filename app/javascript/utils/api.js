@@ -44,4 +44,17 @@ api.get = (url, params, options) => {
   })
 }
 
+api.delete = (url, params, options) => {
+  console.log('delete', url)
+  params = params || {}
+  options = options || {}
+  return fetch(`${url}${encodeQueryString(params)}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute('content')
+    }, ...options
+  })
+}
+
 export default api

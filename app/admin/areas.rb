@@ -12,9 +12,22 @@ ActiveAdmin.register Area do
     end
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end
-  member_action :reset_geometry, method: [:post] do
-    resource.reset_geometry!
-    redirect_to admin_areas_path(notice: 'Success')
+
+  member_action :reset_geometry, method: :get do
+    if resource.nil?
+      redirect_to resource_path, notice: 'You cannot reset this geometry.'
+    else
+      begin
+        resource.reset_geometry!
+        redirect_to resource_path, notice: "You have reset #{resource.title}."
+      rescue => e
+        redirect_to resource_path, alert: "There was an error"
+      end
+    end
+  end
+
+  action_item :reset_geometry, only: [:show] do
+    link_to 'Reset Geometry', reset_geometry_admin_area_path(area)
   end
 
   index do

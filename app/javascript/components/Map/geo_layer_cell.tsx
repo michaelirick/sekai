@@ -52,8 +52,7 @@ const GeoLayerCell = ({ id, type, layer, name, points, color, showLabel }: GeoLa
           <GeoJSON
             data={points}
             pathOptions={{
-              stroke: isThisSelected,
-              color: isThisSelected ? 'yellow' : color,
+              color: isThisSelected ? 'yellow' : 'black',
               fillColor: color
             }}
             eventHandlers={{
@@ -70,6 +69,11 @@ const GeoLayerCell = ({ id, type, layer, name, points, color, showLabel }: GeoLa
                       type: type
                     }))
                   }
+                }
+                if (mapTool == 'delete') {
+                  (new GeoLayerTypes[type]({type: type, id: id})).delete()
+                    .then(response => console.log('deleted', response))
+                    .catch(error => console.log('failed to delete', error))
                 }
                 if (mapTool === 'selectParent') {
                   selectedObject.parent_id = id;

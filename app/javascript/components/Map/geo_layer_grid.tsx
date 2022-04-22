@@ -8,11 +8,13 @@ import api from 'utils/api'
 import World from 'models/world'
 import { Hex } from 'models/hex'
 import ActionCable from 'actioncable'
-import { MapSelectionContext, MapToolContext } from './map_context'
+import { MapSelectionContext, MapToolContext, MapModeContext, MapViewContext, useMapMode } from './map_context'
 import GeoLayerCell from './geo_layer_cell'
 
 const GeoLayerGrid = (props) => {
-  const {mapTool} = useContext(MapToolContext);
+  const mapTool = useContext(MapToolContext);
+  const mapMode = useContext(MapModeContext);
+  const mapView = useContext(MapViewContext);
   const world = new World(props.world)
   const gridOptions = {
     width: 64,
@@ -31,7 +33,7 @@ const GeoLayerGrid = (props) => {
 
   const map = useMapEvents({
     click: (e) => {
-      if (mapTool === 'add') {
+      if (mapTool.mapTool === 'add') {
         console.log('GeoLayerGrid#add', e)
         const [x, y] = Hex.pointToHex(Hex.latLngToXY(e.latlng))
         api.post('/admin/hexes.json', {
@@ -58,13 +60,15 @@ const GeoLayerGrid = (props) => {
     },
     zoomend: (e, z) => {
       console.log('zoomend', e.target._zoom, e, z, map)
-      setZoom(e.target._zoom)
+      mapView.setMapZoom(e.target._zoom)
       localStorage.setItem('mapZoom', e.target._zoom)
       // loadHexes()
     },
     dragend: (e) => {
       const c = map.getCenter()
-      setCenter([c.lng, c.lat])
+      // setCenter([c.lng, c.lat])
+      mapView.setMapCenterX(c.lng)
+      mapView.setMapCenterY(c.lat)
       localStorage.setItem('mapCenterX', c.lng)
       localStorage.setItem('mapCenterY', c.lat)
       // loadHexes()
@@ -72,7 +76,12 @@ const GeoLayerGrid = (props) => {
     }
   })
   useEffect(() => loadHexes(), [])
-  useEffect(() => loadHexes(), [center, zoom, props.mapMode])
+  useEffect(() => loadHexes(), [
+    mapMode.mapMode,
+    mapView.mapZoom,
+    mapView.mapCenterX,
+    mapView.mapCenterY
+  ])
   // useEffect(() => initCable(), [])
   // useEffect(() => refreshGrid(), [selectedHex])
   // console.log('HexGrid', props, grid)
@@ -138,10 +147,11 @@ const GeoLayerGrid = (props) => {
     // cable.send({query: '{hex{name}}'})
     // cable.
     // cable.perform('execute', { query: '{ hex { name } }' })
+    refreshGrid({ cells: [] })
     api.get(`/admin/worlds/${props.world.id}/map`, {
-      center: center,
-      zoom: zoom,
-      mapMode: props.mapMode
+      center: [mapView.mapCenterX, mapView.mapCenterY],
+      zoom: mapView.mapZoom,
+      mapMode: mapMode.mapMode
     }).then(response => response.json())
       .then((newHexes) => {
         refreshGrid(newHexes)
@@ -151,10 +161,10 @@ const GeoLayerGrid = (props) => {
   }
 
   const hexes = ({selectedObject, setSelectedObject}) => {
-    console.log('GeoLayerGrid#cells', zoom, center, props.mapMode, props.mapMode === 'hexes' && zoom > 2)
+    console.log('GeoLayerGrid#cells', zoom, center, mapMode.mapMode, mapMode.mapMode === 'hexes' && zoom > 2)
     let showLabel = false;
 
-    if (props.mapMode === 'hexes' && zoom > 2) {
+    if (mapMode.mapMode === 'hexes' && zoom > 2) {
       console.log('showLabel')
       showLabel = true;
     }

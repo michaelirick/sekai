@@ -1,7 +1,15 @@
 import * as React from 'react'
 import * as Leaflet from 'react-leaflet'
 import { MapContainer, LayerGroup, LayersControl, useMapEvents, ScaleControl } from 'react-leaflet'
-import { MapSelectionContext, MapToolContext } from './map_context'
+import {
+  MapModeContext,
+  MapSelectionContext,
+  MapToolContext, MapViewContext,
+  useMapSelection,
+  useMapTool,
+  useMapView,
+  useMapMode
+} from './map_context'
 import html from 'utils/html'
 import MapLayer from './map_layer'
 import GeoLayer from './geo_layer'
@@ -18,9 +26,11 @@ import { ToolBar } from './toolbar'
 const Map = (props) => {
   console.log('Map', props)
   // console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
-  const [selectedObject, setSelectedObject] = React.useState(null);
-  const [mapMode, setMapMode] = React.useState('hexes');
-  const [mapTool, setMapTool] = React.useState('select');
+  // const [selectedObject, setSelectedObject] = React.useState(null);
+  const { selectedObject, setSelectedObject } = useMapSelection()
+  const { mapTool, setMapTool } = useMapTool()
+  const mapMode = useMapMode()
+  const mapView = useMapView()
 
   const mapToolContext = () => {
     return {
@@ -116,15 +126,19 @@ const Map = (props) => {
   }
 
   return (
-    <MapSelectionContext.Provider value={selectedObjectContext()}>
-      <MapToolContext.Provider value={mapToolContext()}>
-        <ToolBar mapMode={mapMode} setMapMode={setMapMode}/>
-        <div className="map-component">
-          {mapContainer()}
-          {sideBar()}
-        </div>
-      </MapToolContext.Provider>
-    </MapSelectionContext.Provider>
+    <MapModeContext.Provider value={mapMode}>
+      <MapViewContext.Provider value={mapView}>
+        <MapSelectionContext.Provider value={selectedObjectContext()}>
+          <MapToolContext.Provider value={mapToolContext()}>
+            <ToolBar />
+            <div className="map-component">
+              {mapContainer()}
+              {sideBar()}
+            </div>
+          </MapToolContext.Provider>
+        </MapSelectionContext.Provider>
+      </MapViewContext.Provider>
+    </MapModeContext.Provider>
   )
 }
 

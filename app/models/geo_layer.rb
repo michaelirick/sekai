@@ -10,7 +10,7 @@ class GeoLayer < ApplicationRecord
 
   def update_parent_geometry
     return unless parent
-    return if parent.parent_type == 'World'
+    return if parent_type == 'World'
 
     puts 'UPDATE'
     parent.reset_geometry! if previous_changes[:parent_id] || previous_changes[:parent_type]
