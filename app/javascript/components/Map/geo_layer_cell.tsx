@@ -6,9 +6,14 @@ import { MapSelectionContext, MapToolContext } from './map_context'
 import './geo_layer_cell.css'
 import { useContext } from 'react'
 import { Hex } from '../../models/hex'
+import { Province } from '../../models/province'
+import { Area } from '../../models/area'
+import { Region } from '../../models/region'
+import { Subcontinent } from '../../models/subcontinent'
+import { Continent } from '../../models/continent'
 
 const GeoLayerTypes = {
-  Hex: Hex
+  Hex, Province, Area, Region, Subcontinent, Continent
 }
 
 export type GeoLayerCellProps = {
@@ -83,6 +88,24 @@ const GeoLayerCell = ({ id, type, layer, name, points, color, showLabel }: GeoLa
                   selectedObject.save().then(response => console.log('saved'))
                     .catch(error => console.log('selectParent Error:', error))
                   setMapTool('select');
+                }
+                if (mapTool === 'claim') {
+                  if (selectedObject) {
+                    const object = new GeoLayerTypes[type]({
+                      layer: layer,
+                      type: type,
+                      id: id,
+                      title: name,
+                      type: type
+                    })
+
+                    object.parent_id = selectedObject.id
+                    object.parent_type = 'GeoLayer'
+                    object.save()
+                      .then(response => console.log('saved', response))
+                      .catch(error => console.log('error', error))
+                  }
+
                 }
               }
             }}

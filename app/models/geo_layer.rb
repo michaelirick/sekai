@@ -8,12 +8,25 @@ class GeoLayer < ApplicationRecord
 
   after_commit :update_parent_geometry
 
+  def change_geometry?
+    previous_changes[:geometry] || previous_changes[:parent_id] || previous_changes[:parent_type] || destroyed? || previously_new_record? || type == 'Hex'
+  end
   def update_parent_geometry
-    return unless parent
-    return if parent_type == 'World'
+    puts 'update_parent_geometry'
+    unless parent
+      puts "no parent"
+      return
+    end
+    if parent_type == 'World'
+      puts 'parent is World'
+    end
 
-    puts 'UPDATE'
-    parent.reset_geometry! if previous_changes[:parent_id] || previous_changes[:parent_type]
+    if change_geometry?
+      puts 'parent changed'
+      parent.reset_geometry!
+    end
+    puts "changes:"
+    # puts self.methods.sort
   end
 
   def self.add_geo_layer_level(layer)

@@ -15,6 +15,7 @@ const GeoLayerGrid = (props) => {
   const mapTool = useContext(MapToolContext);
   const mapMode = useContext(MapModeContext);
   const mapView = useContext(MapViewContext);
+  const mapSelection = useContext(MapSelectionContext)
   const world = new World(props.world)
   const gridOptions = {
     width: 64,
@@ -36,13 +37,19 @@ const GeoLayerGrid = (props) => {
       if (mapTool.mapTool === 'add') {
         console.log('GeoLayerGrid#add', e)
         const [x, y] = Hex.pointToHex(Hex.latLngToXY(e.latlng))
+        let parent_id = world.id;
+        let parent_type = 'World'
+        if (mapSelection.selectedObject && mapSelection.type != 'Hex') {
+          parent_id = mapSelection.selectedObject.id
+          parent_type = 'GeoLayer'
+        }
         api.post('/admin/hexes.json', {
           hex: {
             world_id: world.id,
             x: x,
             y: y,
-            parent_id: world.id,
-            parent_type: 'World'
+            parent_id: parent_id,
+            parent_type: parent_type
           }
         }).then(() => loadHexes())
       }
