@@ -13,7 +13,7 @@ ActiveAdmin.register State do
     :unrest,
     :money,
     :government_type,
-                :owner_id, :owner_type
+                :owner_id, :owner_type, :de_jure_id, :de_jure_type
   )
   #
   # or
@@ -59,8 +59,25 @@ ActiveAdmin.register State do
     end
   end
 
+  member_action :reset_de_jure, method: :get do
+    if resource.nil?
+      redirect_to resource_path, notice: 'You cannot reset this State.'
+    else
+      begin
+        resource.reset_de_jure!
+        redirect_to resource_path, notice: "You have reset #{resource.name}."
+      rescue => e
+        redirect_to resource_path, alert: "There was an error"
+      end
+    end
+  end
+
   action_item :reset_geometry, only: [:show] do
     link_to 'Reset Geometry', reset_geometry_admin_state_path(state)
+  end
+
+  action_item :reset_de_jure, only: [:show] do
+    link_to 'Reset De Jure', reset_de_jure_admin_state_path(state)
   end
 
   index do
@@ -70,6 +87,7 @@ ActiveAdmin.register State do
     column :owner
     column :primary_color
     column :secondary_color
+    column :de_jure
     actions
   end
 
@@ -78,6 +96,7 @@ ActiveAdmin.register State do
       row :name
       row :adjective
       row :owner
+      row :de_jure
       row :government_type
       row :primary_color
       row :secondary_color

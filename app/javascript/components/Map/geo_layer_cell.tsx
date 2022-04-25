@@ -12,9 +12,10 @@ import { Region } from '../../models/region'
 import { Subcontinent } from '../../models/subcontinent'
 import { Continent } from '../../models/continent'
 import { State } from '../../models/state'
+import { Settlement } from '../../models/settlement'
 
 const GeoLayerTypes = {
-  Hex, Province, Area, Region, Subcontinent, Continent, State
+  Hex, Province, Area, Region, Subcontinent, Continent, State, Settlement
 }
 
 export type GeoLayerCellProps = {
@@ -50,7 +51,7 @@ const GeoLayerLabel = ({ id, name, layer, show }: TooltipProps) => {
 const GeoLayerCell = (props:GeoLayerCellProps) => {
   const { id, type, layer, name, points, color, showLabel } = props;
   const {mapTool, setMapTool} = useContext(MapToolContext);
-  console.log('GeoLayerCell', props);
+  // console.log('GeoLayerCell', props);
   return (
     <MapSelectionContext.Consumer>
       {({selectedObject, setSelectedObject}) => {
@@ -60,7 +61,7 @@ const GeoLayerCell = (props:GeoLayerCellProps) => {
             data={points}
             pathOptions={{
               color: isThisSelected ? 'yellow' : 'black',
-              fillColor: color
+              fillColor: isThisSelected ? 'yellow' : color
             }}
             eventHandlers={{
               click: (e) => {
@@ -89,6 +90,15 @@ const GeoLayerCell = (props:GeoLayerCellProps) => {
                   setSelectedObject(selectedObject);
                   selectedObject.save().then(response => console.log('saved'))
                     .catch(error => console.log('selectParent Error:', error))
+                  setMapTool('select');
+                }
+                if (mapTool === 'selectDeJure') {
+                  selectedObject.de_jure_id = id;
+                  selectedObject.de_jure_type = 'GeoLayer';
+                  console.log('selectDeJure', selectedObject)
+                  setSelectedObject(selectedObject);
+                  selectedObject.save().then(response => console.log('saved'))
+                    .catch(error => console.log('selectDeJure Error:', error))
                   setMapTool('select');
                 }
                 if (mapTool === 'claim') {

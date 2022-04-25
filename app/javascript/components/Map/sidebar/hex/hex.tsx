@@ -4,6 +4,8 @@ import api from 'utils/api'
 import { Grid, Form, Button } from 'semantic-ui-react'
 import { Hex } from 'models/hex'
 import { MapToolContext, MapSelectionContext } from '../../map_context'
+import AsyncSelect from 'react-select/async'
+import { getOptionLabel } from 'react-select/dist/declarations/src/builtins'
 
 export type HexProps = {
   id: number;
@@ -11,12 +13,41 @@ export type HexProps = {
   parent_type?: string;
 };
 
-const useForm = (object, update) => {
+const useForm = (object, update, fields = {}) => {
   // const [object, setObject] = useState(m);
   console.log('useForm', object, update)
   const inputFor = (t) => {
     if (!object) {
       return '';
+    }
+
+    if (fields[t]) {
+      if (fields[t].type === 'react-select') {
+        console.log('react-select', t, fields[t], object, object[t])
+        return (
+          <AsyncSelect
+            cacheOptions
+            defaultOptions
+            value={object[t]}
+            inputValue={object[`${t}_label`] || object[t]}
+            loadOptions={fields[t].loadOptions}
+            onInputChange={value => {
+              console.log('onInputChange', value)
+              update(new (object.constructor)({
+                ...object,
+                [`${t}_label`]: value
+              }))
+            }}
+            onChange={(value) => {
+              console.log('onChange', value)
+              update(new (object.constructor)({
+                ...object,
+                [t]: value.value
+              }))
+            }}
+          />
+        );
+      }
     }
 
     if (t === 'submit') {
@@ -47,10 +78,10 @@ const useForm = (object, update) => {
     )
   }
 
-  const withLayout = (fields) => {
+  const withLayout = (fieldsForLayout) => {
     return (
       <Form>
-        {fields.map((field) => {
+        {fieldsForLayout.map((field) => {
           return inputFor(field)
         })}
       </Form>
@@ -66,7 +97,19 @@ export const HexShow = (props: HexProps) => {
   const {selectedObject, setSelectedObject} = useContext(MapSelectionContext);
   const [hex, setHex] = useState(selectedObject);
   console.log('HexShow#hex', selectedObject)
-  const hexForm = useForm(hex, setHex);
+  const hexForm = useForm(hex, setHex, {
+    biome: {
+      type: 'react-select',
+      loadOptions: () => {
+        return fetch('/admin/hexes/biomes').then(response => response.json()).then(options => {
+          console.log('biomes', options)
+          return options;
+        });
+      },
+      getOptionLabel: e => e.label,
+      getOptionValue: e => e.value
+    }
+  });
 
   useEffect(() => loadHex(), [selectedObject.id])
 

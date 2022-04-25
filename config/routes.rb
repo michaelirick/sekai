@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     get 'worlds/:id/map', to: 'worlds#map'
+    get 'hexes/biomes', to: 'hexes#biomes'
+    get 'hexes/terrains', to: 'hexes#terrains'
   end
   ActiveAdmin.routes(self)
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

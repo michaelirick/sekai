@@ -3,6 +3,10 @@ class StatePolicy < ApplicationPolicy
     admin?
   end
 
+  def reset_de_jure?
+    admin?
+  end
+
   class Scope < Scope
     def resolve
       scope.all.for_world(@user.selected_world)

@@ -47,7 +47,7 @@ class Settlement < ApplicationRecord
   }
 
   def lot_count
-    buildings.map(&:lots).reduce(:+)
+    buildings.map(&:lots).reduce(0, :+)
   end
 
   def control_dc
@@ -118,6 +118,10 @@ class Settlement < ApplicationRecord
 
   def stability
     building_bonuses[:stability]
+  end
+
+  def economy
+    building_bonuses[:economy]
   end
 
   def modifiers

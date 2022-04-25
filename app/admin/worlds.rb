@@ -52,7 +52,7 @@ ActiveAdmin.register World do
         world.factory.point(x + w / 2, y + h / 2),
         world.factory.point(x + w / 2, y - h / 2)
                                                             ])
-      state = Struct.new(:type, :id, :title, :color, :geometry)
+      cell = Struct.new(:type, :id, :title, :color, :geometry)
       if mode == 'hexes'
         x, y = GeoLayer.point_to_hex x, y
         if false #zoom < 5
@@ -69,7 +69,11 @@ ActiveAdmin.register World do
       elsif mode == 'independent_states'
 
         cells = world.states.where(owner_id: nil).map do |s|
-          state.new('State', s.id, s.name, s.primary_color, s.realm_geometry)
+          cell.new('State', s.id, s.name, s.primary_color, s.realm_geometry)
+        end
+      elsif mode == 'settlements'
+        cells = world.settlements.map do |s|
+          cell.new('Settlement', s.id, s.name, 'dark gray', s.hex.geometry)
         end
       else
         puts box

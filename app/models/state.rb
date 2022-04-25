@@ -7,6 +7,7 @@ class State < ApplicationRecord
   has_many :settlements, foreign_key: :owner_id
   belongs_to :owner, polymorphic: true, optional: true
   has_many :subjects, class_name: 'State', as: :owner
+  belongs_to :de_jure, polymorphic: true, optional: true
 
   scope :for_world, -> (world) { where world: world }
 
@@ -18,6 +19,12 @@ class State < ApplicationRecord
     'State'
   end
 
+  def de_jure_subjects(direct = true)
+    [] unless de_jure
+
+    world.states.where(de_jure: de_jure.children)
+  end
+
   def top_owner
     return self if owner.nil?
 
@@ -27,6 +34,27 @@ class State < ApplicationRecord
   # all subjects and their subjects
   def realm
     subjects.map(&:realm).flatten
+  end
+
+  def de_jure_hexes
+    return GeoLayer.where('1=2') unless de_jure
+
+    de_jure.all_hexes
+  end
+
+  def owned_de_jure_hexes
+    de_jure_hexes.where(owner: self)
+  end
+
+  # assigns all dejure hexes that are not also owned by their dejure owner
+  def reset_de_jure!
+    return unless de_jure
+
+    subject_owned = de_jure_subjects.map(&:owned_de_jure_hexes).flatten.map(&:id)
+    de_jure_hexes.where.not(id: subject_owned).each do |hex|
+      hex.owner = self
+      hex.save!
+    end
   end
 
   def building_bonuses

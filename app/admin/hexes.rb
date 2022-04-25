@@ -1,6 +1,6 @@
 ActiveAdmin.register Hex do
   menu parent: 'geography', priority: 1, if: proc{true}
-  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y, :owner_type, :owner_id
+  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y, :owner_type, :owner_id, :biome, :terrain, :color
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -11,6 +11,9 @@ ActiveAdmin.register Hex do
       f.input :world_id, as: :hidden, input_html: {value: current_user.selected_world.id}
       f.input :x
       f.input :y
+      f.input :biome, as: :select, collection: GeoLayer::BIOME_TYPES
+      f.input :terrain, as: :select, collection: GeoLayer::TERRAIN_TYPES
+      f.input :color
     end
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end
@@ -48,6 +51,9 @@ ActiveAdmin.register Hex do
     column :x
     column :y
     column :owner
+    column :biome
+    column :terrain
+    column :color
 
     actions defaults: true do |h|
       # link_to 'Reset Geometry', update_boundaries_admin_hex_path(h), method: 'post', class: 'member_link'
@@ -60,6 +66,26 @@ ActiveAdmin.register Hex do
     def check_for_world
       puts "current_user: #{current_user.inspect}"
       # redirect_to :admin_worlds, alert: 'You must first select a world.' unless current_user.selected_world
+    end
+
+    def biomes
+      biomes = GeoLayer::BIOME_TYPES.map do |biome|
+        {
+          value: biome,
+          label: biome.titleize
+        }
+      end
+
+      render json: biomes
+    end
+
+    def terrains
+      render json: GeoLayer::TERRAIN_TYPES.map do |terrain|
+        {
+          id: terrain,
+          title: terrain.titleize
+        }
+      end
     end
   end
 end

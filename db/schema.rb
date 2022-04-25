@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_22_214149) do
+ActiveRecord::Schema.define(version: 2022_04_25_162641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,6 +114,9 @@ ActiveRecord::Schema.define(version: 2022_04_22_214149) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.string "biome"
+    t.string "terrain"
+    t.string "color"
   end
 
   create_table "map_layers", force: :cascade do |t|
@@ -162,6 +165,8 @@ ActiveRecord::Schema.define(version: 2022_04_22_214149) do
     t.integer "owner_id"
     t.string "owner_type"
     t.geometry "realm_geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.integer "de_jure_id"
+    t.string "de_jure_type"
   end
 
   create_table "users", force: :cascade do |t|

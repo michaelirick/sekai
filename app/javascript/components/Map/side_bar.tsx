@@ -4,6 +4,7 @@ import BlankHex from './sidebar/hex/blank'
 import { HexShow } from './sidebar/hex/hex'
 import { Continent } from './sidebar/continents/continent'
 import { Button, Grid } from 'semantic-ui-react'
+import { StateShow } from './sidebar/state'
 
 type SideBarProps = {
   children?: React.ReactNode;
@@ -27,6 +28,10 @@ const SideBar = (props: SideBarProps) => {
 
     if (props.selectedObject.type === 'Hex') {
       return <HexShow {...props.selectedObject}/>;
+    }
+
+    if (props.selectedObject.type === 'State') {
+      return <StateShow {...props.selectedObject}/>;
     }
 
     return <div></div>;

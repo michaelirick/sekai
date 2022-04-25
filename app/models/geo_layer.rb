@@ -3,15 +3,90 @@ class GeoLayer < ApplicationRecord
   belongs_to :parent, polymorphic: true
   belongs_to :owner, polymorphic: true, optional: true
   has_many :children, class_name: 'GeoLayer', as: :parent
+  has_one :de_jure, class_name: 'State'
 
   HEX_RADIUS = 6.0469
+  BIOME_TYPES = %w[
+    polar_desert
+    ice
+    subpolar_dry_tundra
+    subpolar_moist_tundra
+    subpolar_wet_tundra
+    subpolar_rain_tundra
+    boreal_dry_scrub
+    boreal_moist_forest
+    boreal_wet_forest
+    boreal_rain_forest
+    cool_temperate_desert
+    cool_temperate_desert_scrub
+    cool_temperate_steppe
+    cool_temperate_moist_forest
+    cool_temperate_wet_forest
+    cool_temperate_rain_forest
+    warm_temperate_desert
+    warm_temperate_desert_scrub
+    warm_temperate_thorn_scrub
+    warm_temperate_dry_forest
+    warm_temperate_moist_forest
+    warm_temperate_wet_forest
+    warm_temperate_rain_forest
+    subtropical_desert
+    subtropical_desert_scrub
+    subtropical_thorn_woodland
+    subtropical_dry_forest
+    subtropical_moist_forest
+    subtropical_wet_forest
+    subtropical_rain_forest
+    tropical_desert
+    tropical_desert_scrub
+    tropical_thorn_woodland
+    tropical_very_dry_forest
+    tropical_dry_forest
+    tropical_moist_forest
+    tropical_wet_forest
+    tropical_rain_forest
+  ]
+
+  TERRAIN_TYPES = %w[
+    deep_ocean
+    shallow_sea
+    river
+    lake
+    plains
+    hills
+    mountains
+    impassible_mountains
+  ]
 
   after_commit :update_parent_geometry
   after_commit :update_owner_geometry
+  after_commit :ensure_color_generated
+
+  def ensure_color_generated
+    if color.nil? || !has_unique_color?
+      generate_color!
+    end
+  end
+
+  def generate_color!
+    range = %w[0 1 2 3 4 5 6 7 8 9 a b c d e f]
+    self.color = '#' + 6.times.map { |i| range.sample }.join
+    save!
+  end
+
+  def has_unique_color?
+    world.geo_layers.where.not(id: id).where(color: color).count == 0
+  end
 
   def change_geometry_for_parent?
     previous_changes[:geometry] || previous_changes[:parent_id] || previous_changes[:parent_type] || destroyed? || previously_new_record? || type == 'Hex'
   end
+
+  def all_hexes
+    geo_layer = GeoLayer.arel_table
+    Hex.where(world: world).where(geo_layer[:geometry].st_intersects(geometry))
+  end
+
   def update_parent_geometry
     puts 'update_parent_geometry'
     unless parent
