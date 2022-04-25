@@ -8,6 +8,7 @@ class World < ApplicationRecord
   # has_many :hegxes
   belongs_to :user
   has_many :settlements
+  has_many :cultures
   # add_geo_layer(
   #   name: 'World',
   #   subordinates: :continents

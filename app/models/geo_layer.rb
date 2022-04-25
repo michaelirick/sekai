@@ -4,6 +4,7 @@ class GeoLayer < ApplicationRecord
   belongs_to :owner, polymorphic: true, optional: true
   has_many :children, class_name: 'GeoLayer', as: :parent
   has_one :de_jure, class_name: 'State'
+  belongs_to :culture, optional: true
 
   HEX_RADIUS = 6.0469
   BIOME_TYPES = %w[
@@ -60,6 +61,7 @@ class GeoLayer < ApplicationRecord
 
   after_commit :update_parent_geometry
   after_commit :update_owner_geometry
+  after_commit :update_culture_geometry
   after_commit :ensure_color_generated
 
   def ensure_color_generated
@@ -85,6 +87,18 @@ class GeoLayer < ApplicationRecord
   def all_hexes
     geo_layer = GeoLayer.arel_table
     Hex.where(world: world).where(geo_layer[:geometry].st_intersects(geometry))
+  end
+
+  def change_geometry_for_culture?
+    previous_changes[:geometry] || previous_changes[:culture_id] || previous_changes[:owner_id] || destroyed? || previously_new_record? || type == 'Hex'
+  end
+
+  def update_culture_geometry
+    return unless culture
+
+    if change_geometry_for_culture?
+      culture.reset_geometry!
+    end
   end
 
   def update_parent_geometry

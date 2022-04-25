@@ -1,6 +1,6 @@
 ActiveAdmin.register Hex do
   menu parent: 'geography', priority: 1, if: proc{true}
-  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y, :owner_type, :owner_id, :biome, :terrain, :color
+  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y, :owner_type, :owner_id, :biome, :terrain, :color, :culture_id
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -14,6 +14,7 @@ ActiveAdmin.register Hex do
       f.input :biome, as: :select, collection: GeoLayer::BIOME_TYPES
       f.input :terrain, as: :select, collection: GeoLayer::TERRAIN_TYPES
       f.input :color
+      f.input :culture_id, as: :select, collection: Culture.for_world(current_user.selected_world)
     end
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end

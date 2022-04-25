@@ -47,6 +47,7 @@ export const ToolBar = (props) => {
       <MapMode name="states" label="States"/>
       <MapMode name="independent_states" label="Independent"/>
       <MapMode name="settlements" label="Settlements"/>
+      <MapMode name="cultures" label="Culture"/>
     </Menu>
   </div>
 };

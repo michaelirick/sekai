@@ -75,6 +75,10 @@ ActiveAdmin.register World do
         cells = world.settlements.map do |s|
           cell.new('Settlement', s.id, s.name, 'dark gray', s.hex.geometry)
         end
+      elsif mode == 'cultures'
+        cells = world.cultures.map do |c|
+          cell.new('Culture', c.id, c.title, c.color, c.geometry)
+        end
       else
         puts box
 

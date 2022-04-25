@@ -1,15 +1,13 @@
 class State < ApplicationRecord
   include ReducibleAssociation
+  include ScopedToWorld
   resourcify
   has_many :hexes, as: :owner
-  belongs_to :world
   has_many :buildings, as: :owner
   has_many :settlements, foreign_key: :owner_id
   belongs_to :owner, polymorphic: true, optional: true
   has_many :subjects, class_name: 'State', as: :owner
   belongs_to :de_jure, polymorphic: true, optional: true
-
-  scope :for_world, -> (world) { where world: world }
 
   add_reducer :settlements, :+, 'sum'
 
@@ -165,22 +163,26 @@ class State < ApplicationRecord
     world.factory
   end
 
-  def reset_geometry!
-    new_geometry = GeoLayer.connection.execute(%(
+  def new_geometry_query
+    %(
       SELECT st_asgeojson(st_union(a.new_geometry)) AS new_geometry
 from
       (SELECT st_asgeojson(st_union(geometry)) AS new_geometry
       FROM geo_layers
       WHERE owner_id=#{id} AND owner_type='State') a
-                                               )).map(&:to_h).first['new_geometry']
+                                               )
+  end
 
+  def after_geometry_reset
+    reset_realm_geometry!
+  end
 
-    # polygons = subjects.pluck(:geometry).compact.map(&:to_a).flatten
-
+  def reset_geometry!
+    new_geometry = GeoLayer.connection.execute(new_geometry_query).map(&:to_h).first['new_geometry']
     new_geometry = RGeo::GeoJSON.decode new_geometry
     self.geometry = factory.collection [new_geometry].compact
     self.save!
-    reset_realm_geometry!
+    after_geometry_reset
   rescue => e
     puts "State #{id} #{name} failed to reset geometry:"
     puts e.full_message

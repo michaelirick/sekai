@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_25_162641) do
+ActiveRecord::Schema.define(version: 2022_04_25_190139) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,22 @@ ActiveRecord::Schema.define(version: 2022_04_25_162641) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "culture_groups", force: :cascade do |t|
+    t.integer "parent_id"
+    t.integer "child_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "cultures", force: :cascade do |t|
+    t.string "title"
+    t.string "color"
+    t.integer "world_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+  end
+
   create_table "geo_layers", force: :cascade do |t|
     t.string "title"
     t.integer "parent_id"
@@ -117,6 +133,7 @@ ActiveRecord::Schema.define(version: 2022_04_25_162641) do
     t.string "biome"
     t.string "terrain"
     t.string "color"
+    t.integer "culture_id"
   end
 
   create_table "map_layers", force: :cascade do |t|
