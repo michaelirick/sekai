@@ -1,5 +1,9 @@
 ActiveAdmin.register Culture do
-
+  extend Mappable
+  add_reset_geometry!
+  add_update_boundaries!
+  check_for_world!
+  add_pages!
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
@@ -14,13 +18,6 @@ ActiveAdmin.register Culture do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  controller do
-    before_action :check_for_world
-
-    def check_for_world
-      redirect_to :admin_worlds, alert: 'You must first select a world.' unless current_user.selected_world
-    end
-  end
 
   show do |s|
     attributes_table do
@@ -40,23 +37,6 @@ ActiveAdmin.register Culture do
     end
 
     f.actions
-  end
-
-  action_item :reset_geometry, only: [:show] do
-    link_to 'Reset Geometry', reset_geometry_admin_culture_path(culture)
-  end
-
-  member_action :reset_geometry, method: :get do
-    if resource.nil?
-      redirect_to resource_path, notice: 'You cannot reset this geometry.'
-    else
-      begin
-        resource.reset_geometry!
-        redirect_to resource_path, notice: "You have reset #{resource.title}."
-      rescue => e
-        redirect_to resource_path, alert: "There was an error"
-      end
-    end
   end
 
   index do

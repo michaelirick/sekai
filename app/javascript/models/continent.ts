@@ -8,7 +8,7 @@ export class Continent extends Model {
   }
 
   static endpointPrefix () {
-    return '/admin/continents/';
+    return '/admin/continents';
   }
 
   static model_name () {

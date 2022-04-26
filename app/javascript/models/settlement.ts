@@ -8,7 +8,7 @@ export class Settlement extends Model {
   }
 
   static endpointPrefix () {
-    return '/admin/settlements/';
+    return '/admin/settlements';
   }
 
   static model_name () {

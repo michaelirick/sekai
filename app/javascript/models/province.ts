@@ -8,7 +8,7 @@ export class Province extends Model {
   }
 
   static endpointPrefix () {
-    return '/admin/provinces/';
+    return '/admin/provinces';
   }
 
   static model_name () {

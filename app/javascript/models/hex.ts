@@ -20,7 +20,7 @@ export class Hex extends Model {
   static HEX_RADIUS = 6.0469;
 
   static endpointPrefix () {
-    return '/admin/hexes/';
+    return '/admin/hexes';
   }
 
   static model_name () {

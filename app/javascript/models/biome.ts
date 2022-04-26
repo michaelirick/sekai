@@ -8,7 +8,7 @@ export class Biome extends Model {
   }
 
   static endpointPrefix () {
-    return '/admin/biomes/';
+    return '/admin/biomes';
   }
 
   static model_name () {

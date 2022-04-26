@@ -186,11 +186,11 @@ const GeoLayerGrid = (props) => {
 
   const hexes = ({selectedObject, setSelectedObject}) => {
     console.log('GeoLayerGrid#cells', zoom, center, mapMode.mapMode, mapMode.mapMode === 'hexes' && zoom > 2)
-    let showLabel = false;
+    let showLabel = true;
 
-    if (mapMode.mapMode === 'hexes' && zoom > 2) {
+    if (mapMode.mapMode === 'hexes' && zoom < 2) {
       console.log('showLabel')
-      showLabel = true;
+      showLabel = false;
     }
 
     return grid.map((h, i) => {

@@ -1,4 +1,9 @@
 ActiveAdmin.register Settlement do
+  extend Mappable
+  add_reset_geometry!
+  add_update_boundaries!
+  check_for_world!
+  add_pages!
   menu if: proc{true}
 
   # See permitted parameters documentation:
@@ -15,13 +20,7 @@ ActiveAdmin.register Settlement do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  controller do
-    before_action :check_for_world
 
-    def check_for_world
-      redirect_to :admin_worlds, alert: 'You must first select a world.' unless current_user.selected_world
-    end
-  end
 
   form do |f|
     f.inputs do

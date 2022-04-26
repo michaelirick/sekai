@@ -8,7 +8,7 @@ export class Area extends Model {
   }
 
   static endpointPrefix () {
-    return '/admin/areas/';
+    return '/admin/areas';
   }
 
   static model_name () {

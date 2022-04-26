@@ -1,5 +1,9 @@
 ActiveAdmin.register Region do
   extend Mappable
+  add_reset_geometry!
+  add_update_boundaries!
+  check_for_world!
+  add_pages!
   menu parent: 'geography', priority: 4, if: proc{true}
   permit_params :title, :parent_type, :parent_id, :world_id
 
@@ -14,9 +18,6 @@ ActiveAdmin.register Region do
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end
 
-  add_reset_geometry!
-  add_update_boundaries!
-  check_for_world!
   index do
     selectable_column
     column :title

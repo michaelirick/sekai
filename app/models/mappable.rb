@@ -26,6 +26,21 @@ module Mappable
     end
   end
 
+  def add_pages!
+    collection_action :pages do
+      collection
+      total = collection_before_scope.count
+      per_page = params[:per_page].to_i || 10
+      page = params[:page].to_i || 1
+
+      render json: {
+        per_page: per_page,
+        page: page,
+        total: total / per_page
+      }
+    end
+  end
+
   def check_for_world!
     controller do
       before_action :check_for_world

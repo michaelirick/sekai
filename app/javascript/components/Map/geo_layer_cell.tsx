@@ -38,9 +38,10 @@ type TooltipProps = {
 }
 
 const GeoLayerLabel = ({ id, name, layer, show }: TooltipProps) => {
+  // console.log('GeoLayerLabel', show)
   return (
     <Tooltip
-      permanent={show}
+      permanent={false}
       direction='center'
       className={`geo-layer-cell-label ${layer}-label`}
       opacity={1}
@@ -63,7 +64,7 @@ const GeoLayerCell = (props:GeoLayerCellProps) => {
             data={points}
             pathOptions={{
               color: isThisSelected ? 'yellow' : 'black',
-              fillColor: isThisSelected ? 'yellow' : color
+              fillColor: isThisSelected ? 'yellow' : (color[0] !== '#' ? '#' + color : color)
             }}
             eventHandlers={{
               click: (e) => {

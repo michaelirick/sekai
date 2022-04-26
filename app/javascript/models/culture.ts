@@ -8,7 +8,7 @@ export class Culture extends Model {
   }
 
   static endpointPrefix () {
-    return '/admin/cultures/';
+    return '/admin/cultures';
   }
 
   static model_name () {

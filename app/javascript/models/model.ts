@@ -14,7 +14,7 @@ export class Model {
   }
 
   static load (endpoint, id) {
-    return api.get(endpoint + id + '.json')
+    return api.get(endpoint + '/' + id + '.json')
       .then(response => response.json())
   }
 
@@ -27,16 +27,26 @@ export class Model {
   updateGeometry (points) {
     let endpoint = this.constructor.endpointPrefix() ;
     if (this.id) {
-      endpoint = endpoint + this.id + '/update_boundaries.json'
+      endpoint = endpoint + '/' + this.id + '/update_boundaries.json'
     }
 
     return api.post(endpoint, { points: points });
   }
 
+  static list (params) {
+    return api.get(this.endpointPrefix() + '.json', params)
+      .then(response => response.json())
+  }
+
+  static pages (params) {
+    return api.get(this.endpointPrefix() + '/pages.json', params)
+      .then(response => response.json())
+  }
+
   save () {
     let endpoint = this.constructor.endpointPrefix() ;
     if (this.id) {
-      endpoint = endpoint + this.id + '.json'
+      endpoint = endpoint + '/' + this.id + '.json'
     } else {
       endpoint = endpoint + ''
     }

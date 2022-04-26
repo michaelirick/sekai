@@ -8,7 +8,7 @@ export class State extends Model {
   }
 
   static endpointPrefix () {
-    return '/admin/states/';
+    return '/admin/states';
   }
 
   static model_name () {
