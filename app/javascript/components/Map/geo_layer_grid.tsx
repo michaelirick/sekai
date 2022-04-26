@@ -29,7 +29,6 @@ const GeoLayerGrid = (props) => {
   const [center, setCenter] = useState(props.center ? props.center : [localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY')]) // these are point cords
   const [zoom, setZoom] = useState(props.zoom ? props.zoom : localStorage.getItem('mapZoom'))
   const [selectedHex, setSelectedHex] = useState(null)
-  const [toolPoints, setToolPoints] = useState([])
   // const [cable, setCable] = useState(ActionCable.createConsumer('/cable'))
   // const [subscription, setSubscription] = useState(null);
 
@@ -52,11 +51,16 @@ const GeoLayerGrid = (props) => {
             parent_id: parent_id,
             parent_type: parent_type
           }
-        }).then(() => loadHexes())
+        }).then(response => response.json())
+          .then(json => {
+            console.log('success', json)
+            loadHexes()
+          })
+          .catch(error => console.log('error', error))
       } else if (mapTool.mapTool === 'editPoints') {
         const x = e.latlng.lng
         const y = e.latlng.lat
-        setToolPoints([...toolPoints, [x, y]])
+        mapTool.setMapToolPoints([...mapTool.mapToolPoints, [x, y]])
       }
       // console.log('HexGrid#click', e)
       // // selectBlankHex(e, map)
@@ -85,6 +89,13 @@ const GeoLayerGrid = (props) => {
       localStorage.setItem('mapCenterY', c.lat)
       // loadHexes()
       console.log('dragend', e, [c.lng, c.lat])
+    },
+    keyup: (e) => {
+      // Escape
+      if (mapTool.mapTool === 'select' && mapSelection.selectedObject && e.originalEvent.keyCode == 27) {
+        mapSelection.setSelectedObject({})
+        e.preventDefault()
+      }
     }
   })
   useEffect(() => loadHexes(), [])
@@ -93,7 +104,7 @@ const GeoLayerGrid = (props) => {
     mapView.mapZoom,
     mapView.mapCenterX,
     mapView.mapCenterY,
-    toolPoints
+    mapTool.mapToolPoints
   ])
   // useEffect(() => initCable(), [])
   // useEffect(() => refreshGrid(), [selectedHex])
@@ -193,8 +204,8 @@ const GeoLayerGrid = (props) => {
   }
 
   const toolPointMarkers = () => {
-    console.log('toolPoints', toolPoints)
-    return toolPoints.map(([x, y]) => {
+    console.log('toolPoints', mapTool.mapToolPoints)
+    return mapTool.mapToolPoints.map(([x, y]) => {
       return (
         <Marker
           position={{ lat: y, lng: x }}

@@ -1,6 +1,8 @@
 ActiveAdmin.register Subcontinent do
+  extend Mappable
+
   menu parent: 'geography', priority: 5, if: proc{true}
-  permit_params :title, :parent_type, :parent_id, :world_id
+  permit_params :title, :parent_type, :parent_id, :world_id, :points
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -13,22 +15,10 @@ ActiveAdmin.register Subcontinent do
     f.actions         # adds the 'Submit' and 'Cancel' buttons
   end
 
-  member_action :reset_geometry, method: :get do
-    if resource.nil?
-      redirect_to resource_path, notice: 'You cannot reset this geometry.'
-    else
-      begin
-        resource.reset_geometry!
-        redirect_to resource_path, notice: "You have reset #{resource.title}."
-      rescue => e
-        redirect_to resource_path, alert: "There was an error"
-      end
-    end
-  end
 
-  action_item :reset_geometry, only: [:show] do
-    link_to 'Reset Geometry', reset_geometry_admin_subcontinent_path(subcontinent)
-  end
+  add_reset_geometry!
+  add_update_boundaries!
+  check_for_world!
 
   index do
     selectable_column
@@ -40,11 +30,5 @@ ActiveAdmin.register Subcontinent do
       link_to 'Reset Geometry', reset_geometry_admin_subcontinent_path(h), method: 'post', class: 'member_link'
     end
   end
-  controller do
-    before_action :check_for_world
 
-    def check_for_world
-      redirect_to :admin_worlds, alert: 'You must first select a world.' unless current_user.selected_world
-    end
-  end
 end

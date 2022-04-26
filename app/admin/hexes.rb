@@ -41,7 +41,7 @@ ActiveAdmin.register Hex do
     # resource.reset_geometry!
     resource.update_geometry! params[:points]
     # resource.update_attributes! foo: params[:foo] || {}
-    redirect_to admin_hex_path(resource)
+    redirect_to resource
   end
 
   index do

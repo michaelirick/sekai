@@ -7,6 +7,10 @@ class GeoLayerPolicy < ApplicationPolicy
     @record.world == @user.selected_world
   end
 
+  def update_boundaries?
+    true
+  end
+
   class Scope < Scope
     def resolve
       scope.all.for_world(@user.selected_world)

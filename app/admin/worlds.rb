@@ -63,6 +63,7 @@ ActiveAdmin.register World do
             x - 20, x + 20, y - 20, y + 20
           )
           # cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+          cells = world.geo_layers.where(type: 'Hex')
         end
       elsif mode == 'states'
         cells = world.states

@@ -23,6 +23,10 @@ class World < ApplicationRecord
     @factory
   end
 
+  def reset_geometry!
+
+  end
+
   # GEO_LAYER_TYPES = %i[
   #   continent
   #   subcontinent

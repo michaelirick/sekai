@@ -7,6 +7,7 @@ class GeoLayer < ApplicationRecord
   belongs_to :culture, optional: true
   belongs_to :biome, optional: true
   belongs_to :terrain, optional: true
+  attr_accessor :points
 
   HEX_RADIUS = 6.0469
   BIOME_TYPES = %w[
@@ -97,6 +98,7 @@ class GeoLayer < ApplicationRecord
   end
 
   def update_culture_geometry
+    puts "changes", self.points
     return unless culture
 
     if change_geometry_for_culture?
@@ -223,6 +225,10 @@ class GeoLayer < ApplicationRecord
       factory.point(px, py)
     end
 
+    geometry_from_points points
+  end
+
+  def self.geometry_from_points(points)
     ring = factory.linear_ring points
     polygon = factory.polygon(ring)
     factory.collection([polygon])

@@ -24,6 +24,15 @@ export class Model {
       .then(data => Object.assign(this, data))
   }
 
+  updateGeometry (points) {
+    let endpoint = this.constructor.endpointPrefix() ;
+    if (this.id) {
+      endpoint = endpoint + this.id + '/update_boundaries.json'
+    }
+
+    return api.post(endpoint, { points: points });
+  }
+
   save () {
     let endpoint = this.constructor.endpointPrefix() ;
     if (this.id) {

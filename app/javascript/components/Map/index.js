@@ -34,15 +34,12 @@ const Map = (props) => {
   // console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
   // const [selectedObject, setSelectedObject] = React.useState(null);
   const { selectedObject, setSelectedObject } = useMapSelection()
-  const { mapTool, setMapTool } = useMapTool()
+  const mapTool = useMapTool()
   const mapMode = useMapMode()
   const mapView = useMapView()
 
   const mapToolContext = () => {
-    return {
-      mapTool: mapTool,
-      setMapTool: setMapTool
-    }
+    return mapTool
   }
   const selectedObjectContext = () => {
     return {
@@ -135,7 +132,7 @@ const Map = (props) => {
     <MapModeContext.Provider value={mapMode}>
       <MapViewContext.Provider value={mapView}>
         <MapSelectionContext.Provider value={selectedObjectContext()}>
-          <MapToolContext.Provider value={mapToolContext()}>
+          <MapToolContext.Provider value={mapTool}>
             <ToolBar />
             <div className="map-component">
               {mapContainer()}

@@ -13,12 +13,15 @@ export const MapSelectionContext = React.createContext({
 
 export const useMapTool = () => {
   const [mapTool, setMapTool] = useState(localStorage.getItem('mapTool') || 'select')
-  return { mapTool, setMapTool }
+  const [mapToolPoints, setMapToolPoints] = useState([])
+  return { mapTool, setMapTool, mapToolPoints, setMapToolPoints }
 }
 
 export const MapToolContext = createContext({
   mapTool: localStorage.getItem('mapTool') || 'select',
-  setMapTool: (_) => {}
+  setMapTool: (_) => {},
+  mapToolPoints: [],
+  setMapToolPoints: (_) => {}
 })
 
 export const useMapMode = () => {
