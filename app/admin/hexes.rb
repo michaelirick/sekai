@@ -1,6 +1,6 @@
 ActiveAdmin.register Hex do
   menu parent: 'geography', priority: 1, if: proc{true}
-  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y, :owner_type, :owner_id, :biome, :terrain, :color, :culture_id
+  permit_params :title, :parent_type, :parent_id, :world_id, :x, :y, :owner_type, :owner_id, :biome_id, :terrain_id, :color, :culture_id
 
   form do |f|
     f.semantic_errors # shows errors on :base
@@ -11,8 +11,8 @@ ActiveAdmin.register Hex do
       f.input :world_id, as: :hidden, input_html: {value: current_user.selected_world.id}
       f.input :x
       f.input :y
-      f.input :biome, as: :select, collection: GeoLayer::BIOME_TYPES
-      f.input :terrain, as: :select, collection: GeoLayer::TERRAIN_TYPES
+      f.input :biome_id, as: :select, collection: Biome.all.sort
+      # f.input :terrain_id, as: :select, collection: Terrain.all.sort
       f.input :color
       f.input :culture_id, as: :select, collection: Culture.for_world(current_user.selected_world)
     end

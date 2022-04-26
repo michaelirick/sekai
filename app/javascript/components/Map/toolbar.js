@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Icon, Menu } from 'semantic-ui-react'
+import { Icon, Menu, Dropdown } from 'semantic-ui-react'
 import { MapModeContext, MapToolContext, MapViewContext } from './map_context'
 import { useContext } from 'react'
 
@@ -44,10 +44,13 @@ export const ToolBar = (props) => {
       <MapMode name="areas" label="Areas"/>
       <MapMode name="provinces" label="Provinces"/>
       <MapMode name="hexes" label="Hexes"/>
+    </Menu>
+    <Menu>
       <MapMode name="states" label="States"/>
       <MapMode name="independent_states" label="Independent"/>
       <MapMode name="settlements" label="Settlements"/>
       <MapMode name="cultures" label="Culture"/>
+      <MapMode name="biomes" label="Biome"/>
     </Menu>
   </div>
 };

@@ -14,9 +14,10 @@ import { Continent } from '../../models/continent'
 import { State } from '../../models/state'
 import { Settlement } from '../../models/settlement'
 import { Culture } from '../../models/culture'
+import { Biome } from '../../models/biome'
 
 const GeoLayerTypes = {
-  Hex, Province, Area, Region, Subcontinent, Continent, State, Settlement, Culture
+  Hex, Province, Area, Region, Subcontinent, Continent, State, Settlement, Culture, Biome
 }
 
 export type GeoLayerCellProps = {
@@ -114,9 +115,12 @@ const GeoLayerCell = (props:GeoLayerCellProps) => {
                     if (selectedObject.type === 'State') {
                       object.owner_id = selectedObject.id
                       object.owner_type = 'State'
-                    }
-                    else if (selectedObject.type === 'Culture') {
+                    } else if (selectedObject.type === 'Culture') {
                       object.culture_id = selectedObject.id
+                    } else if (selectedObject.type === 'Biome') {
+                      object.biome_id = selectedObject.id
+                    } else if (selectedObject.type === 'Terrain') {
+                      object.terrain_id = selectedObject.id
                     } else {
                       object.parent_id = selectedObject.id
                       object.parent_type = 'GeoLayer'

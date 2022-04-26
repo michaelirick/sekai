@@ -79,6 +79,10 @@ ActiveAdmin.register World do
         cells = world.cultures.map do |c|
           cell.new('Culture', c.id, c.title, c.color, c.geometry)
         end
+      elsif mode == 'biomes'
+        cells = world.biomes.map do |b|
+          cell.new('Biome', b.id, b.title, b.color, b.geometry)
+        end
       else
         puts box
 

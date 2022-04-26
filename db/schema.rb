@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_25_190139) do
+ActiveRecord::Schema.define(version: 2022_04_25_195126) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,19 @@ ActiveRecord::Schema.define(version: 2022_04_25_190139) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "start_date_id"
+  end
+
+  create_table "biomes", force: :cascade do |t|
+    t.string "title"
+    t.integer "low_moisture"
+    t.integer "high_moisture"
+    t.integer "low_tempurature"
+    t.integer "high_tempurature"
+    t.string "color"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.integer "world_id"
   end
 
   create_table "building_types", force: :cascade do |t|
@@ -130,10 +143,10 @@ ActiveRecord::Schema.define(version: 2022_04_25_190139) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
-    t.string "biome"
-    t.string "terrain"
     t.string "color"
     t.integer "culture_id"
+    t.integer "biome_id"
+    t.integer "terrain_id"
   end
 
   create_table "map_layers", force: :cascade do |t|
@@ -184,6 +197,15 @@ ActiveRecord::Schema.define(version: 2022_04_25_190139) do
     t.geometry "realm_geometry", limit: {:srid=>0, :type=>"geometry_collection"}
     t.integer "de_jure_id"
     t.string "de_jure_type"
+  end
+
+  create_table "terrains", force: :cascade do |t|
+    t.string "title"
+    t.string "color"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.integer "world_id"
   end
 
   create_table "users", force: :cascade do |t|

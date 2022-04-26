@@ -9,6 +9,7 @@ class World < ApplicationRecord
   belongs_to :user
   has_many :settlements
   has_many :cultures
+  has_many :biomes
   # add_geo_layer(
   #   name: 'World',
   #   subordinates: :continents

@@ -5,6 +5,8 @@ class GeoLayer < ApplicationRecord
   has_many :children, class_name: 'GeoLayer', as: :parent
   has_one :de_jure, class_name: 'State'
   belongs_to :culture, optional: true
+  belongs_to :biome, optional: true
+  belongs_to :terrain, optional: true
 
   HEX_RADIUS = 6.0469
   BIOME_TYPES = %w[
@@ -62,6 +64,7 @@ class GeoLayer < ApplicationRecord
   after_commit :update_parent_geometry
   after_commit :update_owner_geometry
   after_commit :update_culture_geometry
+  after_commit :update_biome_geometry
   after_commit :ensure_color_generated
 
   def ensure_color_generated
@@ -99,6 +102,18 @@ class GeoLayer < ApplicationRecord
     if change_geometry_for_culture?
       culture.reset_geometry!
     end
+  end
+
+  def update_biome_geometry
+    return unless culture
+
+    if change_geometry_for_biome?
+      biome.reset_geometry!
+    end
+  end
+
+  def change_geometry_for_biome?
+    previous_changes[:geometry] || previous_changes[:biome_id] || previous_changes[:owner_id] || destroyed? || previously_new_record? || type == 'Hex'
   end
 
   def update_parent_geometry
