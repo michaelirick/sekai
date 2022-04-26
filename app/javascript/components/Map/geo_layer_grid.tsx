@@ -1,7 +1,7 @@
 import { extendHex, defineGrid } from 'honeycomb-grid'
 import * as React from 'react'
 import { useState, useEffect, useCallback, useContext } from 'react'
-import { LayerGroup, Polygon, useMapEvents } from 'react-leaflet'
+import { LayerGroup, Marker, Polygon, useMapEvents } from 'react-leaflet'
 import html from 'utils/html'
 import HexCell from './hex_cell'
 import api from 'utils/api'
@@ -29,6 +29,7 @@ const GeoLayerGrid = (props) => {
   const [center, setCenter] = useState(props.center ? props.center : [localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY')]) // these are point cords
   const [zoom, setZoom] = useState(props.zoom ? props.zoom : localStorage.getItem('mapZoom'))
   const [selectedHex, setSelectedHex] = useState(null)
+  const [toolPoints, setToolPoints] = useState([])
   // const [cable, setCable] = useState(ActionCable.createConsumer('/cable'))
   // const [subscription, setSubscription] = useState(null);
 
@@ -52,6 +53,10 @@ const GeoLayerGrid = (props) => {
             parent_type: parent_type
           }
         }).then(() => loadHexes())
+      } else if (mapTool.mapTool === 'editPoints') {
+        const x = e.latlng.lng
+        const y = e.latlng.lat
+        setToolPoints([...toolPoints, [x, y]])
       }
       // console.log('HexGrid#click', e)
       // // selectBlankHex(e, map)
@@ -87,7 +92,8 @@ const GeoLayerGrid = (props) => {
     mapMode.mapMode,
     mapView.mapZoom,
     mapView.mapCenterX,
-    mapView.mapCenterY
+    mapView.mapCenterY,
+    toolPoints
   ])
   // useEffect(() => initCable(), [])
   // useEffect(() => refreshGrid(), [selectedHex])
@@ -186,11 +192,21 @@ const GeoLayerGrid = (props) => {
     })
   }
 
-
+  const toolPointMarkers = () => {
+    console.log('toolPoints', toolPoints)
+    return toolPoints.map(([x, y]) => {
+      return (
+        <Marker
+          position={{ lat: y, lng: x }}
+        />
+      )
+    })
+  }
 
   return <MapSelectionContext.Consumer>
     {(context) => <LayerGroup>
       {hexes(context)}
+      {toolPointMarkers()}
     </LayerGroup>}
   </MapSelectionContext.Consumer>
 
