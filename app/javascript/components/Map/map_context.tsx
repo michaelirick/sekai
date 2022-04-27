@@ -1,14 +1,17 @@
 import * as React from 'react'
 import {useState, createContext} from 'react'
 
-export const useMapSelection = () => {
+export const useMapSelection = (props) => {
   const [selectedObject, setSelectedObject] = useState(null)
-  return { selectedObject, setSelectedObject }
+  const [world, setWorld] = useState(props.world)
+  return { selectedObject, setSelectedObject, world, setWorld }
 }
 
 export const MapSelectionContext = React.createContext({
   selectedObject: null,
-  setSelectedObject: (_) => {}
+  setSelectedObject: (_) => {},
+  world: null,
+  setWorld: (_) => {}
 })
 
 export const useMapTool = () => {

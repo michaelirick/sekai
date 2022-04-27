@@ -225,10 +225,10 @@ class GeoLayer < ApplicationRecord
       factory.point(px, py)
     end
 
-    geometry_from_points points
+    geometry_from_points points, factory
   end
 
-  def self.geometry_from_points(points)
+  def self.geometry_from_points(points, factory)
     ring = factory.linear_ring points
     polygon = factory.polygon(ring)
     factory.collection([polygon])
@@ -244,18 +244,14 @@ class GeoLayer < ApplicationRecord
       reset_hex!
       return
     end
-    new_geometry = GeoLayer.connection.execute(%(
+    query = %(
       SELECT st_asgeojson(st_union(a.new_geometry)) AS new_geometry
-from
-      (SELECT st_asgeojson(st_union(geometry)) AS new_geometry
+        from
+      (SELECT st_union(geometry) AS new_geometry
       FROM geo_layers
       WHERE parent_id=#{id} AND parent_type='GeoLayer') a
-                                               )).map(&:to_h).first['new_geometry']
-#     new_geometry = GeoLayer.connection.execute(%(
-#       SELECT st_asgeojson(st_union(st_snaptogrid(geometry, 0.0001))) AS new_geometry
-#       FROM geo_layers
-#       WHERE parent_id=#{id} AND parent_type='GeoLayer'
-#                                                )).map(&:to_h).first['new_geometry']
+                                               )
+    new_geometry = GeoLayer.connection.execute(query).map(&:to_h).first['new_geometry']
 
     polygons = children.pluck(:geometry).compact.map(&:to_a).flatten
 

@@ -5,7 +5,7 @@ import { LayerGroup, Polygon, useMapEvents } from 'react-leaflet'
 import html from 'utils/html'
 import HexCell from './hex_cell'
 import api from 'utils/api'
-import World from 'models/world'
+import {World} from 'models/world'
 import ActionCable from 'actioncable'
 import { MapSelectionContext } from './map_context'
 

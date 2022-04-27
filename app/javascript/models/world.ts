@@ -1,4 +1,5 @@
 import { extendHex } from 'honeycomb-grid'
+import { Model } from './model'
 
 type WorldProps = {
   hexSize: number;
@@ -6,10 +7,25 @@ type WorldProps = {
   width: number;
 }
 
-class World {
-  constructor (props: WorldProps) {
+export class World extends Model {
+  constructor (props) {
+    super()
     console.log('world#new', props)
     Object.assign(this, props)
+    this.type = 'World'
+  }
+
+  static endpointPrefix(): string {
+    return '/admins/worlds'
+  }
+
+  static model_name () {
+    return 'world'
+  }
+
+  static load (id) {
+    return Model.load(this.endpointPrefix(), id)
+    .then(data => {return new this(data)})
   }
 
   // TODO: move to DB
@@ -40,5 +56,3 @@ class World {
     return extendHex(this.hexOptions())
   }
 }
-
-export default World

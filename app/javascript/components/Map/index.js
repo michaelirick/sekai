@@ -21,6 +21,7 @@ import GeoLayerGrid from './geo_layer_grid'
 import { zoom } from 'leaflet/src/control/Control.Zoom'
 import { ToolBar } from './toolbar'
 import L from 'leaflet';
+import { World } from 'models/world'
 
 delete L.Icon.Default.prototype._getIconUrl;
 // const [container, tileLayer] = html.tagify([MapContainer, TileLayer]);
@@ -33,20 +34,10 @@ const Map = (props) => {
   console.log('Map', props)
   // console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
   // const [selectedObject, setSelectedObject] = React.useState(null);
-  const { selectedObject, setSelectedObject } = useMapSelection()
+  const mapSelection = useMapSelection({world: new World(props.world)})
   const mapTool = useMapTool()
   const mapMode = useMapMode()
   const mapView = useMapView()
-
-  const mapToolContext = () => {
-    return mapTool
-  }
-  const selectedObjectContext = () => {
-    return {
-      selectedObject: selectedObject,
-      setSelectedObject: setSelectedObject
-    }
-  }
 
   const mapLayer = (layer, index) => {
     // console.log('layer', layer)
@@ -68,20 +59,10 @@ const Map = (props) => {
     zoom: localStorage.getItem('mapZoom') ?? 2
   }
 
-  const hexes = () => {
-    return <LayersControl.Overlay
-      name='Hexes'
-      checked={true}>
-        <HexGrid {...viewOptions} world={props.world} setSelectedObject={setSelectedObject}></HexGrid>
-      </LayersControl.Overlay>
-  }
-
   const geoLayerGrid = () => {
     return html.tag(GeoLayerGrid, 'grid', {
       mapMode: mapMode,
-      world: props.world,
-      selectedObject: selectedObject,
-      setSelectedObject: setSelectedObject
+      world: props.world
     });
   }
 
@@ -123,15 +104,13 @@ const Map = (props) => {
   const sideBar = () => {
     return <SideBar
       class="map-sidebar"
-      setSelectedObject={setSelectedObject}
-      selectedObject={selectedObject}
     ></SideBar>
   }
 
   return (
     <MapModeContext.Provider value={mapMode}>
       <MapViewContext.Provider value={mapView}>
-        <MapSelectionContext.Provider value={selectedObjectContext()}>
+        <MapSelectionContext.Provider value={mapSelection}>
           <MapToolContext.Provider value={mapTool}>
             <ToolBar />
             <div className="map-component">

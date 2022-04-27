@@ -5,18 +5,17 @@ import { HexShow } from './sidebar/hex/hex'
 import { Continent } from './sidebar/continents/continent'
 import { Button, Grid, Tab } from 'semantic-ui-react'
 import { StateShow } from './sidebar/state'
-import { MapToolContext } from './map_context'
+import { MapSelectionContext, MapToolContext } from './map_context'
 import { useContext, useEffect } from 'react'
 import { Find } from './sidebar/find'
 
 type SideBarProps = {
   children?: React.ReactNode;
-  selectedObject: unknown
-  setSelectedObject: unknown
 };
 
 const SideBar = (props: SideBarProps) => {
   const mapTool = useContext(MapToolContext);
+  const mapSelection = useContext(MapSelectionContext);
   console.log('SideBar', props);
 
   const list = () => {
@@ -27,7 +26,7 @@ const SideBar = (props: SideBarProps) => {
     )
   }
   const contents = () => {
-    if (!props.selectedObject)
+    if (!mapSelection.selectedObject)
       return <div></div>
 
     // if (props.selectedObject.type === 'blank_hex') {
@@ -38,8 +37,8 @@ const SideBar = (props: SideBarProps) => {
     //   return <Continent id={props.selectedObject.id}/>;
     // }
 
-    if (props.selectedObject.type === 'Hex') {
-      return <HexShow {...props.selectedObject}/>;
+    if (mapSelection.selectedObject.type === 'Hex') {
+      return <HexShow {...mapSelection.selectedObject}/>;
     }
 
     // if (props.selectedObject.type === 'State') {
@@ -50,7 +49,7 @@ const SideBar = (props: SideBarProps) => {
         <div>
           <Button
             onClick={() => {
-              props.selectedObject.updateGeometry(mapTool.mapToolPoints)
+              mapSelection.selectedObject.updateGeometry(mapTool.mapToolPoints)
                 .then(response => console.log('saved'))
                 .catch(error => console.log('error', error))
             }}

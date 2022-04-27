@@ -45,13 +45,15 @@ export class Model {
 
   save () {
     let endpoint = this.constructor.endpointPrefix() ;
+    let method = 'put'
     if (this.id) {
       endpoint = endpoint + '/' + this.id + '.json'
     } else {
       endpoint = endpoint + ''
+      method = 'post'
     }
 
-    return api.put(endpoint, { [this.constructor.model_name()]: this });
+    return api[method](endpoint, { [this.constructor.model_name()]: this });
   }
 
   delete () {

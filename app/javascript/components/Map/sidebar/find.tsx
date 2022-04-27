@@ -2,7 +2,7 @@ import * as React from 'react'
 import { SelectableObjectTypesByMode } from 'models/selectable_object'
 import { useContext, useEffect, useState } from 'react'
 import { MapModeContext, MapSelectionContext, MapToolContext } from '../map_context'
-import { Menu, Table } from 'semantic-ui-react'
+import { Menu, Table, Button } from 'semantic-ui-react'
 import api from 'utils/api'
 
 export const Find = (props) => {
@@ -42,12 +42,36 @@ export const Find = (props) => {
     return mapSelection.selectedObject.id === row.id && mapSelection.selectedObject.type === row.type
   }
 
+  const addNew = () => {
+    const model = SelectableObjectTypesByMode[mapMode.mapMode]
+    if (model) {
+      const newJunt = new model({
+        world_id: mapSelection.world.id,
+        parent_type: 'World',
+        parent_id: mapSelection.world.id
+      })
+      newJunt.save()
+        .then(res => console.log('saved', res))
+        .then(res => loadRows())
+        .catch(error => console.log(error))
+    }
+    
+  }
+
   return (
     <Table>
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell colSpan='3'>
+            <Button icon="plus" onClick={() => addNew()}/>
+          </Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
       <Table.Body>
         {rows.map((row) => {
           return (
             <Table.Row
+              key={row.id}
               active={isActiveRow(row)}
               onClick={() => mapSelection.setSelectedObject(row)}
             >
