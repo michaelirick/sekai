@@ -11,6 +11,10 @@ admin.add_role :admin
 w = World.create(name: 'Eros', user: admin)
 m = MapLayer.create(title: 'Eros Antique', world: w)
 m.image.attach(io: File.open('public/eros.jpg'), filename: 'eros.jpg' , content_type: 'image/jpeg')
+%w[biome height temperature precipitation].each do |type|
+  m = MapLayer.create(title: "Eros #{type}", world: w)
+  m.image.attach(io: File.open("public/eros_#{type}.png"), filename: "eros_#{type}.png" , content_type: 'image/png')
+end
 state = State.create world: w, name: 'Zeon', primary_color: '#008000', secondary_color: '#808000'
 c = Continent.create(title: 'Auson', parent: w, world: w)
 s = Subcontinent.create(title: 'West Auson', parent: c, world: w)

@@ -11,7 +11,7 @@ class Biome < ApplicationRecord
     %(
       SELECT st_asgeojson(st_union(a.new_geometry)) AS new_geometry
 from
-      (SELECT st_asgeojson(st_union(geometry)) AS new_geometry
+      (SELECT (st_union(geometry)) AS new_geometry
       FROM geo_layers
       WHERE biome_id=#{id} AND world_id=#{world.id}) a
                                                )

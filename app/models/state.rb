@@ -167,7 +167,7 @@ class State < ApplicationRecord
     %(
       SELECT st_asgeojson(st_union(a.new_geometry)) AS new_geometry
 from
-      (SELECT st_asgeojson(st_union(geometry)) AS new_geometry
+      (SELECT (st_union(geometry)) AS new_geometry
       FROM geo_layers
       WHERE owner_id=#{id} AND owner_type='State') a
                                                )
@@ -197,7 +197,7 @@ from
     new_geometry = GeoLayer.connection.execute(%(
       SELECT st_asgeojson(st_union(a.new_geometry)) AS new_geometry
 from
-      (SELECT st_asgeojson(st_union(realm_geometry)) AS new_geometry
+      (SELECT (st_union(realm_geometry)) AS new_geometry
       FROM states
       WHERE owner_id=#{id} AND owner_type='State'
       UNION ALL SELECT st_asgeojson(st_union(geometry)) AS new_geometry
