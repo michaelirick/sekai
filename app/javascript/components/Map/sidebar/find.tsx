@@ -17,6 +17,8 @@ export const Find = (props) => {
   const [searchId, setSearchId] = useState('')
   const [searchTitle, setSearchTitle] = useState('')
   const [searchColor, setSearchColor] = useState('')
+  const [sortColumn, setSortColumn] = useState('id')
+  const [sortDirection, setSortDirection] = useState('asc')
   const [loadingRows, setLoadingRows] = useState(true)
   const [loadingPages, setLoadingPages] = useState(true)
 
@@ -27,7 +29,9 @@ export const Find = (props) => {
     mapMode.mapMode,
     searchId,
     searchTitle,
-    searchColor
+    searchColor,
+    sortColumn,
+    sortDirection
   ])
 
   const loadRows = () => {
@@ -39,7 +43,8 @@ export const Find = (props) => {
         per_page: 10,
         'q[id]': searchId,
         'q[title_contains]': searchTitle,
-        'q[color_contains]': searchColor
+        'q[color_contains]': searchColor,
+        order: `${sortColumn}_${sortDirection}`
         // q: {
         //   id_contains: searchId,
         //   title_contains: searchTitle,
@@ -110,6 +115,21 @@ export const Find = (props) => {
     )
   }
 
+  const isSorted = (column) => {
+    if (sortColumn !== column)
+      return null;
+
+    return sortDirection === 'asc' ? 'ascending' : 'descending'
+  }
+
+  const onSort = (column) => {
+    if (column !== sortColumn)
+      setSortColumn(column)
+    else {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    }
+  }
+
   return (
     <Table>
       <Table.Header>
@@ -119,8 +139,9 @@ export const Find = (props) => {
           </Table.HeaderCell>
         </Table.Row>
         <Table.Row>
-          <Table.HeaderCell>
-            <Input value={searchId} onChange={(e) => setSearchId(e.target.value)}/>
+          <Table.HeaderCell sorted={isSorted('id')}>
+            <h3 onClick={() => onSort('id')}>ID</h3>
+            {/* <Input value={searchId} onChange={(e) => setSearchId(e.target.value)}/> */}
           </Table.HeaderCell>
           <Table.HeaderCell>
             <Input value={searchTitle} onChange={(e) => setSearchTitle(e.target.value)}/>
