@@ -36,7 +36,7 @@ module Mappable
       render json: {
         per_page: per_page,
         page: page,
-        total: total / per_page
+        total: (total / per_page).to_i
       }
     end
   end

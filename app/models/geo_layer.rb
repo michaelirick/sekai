@@ -273,6 +273,104 @@ class GeoLayer < ApplicationRecord
     save!
   end
 
+  def area
+    GeoLayer.connection.execute(%(
+    SELECT st_area(geometry)
+    from geo_layers WHERE id=#{id}
+                                )).first['st_area']
+  end
+
+  # generates a number of random points within the bounds of the geometry
+  def generate_points(n = 12)
+    points = GeoLayer.connection.execute(%(
+    select st_asgeojson(b.points) as points
+    from (
+      select st_generatepoints(a.shapes, #{n}, #{rand(1000)}) as points
+      from (select st_collectionextract(geometry, 3) as shapes
+      from geo_layers where id=#{id}) a
+    ) b
+                                )).first['points']
+    RGeo::GeoJSON.decode(points).elements.map(&:coordinates)
+  end
+
+  def bounding_box
+    box = GeoLayer.connection.execute(%(
+    SELECT st_asgeojson(box2d(geometry)) as box
+    from geo_layers WHERE id=#{id}
+                                )).first['box']
+    RGeo::GeoJSON.decode(box)
+  end
+
+  def hex_coordinates_within_bounding_box
+    points = bounding_box.exterior_ring.points.map(&:coordinates)[0...-1]
+    low_x = points.map(&:first).min
+    high_x = points.map(&:first).max
+    low_y = points.map(&:last).min
+    high_y = points.map(&:last).max
+
+    result = []
+    (low_x..high_x).step(6) do |x|
+      (low_y..high_y).step(6) do |y|
+        result << GeoLayer.point_to_hex(x, y)
+      end
+    end
+    # generate_points(area.to_i / 10).map do |point|
+    #   GeoLayer.point_to_hex *point
+    # end.uniq.compact
+    result.uniq.compact
+  end
+
+  def hexes_existing_in_bounding_box
+    hexes = hex_coordinates_within_bounding_box
+    hexes_string = hexes.map {|x,y| "(#{x},#{y})"}.join(', ')
+    Hex.connection.execute(%(
+    select g.* from geo_layers g
+    join (values #{hexes_string}) t(x,y)
+      on g.x = t.x and g.y = t.y and g.type = 'Hex' and g.world_id=#{world_id}
+                           ))
+  end
+
+  def hexes_within_geometry
+    geo_layer = GeoLayer.arel_table
+    Hex.where(world: world).where(geo_layer[:geometry].st_intersects(geometry))
+  end
+
+  def assign_hexes_within_geometry!
+    hexes_within_geometry.each do |h|
+      h.parent = self
+      h.save!
+    end
+  end
+
+  # generates non-existing hexes within its bounding box
+  def generate_hexes!
+    GeoLayer.transaction do
+      new_hexes = hex_coordinates_within_bounding_box - hexes_existing_in_bounding_box.pluck('x', 'y')
+      new_colors = UniqueColor.allocate_color(world, 'geo_layers', 'color', new_hexes.count)
+      new_hexes = new_hexes.map.with_index do |coords, i|
+        x, y = coords
+        {
+          color: new_colors[i],
+          parent_id: id,
+          world_id: world.id,
+          type: 'Hex',
+          parent_type: 'GeoLayer',
+          x: x,
+          y: y,
+          geometry: GeoLayer.hex_geometry(GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)), factory),
+          created_at: Time.now,
+          updated_at: Time.now
+        }
+      end
+
+      new_hexes.each_slice(24) do |slice|
+        Hex.insert_all slice
+      end
+    end
+
+    reset_geometry!
+  end
+
   scope :for_world, ->(w) { where world: w }
 
   add_geo_layer_level :continent

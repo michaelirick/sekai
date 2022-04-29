@@ -20,6 +20,7 @@ ActiveAdmin.register Region do
 
   index do
     selectable_column
+    id_column
     column :title
     column :parent
     column :owner

@@ -6,7 +6,7 @@ ActiveAdmin.register MapLayer do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :title, :world_id, :image, :world
+  permit_params :title, :world_id, :image, :world, :priority
   #
   # or
   #
@@ -17,9 +17,13 @@ ActiveAdmin.register MapLayer do
   # end
 
   form do |f|
-    input :title
-    input :world, as: :select
-    input :image, as: :file
+    f.semantic_errors
+    f.inputs do
+      input :title
+      f.input :world_id, as: :hidden, input_html: {value: current_user.selected_world.id}
+      input :image, as: :file
+      input :priority
+    end
 
     actions
   end
@@ -28,6 +32,7 @@ ActiveAdmin.register MapLayer do
     attributes_table do
       row :title
       row :world
+      row :priority
       row :created_at
       row :updated_at
       row :image do |ad|

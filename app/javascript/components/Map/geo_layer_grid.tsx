@@ -1,7 +1,7 @@
 import { extendHex, defineGrid } from 'honeycomb-grid'
 import * as React from 'react'
 import { useState, useEffect, useCallback, useContext } from 'react'
-import { LayerGroup, Marker, Polygon, useMapEvents } from 'react-leaflet'
+import { LayerGroup, Marker, Polygon, Popup, useMap, useMapEvents } from 'react-leaflet'
 import html from 'utils/html'
 import HexCell from './hex_cell'
 import api from 'utils/api'
@@ -12,6 +12,7 @@ import { MapSelectionContext, MapToolContext, MapModeContext, MapViewContext, us
 import GeoLayerCell from './geo_layer_cell'
 
 const GeoLayerGrid = (props) => {
+  const mapObject = useMap();
   const mapTool = useContext(MapToolContext);
   const mapMode = useContext(MapModeContext);
   const mapView = useContext(MapViewContext);
@@ -20,6 +21,10 @@ const GeoLayerGrid = (props) => {
   const gridOptions = {
     width: 64,
     height: 48
+  }
+
+  if (!mapView.map) {
+    mapView.setMap(mapObject)
   }
 
   // const HexFactory = world.hexFactory()
@@ -33,6 +38,11 @@ const GeoLayerGrid = (props) => {
   // const [subscription, setSubscription] = useState(null);
 
   const map = useMapEvents({
+    baselayerchange: (e) => {
+      console.log('baselayerchange', e)
+      mapMode.setMapLayer(e.name)
+      localStorage.setItem("mapLayer", e.name)
+    },
     click: (e) => {
       if (mapTool.mapTool === 'add') {
         console.log('GeoLayerGrid#add', e)
@@ -61,6 +71,10 @@ const GeoLayerGrid = (props) => {
         const x = e.latlng.lng
         const y = e.latlng.lat
         mapTool.setMapToolPoints([...mapTool.mapToolPoints, [x, y]])
+      } else if (mapTool.mapTool === 'placeMarker') {
+        const x = e.latlng.lng
+        const y = e.latlng.lat
+        mapTool.setMapToolPoint([x, y])
       }
       // console.log('HexGrid#click', e)
       // // selectBlankHex(e, map)
@@ -94,6 +108,12 @@ const GeoLayerGrid = (props) => {
       // Escape
       if (mapTool.mapTool === 'select' && mapSelection.selectedObject && e.originalEvent.keyCode == 27) {
         mapSelection.setSelectedObject({})
+        e.preventDefault()
+      } else if (mapTool.mapTool === 'placeMarker') {
+        mapTool.setMapToolPoint(null);
+        e.preventDefault()
+      } else if (mapTool.mapTool === 'editPoints') {
+        mapTool.setMapToolPoints(null)
         e.preventDefault()
       }
     }
@@ -214,10 +234,27 @@ const GeoLayerGrid = (props) => {
     })
   }
 
+  const toolPointMarker = () => {
+    if (!mapTool.mapToolPoint) {
+      return ''
+    }
+
+    return (
+      <Marker
+        position={{lat: mapTool.mapToolPoint[1], lng: mapTool.mapToolPoint[0]}}
+      >
+        <Popup permanent>
+          ({mapTool.mapToolPoint.join(', ')})
+        </Popup>
+      </Marker>
+    )
+  }
+
   return <MapSelectionContext.Consumer>
     {(context) => <LayerGroup>
       {hexes(context)}
       {toolPointMarkers()}
+      {mapTool.mapTool === 'placeMarker' ? toolPointMarker() : ''}
     </LayerGroup>}
   </MapSelectionContext.Consumer>
 

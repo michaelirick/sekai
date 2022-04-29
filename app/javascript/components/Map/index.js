@@ -40,11 +40,11 @@ const Map = (props) => {
   const mapView = useMapView()
 
   const mapLayer = (layer, index) => {
-    // console.log('layer', layer)
+    console.log('layer', layer)
     return <LayersControl.BaseLayer
       key={`layer-${index}`}
       name={layer.title}
-      checked={true}
+      checked={mapMode.mapLayer === layer.title}
     >
       <MapLayer key={`layer-${index}`} {...layer}></MapLayer>
     </LayersControl.BaseLayer>
@@ -68,7 +68,7 @@ const Map = (props) => {
 
   const layers = () => {
     return html.tag(LayersControl, 'layers', {},
-      props.world.map_layers.map((layer, i) => {
+      props.world.map_layers.sort((a, b) => (a < b)).map((layer, i) => {
         return mapLayer(layer, i)
       }),
       // geoLayers(),

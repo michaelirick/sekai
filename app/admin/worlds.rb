@@ -55,15 +55,36 @@ ActiveAdmin.register World do
       cell = Struct.new(:type, :id, :title, :color, :geometry)
       if mode == 'hexes'
         x, y = GeoLayer.point_to_hex x, y
+        puts 'new xy', x, y
         if false #zoom < 5
           cells = []
         else
+          w = case zoom
+              when 5
+                55
+              when 6
+                25
+              when 7
+                15
+              when 8
+                10
+              when 9
+                5
+              else
+                0
+              end
+          # x, y = GeoLayer.point_to_hex x, y
+          h = 35#10 * (zoom - 3)
+          # w = 2048 / (2**zoom)#10 * (zoom - 3)
+          h = w
+          puts 'box', w, h
+          puts 'pixels', 2 ** zoom * 256
           cells = world.geo_layers.where(type: 'Hex').where(
             "x > ? AND x < ? AND y > ? AND y < ?",
-            x - 20, x + 20, y - 20, y + 20
+            x - w, x + w, y - h, y + h
           )
-          # cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
-          cells = world.geo_layers.where(type: 'Hex')
+          #cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+          # cells = world.geo_layers.where(type: 'Hex')
         end
       elsif mode == 'states'
         cells = world.states

@@ -36,6 +36,7 @@ export const ToolBar = (props) => {
       <MapTool name="delete" label="delete"/>
       <MapTool name="editPoints" label="edit"/>
       <MapTool name="claim" label="chain"/>
+      <MapTool name="placeMarker" label="marker"/>
     </Menu>
     <Menu>
       <MapMode name="continents" label="Continents"/>

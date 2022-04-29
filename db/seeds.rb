@@ -9,10 +9,10 @@ admin = User.create!(email: 'admin@example.com', password: 'password', password_
 admin.add_role :admin
 
 w = World.create(name: 'Eros', user: admin)
-m = MapLayer.create(title: 'Eros Antique', world: w)
+m = MapLayer.create(title: 'Eros Antique', world: w, priority: 0)
 m.image.attach(io: File.open('public/eros.jpg'), filename: 'eros.jpg' , content_type: 'image/jpeg')
-%w[biome height temperature precipitation].each do |type|
-  m = MapLayer.create(title: "Eros #{type}", world: w)
+%w[biome height temperature precipitation].each_with_index do |type, index|
+  m = MapLayer.create(title: "Eros #{type}", world: w, priority: index + 1)
   m.image.attach(io: File.open("public/eros_#{type}.png"), filename: "eros_#{type}.png" , content_type: 'image/png')
 end
 state = State.create world: w, name: 'Zeon', primary_color: '#008000', secondary_color: '#808000'
@@ -24,6 +24,8 @@ p = Province.create(title: 'Arriccar', parent: a, world: w)
 h = Hex.create(world: w, x: 409, y: 274, parent: p, title: 'Arriccar', world: w, owner: state)
 h = Hex.create(world: w, x: 408, y: 273, parent: p, title: 'Neoheim', world: w)
 h = Hex.create(world: w, x: 409, y: 275, parent: p, title: 'North Arriccar', world: w)
+c.update_geometry! [[0, 0], [8192, 0], [8192, 4096], [0, 4096]]
+c.generate_hexes!
 #
 # puts 'Seeding hexes...'
 # Hex.transaction do

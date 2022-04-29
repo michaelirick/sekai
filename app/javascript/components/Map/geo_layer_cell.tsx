@@ -64,7 +64,7 @@ const GeoLayerCell = (props:GeoLayerCellProps) => {
             data={points}
             pathOptions={{
               color: isThisSelected ? 'yellow' : 'black',
-              fillColor: isThisSelected ? 'yellow' : (color[0] !== '#' ? '#' + color : color)
+              fillColor: isThisSelected ? 'yellow' : (color ? (color[0] !== '#' ? '#' + color : color) : 'dark gray')
             }}
             eventHandlers={{
               click: (e) => {
