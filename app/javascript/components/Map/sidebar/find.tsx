@@ -73,11 +73,7 @@ export const Find = (props) => {
   }
 
   const isActiveRow = (row) => {
-    if (!mapSelection.selectedObject) {
-      return false;
-    }
-
-    return mapSelection.selectedObject.id === row.id && mapSelection.selectedObject.type === row.type
+    return mapSelection.isSelected(row)
   }
 
   const addNew = () => {
@@ -96,9 +92,14 @@ export const Find = (props) => {
 
   }
 
-  const setObject = (object) => {
+  const setObject = (event, object) => {
     console.log('setObject', object)
-    mapSelection.setSelectedObject(object)
+    if (event.shiftKey) {
+      mapSelection.addSelected(object)
+    } else {
+      mapSelection.setSelectedObject(object)
+    }
+
     if (object.type === 'Hex') {
       mapView.updateMapCenter(mapView.map, ...(Hex.hexToPoint([object.x, object.y])))
     }
@@ -157,7 +158,7 @@ export const Find = (props) => {
             <Table.Row
               key={row.id}
               active={isActiveRow(row)}
-              onClick={() => setObject(row)}
+              onClick={(e) => setObject(e, row)}
             >
               <Table.Cell>{row.id}</Table.Cell>
               <Table.Cell>{row.title ?? row.name}</Table.Cell>

@@ -15,6 +15,7 @@ import { State } from '../../models/state'
 import { Settlement } from '../../models/settlement'
 import { Culture } from '../../models/culture'
 import { Biome } from '../../models/biome'
+import { SelectParent } from 'components/Map/actions/select_parent'
 
 const GeoLayerTypes = {
   Hex, Province, Area, Region, Subcontinent, Continent, State, Settlement, Culture, Biome
@@ -57,14 +58,14 @@ const GeoLayerCell = (props:GeoLayerCellProps) => {
   // console.log('GeoLayerCell', props);
   return (
     <MapSelectionContext.Consumer>
-      {({selectedObject, setSelectedObject}) => {
+      {({ selectedObject, setSelectedObject, addSelected, removeSelected, withSelection, isSelected }) => {
         const isThisSelected = selectedObject && selectedObject?.id === id && selectedObject?.type === type
         return (
           <GeoJSON
             data={points}
             pathOptions={{
-              color: isThisSelected ? 'yellow' : 'black',
-              fillColor: isThisSelected ? 'yellow' : (color ? (color[0] !== '#' ? '#' + color : color) : 'dark gray')
+              color: isSelected({ id, type }) ? 'yellow' : 'black',
+              fillColor: isSelected({ id, type }) ? 'yellow' : (color ? (color[0] !== '#' ? '#' + color : color) : 'dark gray')
             }}
             eventHandlers={{
               click: (e) => {
@@ -72,30 +73,45 @@ const GeoLayerCell = (props:GeoLayerCellProps) => {
                   console.log('GeoLayerCell#select', layer, id, name, points, e)
                   // e.preventDefault()
                   if (setSelectedObject) {
-                    setSelectedObject(new GeoLayerTypes[type]({
+                    const newSelection = new GeoLayerTypes[type]({
                       layer: layer,
                       type: type,
                       id: id,
                       title: name,
                       type: type
-                    }))
+                    })
+                    if (e.originalEvent.shiftKey) {
+                      if (isSelected({ id, type })) {
+                        removeSelected(newSelection)
+                      } else {
+                        addSelected(newSelection)
+                      }
+                    } else {
+                      setSelectedObject(newSelection)
+                    }
                   }
                 }
-                if (mapTool == 'delete') {
+                if (mapTool === 'delete') {
                   (new GeoLayerTypes[type]({type: type, id: id})).delete()
                     .then(response => console.log('deleted', response))
                     .catch(error => console.log('failed to delete', error))
                 }
                 if (mapTool === 'selectParent') {
-                  selectedObject.parent_id = id;
-                  selectedObject.parent_type = 'GeoLayer';
-                  console.log('selectParent', selectedObject)
-                  setSelectedObject(selectedObject);
-                  selectedObject.save().then(response => console.log('saved'))
-                    .catch(error => console.log('selectParent Error:', error))
-                  setMapTool('select');
+                  Promise.allSettled(withSelection(SelectParent))
+                    .then((results) => console.log('selectParent results', results))
+                  // withSelection((obj) => {
+                  //   obj.parent_id = id
+                  //   obj.parent_type = 'GeoLayer'
+                  //   console.log('selectParent', obj)
+                  //   setSelectedObject(obj)
+                  //   obj.save().then(response => console.log('saved'))
+                  //     .catch(error => console.log('selectParent Error:', error))
+                  // })
+                  // SelectParent
+                  setMapTool('select')
                 }
                 if (mapTool === 'selectDeJure') {
+
                   selectedObject.de_jure_id = id;
                   selectedObject.de_jure_type = 'GeoLayer';
                   console.log('selectDeJure', selectedObject)

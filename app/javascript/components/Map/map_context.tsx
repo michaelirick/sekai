@@ -4,12 +4,70 @@ import {useState, createContext} from 'react'
 export const useMapSelection = (props) => {
   const [selectedObject, setSelectedObject] = useState(null)
   const [world, setWorld] = useState(props.world)
-  return { selectedObject, setSelectedObject, world, setWorld }
+  const removeSelected = (obj) => {
+    if (selectedObject && selectedObject.type === 'Array') {
+      setSelectedObject({
+        type: 'Array',
+        items: selectedObject.items.filter(item => item.id !== obj.id || item.item !== obj.type)
+      })
+    }
+  }
+  const addSelected = (obj) => {
+    if (selectedObject) {
+      if (selectedObject.type === 'Array') {
+        // already in, early return
+        if (selectedObject.items.find(o => obj.id === o.id && obj.type === o.type)) {
+          return
+        }
+
+        setSelectedObject({
+          type: 'Array',
+          items: [...selectedObject.items, obj]
+        })
+      } else {
+        setSelectedObject({
+          type: 'Array',
+          items: [selectedObject, obj]
+        })
+      }
+    } else {
+      setSelectedObject({
+        type: 'Array',
+        items: [obj]
+      })
+    }
+  }
+  const withSelection = (method) => {
+    if (!selectedObject) {
+      return null
+    }
+    if (selectedObject.type === 'Array') {
+      return selectedObject.items.map(item => method(item))
+    } else {
+      return method(selectedObject)
+    }
+  }
+  const isSelected = (obj) => {
+    if (!selectedObject) {
+      return false
+    }
+
+    if (selectedObject.type === 'Array') {
+      return selectedObject.items.find(item => item.id === obj.id && item.type === obj.type)
+    } else {
+      return selectedObject.id === obj.id && selectedObject.type === obj.type
+    }
+  }
+  return { selectedObject, setSelectedObject, world, setWorld, addSelected, removeSelected, withSelection, isSelected }
 }
 
 export const MapSelectionContext = React.createContext({
   selectedObject: null,
   setSelectedObject: (_) => {},
+  addSelected: (_) => {},
+  removeSelected: (_) => {},
+  withSelection: (_) => {},
+  isSelected: (_) => {},
   world: null,
   setWorld: (_) => {}
 })
