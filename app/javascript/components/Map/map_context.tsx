@@ -8,7 +8,7 @@ export const useMapSelection = (props) => {
     if (selectedObject && selectedObject.type === 'Array') {
       setSelectedObject({
         type: 'Array',
-        items: selectedObject.items.filter(item => item.id !== obj.id || item.item !== obj.type)
+        items: selectedObject.items.filter(item => !(item.id === obj.id && item.item === obj.type))
       })
     }
   }
@@ -37,14 +37,14 @@ export const useMapSelection = (props) => {
       })
     }
   }
-  const withSelection = (method) => {
+  const withSelection = (method, params) => {
     if (!selectedObject) {
       return null
     }
     if (selectedObject.type === 'Array') {
-      return selectedObject.items.map(item => method(item))
+      return selectedObject.items.map(item => method(item, params))
     } else {
-      return method(selectedObject)
+      return method(selectedObject, params)
     }
   }
   const isSelected = (obj) => {
@@ -58,7 +58,33 @@ export const useMapSelection = (props) => {
       return selectedObject.id === obj.id && selectedObject.type === obj.type
     }
   }
-  return { selectedObject, setSelectedObject, world, setWorld, addSelected, removeSelected, withSelection, isSelected }
+
+  const hasType = (types) => {
+    if (!Array.isArray(types)) {
+      types = [types]
+    }
+
+    if (!selectedObject) {
+      return false
+    }
+
+    if (selectedObject.type === 'Array') {
+      return selectedObject.items.all(item => types.some(type => item.type === type))
+    } else {
+      return types.some(type => selectedObject.type === type)
+    }
+  }
+  return {
+    selectedObject,
+    setSelectedObject,
+    world,
+    setWorld,
+    addSelected,
+    removeSelected,
+    withSelection,
+    isSelected,
+    hasType
+  }
 }
 
 export const MapSelectionContext = React.createContext({

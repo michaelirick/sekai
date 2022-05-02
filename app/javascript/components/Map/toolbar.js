@@ -1,12 +1,14 @@
 import * as React from "react";
 import { Icon, Menu, Dropdown } from 'semantic-ui-react'
-import { MapModeContext, MapToolContext, MapViewContext } from './map_context'
+import { MapModeContext, MapSelectionContext, MapToolContext, MapViewContext } from './map_context'
 import { useContext } from 'react'
+import { SelectParentObjectTypes } from './actions/select_parent'
 
 export const ToolBar = (props) => {
   const mapTool = useContext(MapToolContext);
   const mapMode = useContext(MapModeContext);
   const mapView = useContext(MapViewContext);
+  const mapSelection = useContext(MapSelectionContext)
   console.log('ToolBar', props)
   const MapMode = ({name, label}) => {
     return (<Menu.Item
@@ -20,7 +22,11 @@ export const ToolBar = (props) => {
     />)
   }
 
-  const MapTool = ({name, label}) => {
+  const MapTool = ({name, label, types}) => {
+    if (types && !mapSelection.hasType(types)) {
+      return ''
+    }
+
     return (<Menu.Item
       name={name}
       active={mapTool.mapTool === name}
@@ -37,6 +43,7 @@ export const ToolBar = (props) => {
       <MapTool name="editPoints" label="edit"/>
       <MapTool name="claim" label="chain"/>
       <MapTool name="placeMarker" label="marker"/>
+      <MapTool name="selectParent" label="sitemap" types={SelectParentObjectTypes}/>
     </Menu>
     <Menu>
       <MapMode name="continents" label="Continents"/>

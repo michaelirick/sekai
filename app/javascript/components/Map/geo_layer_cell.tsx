@@ -97,7 +97,7 @@ const GeoLayerCell = (props:GeoLayerCellProps) => {
                     .catch(error => console.log('failed to delete', error))
                 }
                 if (mapTool === 'selectParent') {
-                  Promise.allSettled(withSelection(SelectParent))
+                  Promise.allSettled(withSelection(SelectParent, { id, type }))
                     .then((results) => console.log('selectParent results', results))
                   // withSelection((obj) => {
                   //   obj.parent_id = id
