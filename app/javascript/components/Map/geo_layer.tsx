@@ -1,18 +1,19 @@
 // eslint-disable-next-line no-use-before-define
 import * as React from 'react'
 import { LayerGroup } from 'react-leaflet'
-import GeoLayerCell from './geo_layer_cell'
+import GeoLayerCell, {GeoLayerCellProps} from './geo_layer_cell'
 
 type GeoLayerProps = {
-  points?: []
+  name: string;
+  cells: GeoLayerCellProps[]
 }
 
 const GeoLayer = (props: GeoLayerProps) => {
-  console.log('GeoLayer', props)
+  // console.log('GeoLayer', props)
   const shapes = () => {
-    return props.points.map((m, i) => {
-      console.log('GeoLayer#shapes', m)
-      return (<GeoLayerCell key={i} points={m} color="#ff0000"></GeoLayerCell>)
+    return props.cells.map((m, i) => {
+      // console.log('GeoLayer#shapes', m)
+      return (<GeoLayerCell layer={props.name} id={m.id} name={m.name} key={i} points={m.points} color="#ff0000"/>)
     })
   }
 

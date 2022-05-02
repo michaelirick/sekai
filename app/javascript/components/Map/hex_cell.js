@@ -35,7 +35,7 @@ const HexCell = (props) => {
     eventHandlers: {
       click: (e) => console.log('HexCell#click', props, e)
     }
-  }, popup())
+  })
 }
 
 export default HexCell

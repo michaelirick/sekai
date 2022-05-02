@@ -1,4 +1,19 @@
 class Hex < GeoLayer
+  after_create :reset_geometry!
+  validates_uniqueness_of :x, scope: %i[y world_id]
+
+  def farmers_count
+    population / 3
+  end
+  
+  def population_capacity
+    # lots * 250
+    farmers_count * 30
+  end
+
+  def net_population_capacity
+    population_capacity - population
+  end
 end
 # #require 'geometry'
 

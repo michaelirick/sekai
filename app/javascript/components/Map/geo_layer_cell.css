@@ -1,0 +1,40 @@
+.leaflet-tooltip.geo-layer-cell-label {
+    background-color: transparent;
+    border: transparent;
+    box-shadow: none;
+}
+
+.leaflet-tooltip.geo-layer-cell-label.continents-label {
+    color: white;
+    font-size: 36pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.subcontinents-label {
+    color: white;
+    font-size: 30pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.regions-label {
+    color: white;
+    font-size: 24pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.areas-label {
+    color: white;
+    font-size: 20pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.states-label {
+    font-size: 20pt;
+    color: white;
+}
+.leaflet-tooltip.geo-layer-cell-label.independent_states-label {
+    font-size: 20pt;
+    color: white;
+}
+.leaflet-tooltip.geo-layer-cell-label.provinces-label {
+    color: white;
+    font-size: 18pt;
+}
+.leaflet-tooltip.geo-layer-cell-label.hexes-label {
+    font-size: 16pt;
+    color: white;
+}
+
+

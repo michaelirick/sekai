@@ -1,6 +1,10 @@
-class HexPolicy < ApplicationPolicy
+class HexPolicy < GeoLayerPolicy
   def update_boundaries?
     admin?
+  end
+
+  def pages?
+    index?
   end
 
   class Scope < Scope

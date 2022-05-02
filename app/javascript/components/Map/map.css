@@ -1,0 +1,12 @@
+.map-component {
+    display: flex;
+}
+
+.map-container {
+    flex: 1;
+}
+
+.map-sidebar {
+    flex: 1 1;
+}
+

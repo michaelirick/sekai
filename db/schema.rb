@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_29_230814) do
+ActiveRecord::Schema.define(version: 2022_05_01_164509) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
@@ -67,6 +68,68 @@ ActiveRecord::Schema.define(version: 2021_09_29_230814) do
     t.integer "start_date_id"
   end
 
+  create_table "biomes", force: :cascade do |t|
+    t.string "title"
+    t.integer "low_moisture"
+    t.integer "high_moisture"
+    t.integer "low_tempurature"
+    t.integer "high_tempurature"
+    t.string "color"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.integer "world_id"
+  end
+
+  create_table "building_types", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.integer "upgrade_id"
+    t.integer "lots"
+    t.integer "cost"
+    t.jsonb "faction_bonus", default: {}
+    t.jsonb "settlement_bonus", default: {}
+    t.string "flags"
+    t.jsonb "limits", default: {}
+    t.jsonb "need_types", default: {}
+    t.jsonb "output_types", default: {}
+    t.jsonb "effects", default: {}
+    t.jsonb "discounts", default: {}
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "buildings", force: :cascade do |t|
+    t.string "name"
+    t.integer "building_type_id"
+    t.string "flags"
+    t.integer "location_id"
+    t.string "location_type"
+    t.integer "owner_id"
+    t.string "owner_type"
+    t.string "owner_name"
+    t.date "completion_date"
+    t.integer "world_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "culture_groups", force: :cascade do |t|
+    t.integer "parent_id"
+    t.integer "child_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "cultures", force: :cascade do |t|
+    t.string "title"
+    t.string "color"
+    t.integer "world_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+  end
+
   create_table "geo_layers", force: :cascade do |t|
     t.string "title"
     t.integer "parent_id"
@@ -75,8 +138,16 @@ ActiveRecord::Schema.define(version: 2021_09_29_230814) do
     t.integer "y"
     t.integer "world_id"
     t.string "type"
+    t.integer "owner_id"
+    t.string "owner_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.string "color"
+    t.integer "culture_id"
+    t.integer "biome_id"
+    t.integer "terrain_id"
+    t.integer "population"
   end
 
   create_table "map_layers", force: :cascade do |t|
@@ -84,6 +155,7 @@ ActiveRecord::Schema.define(version: 2021_09_29_230814) do
     t.integer "world_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "priority"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -96,14 +168,46 @@ ActiveRecord::Schema.define(version: 2021_09_29_230814) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "settlements", force: :cascade do |t|
+    t.string "name"
+    t.integer "hex_id"
+    t.integer "owner_id"
+    t.integer "world_id"
+    t.integer "population"
+    t.string "government_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "states", force: :cascade do |t|
     t.string "name"
     t.string "adjective"
     t.integer "world_id"
     t.string "primary_color"
     t.string "secondary_color"
+    t.float "stability", default: 0.0
+    t.float "economy", default: 0.0
+    t.float "loyalty", default: 0.0
+    t.float "unrest", default: 0.0
+    t.float "money", default: 0.0
+    t.string "government_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.integer "owner_id"
+    t.string "owner_type"
+    t.geometry "realm_geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.integer "de_jure_id"
+    t.string "de_jure_type"
+  end
+
+  create_table "terrains", force: :cascade do |t|
+    t.string "title"
+    t.string "color"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.integer "world_id"
   end
 
   create_table "users", force: :cascade do |t|

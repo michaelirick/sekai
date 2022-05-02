@@ -7,12 +7,25 @@ class World < ApplicationRecord
   has_many :geo_layers
   # has_many :hegxes
   belongs_to :user
+  has_many :settlements
+  has_many :cultures
+  has_many :biomes
   # add_geo_layer(
   #   name: 'World',
   #   subordinates: :continents
   # )
 
+
   scope :for_user, -> (user) { where(user: user) }
+
+  def factory
+    @factory ||= RGeo::Cartesian.factory
+    @factory
+  end
+
+  def reset_geometry!
+
+  end
 
   # GEO_LAYER_TYPES = %i[
   #   continent

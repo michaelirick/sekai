@@ -33,15 +33,109 @@ ActiveAdmin.register World do
 
     def map
       world = World.find params[:id]
-      hexes = Hex.all
-      range = 500
-      zoom = params[:zoom].to_i
-
+      mode = params[:mapMode] || 'continents'
       x, y = if params[:center]
         params[:center].try(:split, ',').map &:to_i
       else
         [0 ,0]
       end
+      zoom = params[:zoom].to_i + 5
+      zoom = 1 if zoom < 1
+      puts "zoom: #{zoom}"
+      w = 4000 / zoom
+      h = 2000 / zoom
+      cells = []
+      geo_layer_type = mode.singularize.titleize
+      box = world.factory.polygon world.factory.linear_ring([
+        world.factory.point(x - w / 2, y - h / 2),
+        world.factory.point(x - w / 2, y + h / 2),
+        world.factory.point(x + w / 2, y + h / 2),
+        world.factory.point(x + w / 2, y - h / 2)
+                                                            ])
+      cell = Struct.new(:type, :id, :title, :color, :geometry)
+      if mode == 'hexes'
+        x, y = GeoLayer.point_to_hex x, y
+        puts 'new xy', x, y
+        if false #zoom < 5
+          cells = []
+        else
+          w = case zoom
+              when 5
+                55
+              when 6
+                25
+              when 7
+                15
+              when 8
+                10
+              when 9
+                5
+              else
+                0
+              end
+          # x, y = GeoLayer.point_to_hex x, y
+          h = 35#10 * (zoom - 3)
+          # w = 2048 / (2**zoom)#10 * (zoom - 3)
+          h = w
+          puts 'box', w, h
+          puts 'pixels', 2 ** zoom * 256
+          cells = world.geo_layers.where(type: 'Hex').where(
+            "x > ? AND x < ? AND y > ? AND y < ?",
+            x - w, x + w, y - h, y + h
+          )
+          #cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+          # cells = world.geo_layers.where(type: 'Hex')
+        end
+      elsif mode == 'states'
+        cells = world.states
+      elsif mode == 'independent_states'
+
+        cells = world.states.where(owner_id: nil).map do |s|
+          cell.new('State', s.id, s.name, s.primary_color, s.realm_geometry)
+        end
+      elsif mode == 'settlements'
+        cells = world.settlements.map do |s|
+          cell.new('Settlement', s.id, s.name, 'dark gray', s.hex.geometry)
+        end
+      elsif mode == 'cultures'
+        cells = world.cultures.map do |c|
+          cell.new('Culture', c.id, c.title, c.color, c.geometry)
+        end
+      elsif mode == 'biomes'
+        cells = world.biomes.map do |b|
+          cell.new('Biome', b.id, b.title, b.color, b.geometry)
+        end
+      else
+        puts box
+
+        geo_layers = GeoLayer.arel_table
+        cells = world.geo_layers.where(type: geo_layer_type)#.where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+
+        #.where(geo_layers[:geometry].st_contains(box))
+
+
+      end
+      # cells = world.geo_layers.where(type: geo_layer_type)
+      cells = cells.map do |c|
+        {
+          id: c.id,
+          name: c.try(:title) || c.try(:name),
+          points: RGeo::GeoJSON.encode(c.geometry),
+          layer: mode,
+          type: c.type,
+          color: c.try(:color) || c.try(:primary_color)
+        }
+      end
+      puts cells.count
+      # hexes = Hex.all
+      # range = 500
+      # zoom = params[:zoom].to_i
+
+      # x, y = if params[:center]
+      #   params[:center].try(:split, ',').map &:to_i
+      # else
+      #   [0 ,0]
+      # end
 
       # # TODO: scope to world
       # hexes = Hex.viewable_on_map_at(world, x, y, zoom).map do |h|
@@ -49,7 +143,9 @@ ActiveAdmin.register World do
       # end
       hexes = []
 
-      render json: hexes
+
+
+      render json: {cells: cells}
     end
   end
 
@@ -87,10 +183,21 @@ ActiveAdmin.register World do
     end
   end
 
-  action_item :select_world, only: :show do
+  action_item :select_world, only: [:show] do
     # if current_user.can?(:select_world, character)
       link_to 'Select World', select_world_admin_world_path(world)
     # end
+  end
+
+  index do
+    selectable_column
+    id_column
+    column :name
+
+    actions defaults: true do |world|
+
+      link_to 'Select World', select_world_admin_world_path(world), class: 'member_link'
+    end
   end
 
 end

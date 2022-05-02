@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  low_moisture: 1
+  high_moisture: 1
+  low_tempurature: 1
+  high_tempurature: 1
+  color: MyString
+
+two:
+  title: MyString
+  low_moisture: 1
+  high_moisture: 1
+  low_tempurature: 1
+  high_tempurature: 1
+  color: MyString

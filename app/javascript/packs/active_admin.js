@@ -9,3 +9,4 @@ import 'arctic_admin'
 const componentRequireContext = require.context('components', true)
 const ReactRailsUJS = require('react_ujs')
 ReactRailsUJS.useContext(componentRequireContext)
+import 'semantic-ui-css/semantic.min.css'

@@ -1,84 +1,89 @@
 import * as React from 'react'
 import * as Leaflet from 'react-leaflet'
-import { MapContainer, LayerGroup, LayersControl } from 'react-leaflet'
+import { MapContainer, LayerGroup, LayersControl, useMapEvents, ScaleControl } from 'react-leaflet'
+import {
+  MapModeContext,
+  MapSelectionContext,
+  MapToolContext, MapViewContext,
+  useMapSelection,
+  useMapTool,
+  useMapView,
+  useMapMode
+} from './map_context'
 import html from 'utils/html'
 import MapLayer from './map_layer'
 import GeoLayer from './geo_layer'
 import HexGrid from './hex_grid'
 import SideBar from './side_bar'
 import 'leaflet/dist/leaflet.css'
+import './map.css'
+import GeoLayerGrid from './geo_layer_grid'
+import { zoom } from 'leaflet/src/control/Control.Zoom'
+import { ToolBar } from './toolbar'
+import L from 'leaflet';
+import { World } from 'models/world'
 
+delete L.Icon.Default.prototype._getIconUrl;
 // const [container, tileLayer] = html.tagify([MapContainer, TileLayer]);
-
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 const Map = (props) => {
   console.log('Map', props)
+  // console.log('mapCenter', localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY'))
+  // const [selectedObject, setSelectedObject] = React.useState(null);
+  const mapSelection = useMapSelection({world: new World(props.world)})
+  const mapTool = useMapTool()
+  const mapMode = useMapMode()
+  const mapView = useMapView()
+
   const mapLayer = (layer, index) => {
     console.log('layer', layer)
     return <LayersControl.BaseLayer
       key={`layer-${index}`}
       name={layer.title}
-      checked={true}
+      checked={mapMode.mapLayer === layer.title}
     >
       <MapLayer key={`layer-${index}`} {...layer}></MapLayer>
     </LayersControl.BaseLayer>
   }
 
   const viewOptions = {
-    center: [2800, 3700],
+    center: [
+      localStorage.getItem('mapCenterY') ?? 2800,
+      localStorage.getItem('mapCenterX') ?? 3700
+    ],
     // center: [4805, 2100],
-    zoom: 2
+    zoom: localStorage.getItem('mapZoom') ?? 2
   }
 
-  const hexes = () => {
-    return <LayersControl.Overlay
-      name='Hexes'
-      checked={true}>
-        <HexGrid {...viewOptions} world={props.world}></HexGrid>
-      </LayersControl.Overlay>
-  }
-
-  const geoLayer = (layer, i) => {
-    console.log('Map#geoLayer', layer)
-    return <LayersControl.Overlay name={layer.name} checked={false}>
-      <GeoLayer {...layer}></GeoLayer>
-    </LayersControl.Overlay>
-  }
-
-  const geoLayers = () => {
-    return null;
-    // return props.world.geo_layers.map((layer, i) => {
-    //   return geoLayer(layer, i)
-    // })
-  }
-
-  const Control = (props) => {
-    return <div></div>
-    // <div class="leaflet-control-zoom leaflet-bar leaflet-control">
-    // <a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in">
-    // +
-    // </a>
-    // <a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out">
-    // −
-    // </a>
-    // </div>
-    // return html.div('control', { className: 'leaflet-control leaflet-bar' }, 'test')
+  const geoLayerGrid = () => {
+    return html.tag(GeoLayerGrid, 'grid', {
+      mapMode: mapMode,
+      world: props.world
+    });
   }
 
   const layers = () => {
     return html.tag(LayersControl, 'layers', {},
-      props.world.map_layers.map((layer, i) => {
+      props.world.map_layers.sort((a, b) => (a < b)).map((layer, i) => {
         return mapLayer(layer, i)
       }),
-      geoLayers(),
-      hexes()
+      // geoLayers(),
+      geoLayerGrid(),
+      // hexes(),
       // html.tag(Control, 'control', {position: 'bottomleft'}, 'test')
+      // html.tag(ScaleControl, 'scale', {position: 'bottomright'})
     )
   }
 
   // yo
   const mapContainer = () => {
-    console.log('mapContainer')
+    console.log('mapContainer', L.CRS.Simple.scale(1))
     return html.tag(MapContainer, 'test', {
+      className: 'map-container',
       key: 'test',
       ...viewOptions,
       minZoom: -10,
@@ -97,13 +102,26 @@ const Map = (props) => {
   }
 
   const sideBar = () => {
-    return <SideBar></SideBar>
+    return <SideBar
+      class="map-sidebar"
+    ></SideBar>
   }
 
-  return <div>
-    {mapContainer()}
-    {sideBar()}
-  </div>
+  return (
+    <MapModeContext.Provider value={mapMode}>
+      <MapViewContext.Provider value={mapView}>
+        <MapSelectionContext.Provider value={mapSelection}>
+          <MapToolContext.Provider value={mapTool}>
+            <ToolBar />
+            <div className="map-component">
+              {mapContainer()}
+              {sideBar()}
+            </div>
+          </MapToolContext.Provider>
+        </MapSelectionContext.Provider>
+      </MapViewContext.Provider>
+    </MapModeContext.Provider>
+  )
 }
 
 export default Map

@@ -25,10 +25,10 @@ module Types
       puts 'get them hexes'
       # hexes = Hex.all
       hexes = Hex.where(world_id: args[:world_id])
-      radius = args[:zoom] * 200
-      
-      hexes = hexes.where(x: ((args[:x] - radius)..(args[:x] + radius))) if args[:x]
-      hexes = hexes.where(y: ((args[:y] - radius)..(args[:y] + radius))) if args[:y]
+      # radius = args[:zoom] * 200
+      #
+      # hexes = hexes.where(x: ((args[:x] - radius)..(args[:x] + radius))) if args[:x]
+      # hexes = hexes.where(y: ((args[:y] - radius)..(args[:y] + radius))) if args[:y]
       hexes
     end
   end
