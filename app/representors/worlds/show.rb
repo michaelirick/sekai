@@ -1,6 +1,6 @@
 class Worlds::Show < ApplicationRepresentor
   def attributes
-    %i[id name]
+    %i[id name resolution_x resolution_y circumference hex_radius]
   end
 
   def map_layers_attributes

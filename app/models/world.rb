@@ -15,6 +15,7 @@ class World < ApplicationRecord
   #   subordinates: :continents
   # )
 
+  HEX_RADIUS = 6.0469 # miles
 
   scope :for_user, -> (user) { where(user: user) }
 
@@ -27,6 +28,57 @@ class World < ApplicationRecord
 
   end
 
+  def pixel_length
+    (circumference || 1.0) / (resolution_x || 1.0)
+  end
+
+  def hex_radius
+    HEX_RADIUS / pixel_length
+  end
+
+  # odd-q hexes
+  def point_to_hex(x, y)
+    q = ((2.0/3 * x) / hex_radius).round
+    r = ((-1.0/3 * x + Math.sqrt(3)/3 * y) / hex_radius).round
+    ny = r + (q - (q & 1))/2
+    [q, ny]
+  end
+
+  # odd-q hexes
+  def hex_to_point(x, y)
+  radius = hex_radius
+  nx = radius * x * 3.0/2
+  ny = radius * Math.sqrt(3) * (y + 0.5 * (x & 1))
+  [nx, ny]
+  end
+
+  def draw_hex(center)
+    radius = hex_radius
+    x, y = center
+    sides = 6
+    grade = 2 * Math::PI / sides
+    sides.times.map do |i|
+      [
+        (Math.cos(grade * i) * radius) + x,
+        (Math.sin(grade * i) * radius) + y
+      ]
+    end
+  end
+
+  def hex_geometry(points)
+    points = points.map do |p|
+      px, py = p
+      factory.point(px, py)
+    end
+
+    geometry_from_points points
+  end
+
+  def geometry_from_points(points)
+    ring = factory.linear_ring points
+    polygon = factory.polygon(ring)
+    factory.collection([polygon])
+  end
   # GEO_LAYER_TYPES = %i[
   #   continent
   #   subcontinent

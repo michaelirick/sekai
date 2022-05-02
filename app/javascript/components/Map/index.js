@@ -87,6 +87,7 @@ const Map = (props) => {
       key: 'test',
       ...viewOptions,
       minZoom: -10,
+      maxZoom: 10,
       // scrollWheelZoom: false,
       style: {
         height: '600px',

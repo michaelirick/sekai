@@ -6,7 +6,7 @@ ActiveAdmin.register World do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :name
+  permit_params :name, :resolution_x, :resolution_y, :circumference
   #
   # or
   #
@@ -54,7 +54,7 @@ ActiveAdmin.register World do
                                                             ])
       cell = Struct.new(:type, :id, :title, :color, :geometry)
       if mode == 'hexes'
-        x, y = GeoLayer.point_to_hex x, y
+        x, y = world.point_to_hex x, y
         puts 'new xy', x, y
         if false #zoom < 5
           cells = []
@@ -84,7 +84,7 @@ ActiveAdmin.register World do
             x - w, x + w, y - h, y + h
           )
           #cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
-          # cells = world.geo_layers.where(type: 'Hex')
+          cells = world.geo_layers.where(type: 'Hex')
         end
       elsif mode == 'states'
         cells = world.states
@@ -123,7 +123,8 @@ ActiveAdmin.register World do
           points: RGeo::GeoJSON.encode(c.geometry),
           layer: mode,
           type: c.type,
-          color: c.try(:color) || c.try(:primary_color)
+          color: c.try(:color) || c.try(:primary_color),
+          hex_radius: world.hex_radius
         }
       end
       puts cells.count
@@ -152,17 +153,13 @@ ActiveAdmin.register World do
   show do |w|
     attributes_table do
       row :name
+      row :resolution_x
+      row :resolution_y
+      row :circumference
       row :created_at
     end
 
     tabs do
-      tab 'Continents' do
-        table_for GeoLayer.continents_for(w) do
-          column :id
-          column :title
-        end
-      end
-
       tab 'Map' do
         react_component 'Map/index', { world: Worlds::Show.new(w).to_json }
       end

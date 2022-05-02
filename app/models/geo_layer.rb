@@ -190,34 +190,6 @@ class GeoLayer < ApplicationRecord
     end
   end
 
-  # odd-q hexes
-  def self.point_to_hex(x, y)
-    q = ((2.0/3 * x) / HEX_RADIUS).round
-    r = ((-1.0/3 * x + Math.sqrt(3)/3 * y) / HEX_RADIUS).round
-    ny = r + (q - (q & 1))/2
-    [q, ny]
-  end
-
-  # odd-q hexes
-  def self.hex_to_point(x, y)
-    radius = HEX_RADIUS
-    nx = radius * x * 3.0/2
-    ny = radius * Math.sqrt(3) * (y + 0.5 * (x & 1))
-    [nx, ny]
-  end
-
-  def self.draw_hex(center)
-    radius = HEX_RADIUS
-    x, y = center
-    sides = 6
-    grade = 2 * Math::PI / sides
-    sides.times.map do |i|
-      [
-        (Math.cos(grade * i) * radius) + x,
-        (Math.sin(grade * i) * radius) + y
-      ]
-    end
-  end
 
   def self.hex_geometry(points, factory)
     points = points.map do |p|
@@ -228,14 +200,8 @@ class GeoLayer < ApplicationRecord
     geometry_from_points points, factory
   end
 
-  def self.geometry_from_points(points, factory)
-    ring = factory.linear_ring points
-    polygon = factory.polygon(ring)
-    factory.collection([polygon])
-  end
-
   def reset_hex!
-    self.geometry = GeoLayer.hex_geometry GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)), factory
+    self.geometry = world.hex_geometry world.draw_hex(world.hex_to_point(x, y))
     save!
   end
 
@@ -311,7 +277,7 @@ class GeoLayer < ApplicationRecord
     result = []
     (low_x..high_x).step(6) do |x|
       (low_y..high_y).step(6) do |y|
-        result << GeoLayer.point_to_hex(x, y)
+        result << world.point_to_hex(x, y)
       end
     end
     # generate_points(area.to_i / 10).map do |point|
@@ -357,7 +323,7 @@ class GeoLayer < ApplicationRecord
           parent_type: 'GeoLayer',
           x: x,
           y: y,
-          geometry: GeoLayer.hex_geometry(GeoLayer.draw_hex(GeoLayer.hex_to_point(x, y)), factory),
+          geometry: world.hex_geometry(world.draw_hex(world.hex_to_point(x, y))),
           created_at: Time.now,
           updated_at: Time.now
         }

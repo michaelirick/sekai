@@ -29,23 +29,52 @@ export class World extends Model {
   }
 
   // TODO: move to DB
-  get circumference () {
-    return 25000
-  }
-
-  // TODO: move to DB
   get width () {
-    return 8192
+    return this.resolution_x
   }
 
   // TODO: move to DB
   get hexSize () {
-    return 6.0469
+    return this.hex_radius
+  }
+
+  latLngToXY (latLng) {
+    return [latLng.lng, latLng.lat];
+  }
+
+  pointToHex (center) {
+    const [x, y] = center;
+    const q = Math.round(((2.0/3) * x) / this.hexSize);
+    const r = Math.round(((-1.0/3 * x + Math.sqrt(3)/3 * y) / this.hexSize));
+    const ny = r + (q - (q & 1)) / 2
+
+    return [q, ny];
+  }
+
+  hexToPoint (center) {
+    const [x, y] = center;
+    const nx = this.hexSize * x * 3.0/2
+    const ny = this.hexSize * Math.sqrt(3) * (y + 0.5 * (x & 1))
+
+    return [nx, ny];
+  }
+
+  drawHex (center) {
+    const [x, y] = center;
+    const sides = [0, 1, 2, 3, 4, 5];
+    const grade = 2.0 * Math.PI / 6;
+
+    return sides.map(s => {
+      return [
+        (Math.cos(grade * s) * this.hexSize) + x,
+        (Math.sin(grade * s) * this.hexSize) + y
+      ]
+    })
   }
 
   hexOptions () {
     return {
-      size: this.hexSize / (this.circumference / this.width),
+      size: this.hexSize,
       strokeWidth: 1
     }
   }

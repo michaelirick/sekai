@@ -101,7 +101,7 @@ export const Find = (props) => {
     }
 
     if (object.type === 'Hex') {
-      mapView.updateMapCenter(mapView.map, ...(Hex.hexToPoint([object.x, object.y])))
+      mapView.updateMapCenter(mapView.map, ...(mapSelection.world.hexToPoint([object.x, object.y])))
     }
   }
 

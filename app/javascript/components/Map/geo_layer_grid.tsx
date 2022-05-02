@@ -27,15 +27,10 @@ const GeoLayerGrid = (props) => {
     mapView.setMap(mapObject)
   }
 
-  // const HexFactory = world.hexFactory()
-  // const Grid = defineGrid(HexFactory)
-
   const [grid, setGrid] = useState([]) // empty grid, make api call to populate from center and zoom
   const [center, setCenter] = useState(props.center ? props.center : [localStorage.getItem('mapCenterX'), localStorage.getItem('mapCenterY')]) // these are point cords
   const [zoom, setZoom] = useState(props.zoom ? props.zoom : localStorage.getItem('mapZoom'))
-  const [selectedHex, setSelectedHex] = useState(null)
-  // const [cable, setCable] = useState(ActionCable.createConsumer('/cable'))
-  // const [subscription, setSubscription] = useState(null);
+
 
   const map = useMapEvents({
     baselayerchange: (e) => {
@@ -46,7 +41,7 @@ const GeoLayerGrid = (props) => {
     click: (e) => {
       if (mapTool.mapTool === 'add') {
         console.log('GeoLayerGrid#add', e)
-        const [x, y] = Hex.pointToHex(Hex.latLngToXY(e.latlng))
+        const [x, y] = mapSelection.world.pointToHex(mapSelection.world.latLngToXY(e.latlng))
         let parent_id = world.id;
         let parent_type = 'World'
         if (mapSelection.selectedObject && mapSelection.type != 'Hex') {
