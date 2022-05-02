@@ -5,6 +5,7 @@ ActiveAdmin.register State do
   check_for_world!
   add_pages!
   menu if: proc{true}
+  config.create_another = true
 
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
@@ -28,7 +29,8 @@ ActiveAdmin.register State do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-
+  filter :name
+  filter :primary_color
 
   form do |f|
     f.inputs do
@@ -86,13 +88,16 @@ ActiveAdmin.register State do
     column :owner
     column :primary_color
     column :secondary_color
-    column :de_jure
+    # column :de_jure
     actions
   end
 
   show do |s|
     attributes_table do
       row :name
+      row :title do
+        s.name
+      end
       row :adjective
       row :owner
       row :de_jure

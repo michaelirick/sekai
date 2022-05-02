@@ -45,7 +45,6 @@ ActiveAdmin.register Hex do
 
   controller do
 
-
     def biomes
       biomes = GeoLayer::BIOME_TYPES.map do |biome|
         {

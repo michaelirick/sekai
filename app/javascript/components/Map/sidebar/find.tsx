@@ -160,7 +160,7 @@ export const Find = (props) => {
               onClick={() => setObject(row)}
             >
               <Table.Cell>{row.id}</Table.Cell>
-              <Table.Cell>{row.title}</Table.Cell>
+              <Table.Cell>{row.title ?? row.name}</Table.Cell>
               <Table.Cell>{row.color}</Table.Cell>
             </Table.Row>
           )

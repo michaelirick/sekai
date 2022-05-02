@@ -3,9 +3,9 @@ class Hex < GeoLayer
   validates_uniqueness_of :x, scope: %i[y world_id]
 
   def farmers_count
-    population / 3
+    (population || 0) / 3
   end
-  
+
   def population_capacity
     # lots * 250
     farmers_count * 30

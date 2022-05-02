@@ -19,7 +19,7 @@ class State < ApplicationRecord
   end
 
   def population
-    sum_settlements(:population) + sum_hexes(:population)
+    (sum_settlements(:population) + sum_hexes(:population)) || 0
   end
 
   def population_capacity
