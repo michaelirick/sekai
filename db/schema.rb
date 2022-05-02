@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_28_145105) do
+ActiveRecord::Schema.define(version: 2022_05_01_164509) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -147,6 +147,7 @@ ActiveRecord::Schema.define(version: 2022_04_28_145105) do
     t.integer "culture_id"
     t.integer "biome_id"
     t.integer "terrain_id"
+    t.integer "population"
   end
 
   create_table "map_layers", force: :cascade do |t|

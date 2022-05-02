@@ -10,11 +10,20 @@ class State < ApplicationRecord
   belongs_to :de_jure, polymorphic: true, optional: true
 
   add_reducer :settlements, :+, 'sum'
+  add_reducer :hexes, :+, 'sum'
 
   after_commit :update_owner_realm_geometry
 
   def type
     'State'
+  end
+
+  def population
+    sum_settlements(:population) + sum_hexes(:population)
+  end
+
+  def population_capacity
+    sum_settlements(:population_capacity) + sum_hexes(:population_capacity)
   end
 
   def de_jure_subjects(direct = true)

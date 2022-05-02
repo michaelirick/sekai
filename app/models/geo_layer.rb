@@ -85,7 +85,7 @@ class GeoLayer < ApplicationRecord
   end
 
   def change_geometry_for_parent?
-    previous_changes[:geometry] || previous_changes[:parent_id] || previous_changes[:parent_type] || destroyed? || previously_new_record? || type == 'Hex'
+    previous_changes[:geometry] || previous_changes[:parent_id] || previous_changes[:parent_type] || destroyed? || previously_new_record?
   end
 
   def all_hexes
@@ -94,7 +94,7 @@ class GeoLayer < ApplicationRecord
   end
 
   def change_geometry_for_culture?
-    previous_changes[:geometry] || previous_changes[:culture_id] || previous_changes[:owner_id] || destroyed? || previously_new_record? || type == 'Hex'
+    previous_changes[:geometry] || previous_changes[:culture_id] || previous_changes[:owner_id] || destroyed? || previously_new_record?
   end
 
   def update_culture_geometry
@@ -115,7 +115,7 @@ class GeoLayer < ApplicationRecord
   end
 
   def change_geometry_for_biome?
-    previous_changes[:geometry] || previous_changes[:biome_id] || previous_changes[:owner_id] || destroyed? || previously_new_record? || type == 'Hex'
+    previous_changes[:geometry] || previous_changes[:biome_id] || previous_changes[:owner_id] || destroyed? || previously_new_record?
   end
 
   def update_parent_geometry
@@ -137,7 +137,7 @@ class GeoLayer < ApplicationRecord
   end
 
   def change_geometry_for_owner?
-    previous_changes[:geometry] || previous_changes[:owner_type] || previous_changes[:owner_id] || destroyed? || previously_new_record? || type == 'Hex'
+    previous_changes[:geometry] || previous_changes[:owner_type] || previous_changes[:owner_id] || destroyed? || previously_new_record?
   end
   def update_owner_geometry
     puts 'update_owner_geometry'

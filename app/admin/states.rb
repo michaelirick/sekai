@@ -103,6 +103,8 @@ ActiveAdmin.register State do
       row :size do
         s.hexes.count
       end
+      row :population
+      row :population_capacity
       row :control_dc
       row :consumption
     end

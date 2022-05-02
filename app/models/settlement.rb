@@ -62,7 +62,11 @@ class Settlement < ApplicationRecord
 
   def population_capacity
     # lots * 250
-    lot_count * 250.0
+    farmers_count * 30
+  end
+
+  def net_population_capacity
+    population_capacity - population
   end
 
   def settlement_type
@@ -84,6 +88,10 @@ class Settlement < ApplicationRecord
     else # metropolis and beyond
       :metropolis
     end
+  end
+
+  def farmers_count
+    population / 30
   end
 
   def base_value
