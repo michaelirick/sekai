@@ -42,8 +42,8 @@ ActiveAdmin.register World do
       zoom = params[:zoom].to_i + 5
       zoom = 1 if zoom < 1
       puts "zoom: #{zoom}"
-      w = 4000 / zoom
-      h = 2000 / zoom
+      w = 400
+      h = 200
       cells = []
       geo_layer_type = mode.singularize.titleize
       box = world.factory.polygon world.factory.linear_ring([
@@ -70,6 +70,8 @@ ActiveAdmin.register World do
                 10
               when 9
                 5
+              when 10
+                5
               else
                 0
               end
@@ -83,8 +85,9 @@ ActiveAdmin.register World do
             "x > ? AND x < ? AND y > ? AND y < ?",
             x - w, x + w, y - h, y + h
           )
-          #cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
-          cells = world.geo_layers.where(type: 'Hex')
+          # cells = world.geo_layers.where(type: geo_layer_type).where("ST_Intersects(ST_geomfromtext('#{box}'), geo_layers.geometry)")
+          # cells = world.geo_layers.where(type: 'Hex').where("ST_distance(geometry, ST_GeomFromText('POINT((#{x} #{y}))')) < 100")
+          # cells = world.geo_layers.where(type: 'Hex')
         end
       elsif mode == 'states'
         cells = world.states

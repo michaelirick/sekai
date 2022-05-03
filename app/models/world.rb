@@ -44,6 +44,20 @@ class World < ApplicationRecord
     [q, ny]
   end
 
+  def range_to_hex(x, y)
+    ax, ay = point_to_hex(x.first, y.first)
+    bx, by = point_to_hex(x.last, x.last)
+
+    [ax..bx, ay..by]
+  end
+
+  def range_to_point(x, y)
+    ax, ay = hex_to_point(x.first, y.first)
+    bx, by = hex_to_point(x.last, x.last)
+
+    [ax..bx, ay..by]
+  end
+
   # odd-q hexes
   def hex_to_point(x, y)
   radius = hex_radius
@@ -78,6 +92,102 @@ class World < ApplicationRecord
     ring = factory.linear_ring points
     polygon = factory.polygon(ring)
     factory.collection([polygon])
+  end
+
+  def quick_hex_string(points)
+    "GEOMETRY_COLLECTION (POLYGON ((#{points.map {|point| "#{point.join(' ')}"}.join(', ')})))"
+  end
+
+
+  def quick_hex(x, y)
+    hex_geometry(draw_hex(hex_to_point(x, y)))
+  end
+
+  def all_hex_coordinates(x_range: nil, y_range: nil)
+    x_range ||= 0..resolution_x
+    y_range ||= 0..resolution_y
+    new_hexes = []
+    # last_percent = 0
+    x_range.step(hex_radius) do |x|
+      y_range.step(hex_radius) do |y|
+        new_hexes << point_to_hex(x, y)
+      end
+
+      # percent = (x / resolution_x.to_f * 100).round
+      # puts "#{percent}%" if percent % 5 == 0 && percent != last_percent
+      # last_percent = percent
+    end
+
+    # puts "removing duplicates"
+    new_hexes = new_hexes.uniq
+
+    new_hexes
+  end
+
+  def regenerate_hexes!(x_range: nil, y_range: nil)
+    x_range ||= 0..resolution_x
+    y_range ||= 0..resolution_y
+    hex_range_x, hex_range_y = range_to_hex(x_range, y_range)
+    GeoLayer.transaction do
+      puts "Deleting..."
+      geo_layers.where(type: 'Hex', x: hex_range_x, y: hex_range_y).delete_all
+
+      puts "Generating #{x_range.count * y_range.count} new coords..."
+      new_hexes = []
+      last_percent = 0
+      x_range.step(hex_radius) do |x|
+        y_range.step(hex_radius) do |y|
+          new_hexes << point_to_hex(x, y)
+        end
+
+        percent = (x / x_range.count.to_f * 100).round
+        puts "#{percent}%" if percent % 5 == 0 && percent != last_percent
+        last_percent = percent
+      end
+
+      puts "removing duplicates"
+      new_hexes = new_hexes.uniq
+
+      puts "#{new_hexes.count} hexes to create"
+
+      puts "allocating colors..."
+      new_colors = UniqueColor.allocate_color(self, 'geo_layers', 'color', new_hexes.count)
+
+      puts "creating hex data..."
+      last_percent = 0
+      new_hex = {
+        parent_id: id,
+        world_id: id,
+        type: 'Hex',
+        parent_type: 'World',
+        created_at: Time.now,
+        updated_at: Time.now
+      }
+      new_hexes = new_hexes.map.with_index do |coords, i|
+        percent = (i / new_hexes.count.to_f * 100).round
+        puts "#{percent}%" if percent % 5 == 0 && percent != last_percent
+        last_percent = percent
+        x, y = coords
+        new_hex.merge({
+          title: "#{x}, #{y}",
+          color: new_colors[i],
+          x: x,
+          y: y,
+          geometry: quick_hex(x, y)
+        })
+      end
+
+      puts "inserting in slices of 1000..."
+      last_percent = 0
+      new_hexes.each_slice(10000).with_index do |slice, i|
+        percent = (i / (new_hexes.count / 10000).to_f * 100).round
+        puts "#{percent}%" #if percent % 5 == 0 && percent != last_percent
+        last_percent = percent
+        Hex.insert_all slice
+      end
+
+      puts "done"
+    end
   end
   # GEO_LAYER_TYPES = %i[
   #   continent
