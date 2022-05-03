@@ -62,7 +62,7 @@ const GeoLayerGrid = (props) => {
             loadHexes()
           })
           .catch(error => console.log('error', error))
-      } else if (mapTool.mapTool === 'editPoints') {
+      } else if (mapTool.mapTool === 'editPoints' || mapTool.mapTool === 'selectPoints') {
         const x = e.latlng.lng
         const y = e.latlng.lat
         mapTool.setMapToolPoints([...mapTool.mapToolPoints, [x, y]])

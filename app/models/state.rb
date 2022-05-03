@@ -246,4 +246,21 @@ from
     puts "changes:"
     # puts self.methods.sort
   end
+
+  def area
+    hexes.count * world.hex_area
+  end
+
+  def area_in_km2
+    area * 2.59
+  end
+
+  def claim!(points)
+    selection = factory.polygon factory.linear_ring(points.map {|p| factory.point(*p)})
+    table = GeoLayer.arel_table
+    hexes = world.geo_layers.where(type: 'Hex').where(table[:geometry].st_intersects(selection))
+
+    hexes.update_all(owner_id: id, owner_type: 'State')
+    reset_geometry!
+  end
 end

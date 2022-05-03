@@ -41,6 +41,22 @@ const SideBar = (props: SideBarProps) => {
       return <HexShow {...mapSelection.selectedObject}/>;
     }
 
+    if (mapSelection.selectedObject.type === 'State') {
+      return (
+        <div>
+          <Button
+            onClick={() => {
+              mapSelection.selectedObject.claimHexes(mapTool.mapToolPoints)
+                .then(response => console.log('saved'))
+                .catch(error => console.log('error', error))
+            }}
+          >
+            Claim Selected Area
+          </Button>
+        </div>
+      )
+    }
+
     // if (props.selectedObject.type === 'State') {
     //   return <StateShow {...props.selectedObject}/>;
     // }

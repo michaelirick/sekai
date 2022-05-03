@@ -1,4 +1,5 @@
 import { Model } from './model'
+import api from 'utils/api'
 
 export class State extends Model {
   constructor (props) {
@@ -20,6 +21,10 @@ export class State extends Model {
       .then(data => {
         return new this(data)
       })
+  }
+
+  claimHexes(points) {
+    return api.post('/admin/states/' + this.id + '/claim.json', {points: points})
   }
 
 }

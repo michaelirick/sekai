@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Icon, Menu, Dropdown } from 'semantic-ui-react'
+import { Icon, Menu, Dropdown, Popup } from 'semantic-ui-react'
 import { MapModeContext, MapSelectionContext, MapToolContext, MapViewContext } from './map_context'
 import { useContext } from 'react'
 import { SelectParentObjectTypes } from './actions/select_parent'
@@ -30,7 +30,7 @@ export const ToolBar = (props) => {
     return (<Menu.Item
       name={name}
       active={mapTool.mapTool === name}
-      content={(<Icon name={label}/>)}
+      content={<Popup content={name} trigger={<Icon name={label}/>}/>}
       onClick={() => mapTool.setMapTool(name)}
     />)
   }
@@ -38,6 +38,7 @@ export const ToolBar = (props) => {
   return <div>
     <Menu>
       <MapTool name="select" label="mouse pointer"/>
+      <MapTool name="selectPoints" label="expand"/>
       <MapTool name="add" label="plus"/>
       <MapTool name="delete" label="delete"/>
       <MapTool name="editPoints" label="edit"/>

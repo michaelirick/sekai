@@ -15,7 +15,7 @@ class World < ApplicationRecord
   #   subordinates: :continents
   # )
 
-  HEX_RADIUS = 6.0469 # miles
+  HEX_RADIUS = 6 # miles
 
   scope :for_user, -> (user) { where(user: user) }
 
@@ -32,8 +32,14 @@ class World < ApplicationRecord
     (circumference || 1.0) / (resolution_x || 1.0)
   end
 
+  # in world units
   def hex_radius
     HEX_RADIUS / pixel_length
+  end
+
+  # in miles
+  def hex_area
+    (3 * Math.sqrt(3)) / 2 * HEX_RADIUS ** 2
   end
 
   # odd-q hexes

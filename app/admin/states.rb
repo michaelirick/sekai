@@ -47,6 +47,23 @@ ActiveAdmin.register State do
     f.actions
   end
 
+  member_action :claim, method: :post do
+    format_type = request.format.symbol
+    if resource.nil?
+      redirect redirect_to(format: format_type), notice: 'No state such exists'
+    else
+      begin
+        puts "good"
+        resource.claim! params[:points]
+        redirect_to resource_path(format: format_type), notice: "You have reset #{resource.name}."
+      rescue => e
+        puts "nope"
+        puts e.full_message
+        redirect_to resource_path(format: format_type), alert: "There was an error"
+      end
+    end
+  end
+
   member_action :reset_geometry, method: :get do
     if resource.nil?
       redirect_to resource_path, notice: 'You cannot reset this geometry.'
@@ -108,8 +125,15 @@ ActiveAdmin.register State do
       row :size do
         s.hexes.count
       end
-      row :population
-      row :population_capacity
+      row :area do
+        "#{number_with_delimiter(s.area.round)} sqmi (#{number_with_delimiter(s.area_in_km2.round)} sqkm)"
+      end
+      row :population do
+        number_with_delimiter s.population
+      end
+      row :population_capacity do
+        number_with_delimiter s.population_capacity
+      end
       row :control_dc
       row :consumption
     end
