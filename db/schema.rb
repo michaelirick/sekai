@@ -10,11 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_02_211521) do
+ActiveRecord::Schema.define(version: 2022_05_05_162659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+  enable_extension "postgis_raster"
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
@@ -150,13 +151,8 @@ ActiveRecord::Schema.define(version: 2022_05_02_211521) do
     t.integer "population"
   end
 
-  create_table "map_layers", force: :cascade do |t|
-    t.string "title"
-    t.integer "world_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.integer "priority"
-  end
+# Could not dump table "map_layers" because of following StandardError
+#   Unknown type 'raster' for column 'raster'
 
   create_table "roles", force: :cascade do |t|
     t.string "name"

@@ -118,6 +118,15 @@ ActiveAdmin.register World do
 
 
       end
+      cells = MapLayer.first.polygons.map do |p|
+        cell.new(
+          'test',
+          1,
+          'test',
+          '#333333',
+          RGeo::GeoJSON.decode(p['st_asgeojson'])
+        )
+      end
       # cells = world.geo_layers.where(type: geo_layer_type)
       cells = cells.map do |c|
         {
