@@ -2,6 +2,15 @@ class Hex < GeoLayer
   after_create :reset_geometry!
   validates_uniqueness_of :x, scope: %i[y world_id]
 
+  DIRECTIONS = {
+    north: [0, 1],
+    south: [0, -1],
+    northeast: [1, 0],
+    southeast: [1, -1],
+    northwest: [-1, 0],
+    southwest: [-1, -1]
+  }
+
   def farmers_count
     (population || 0) / 3
   end
@@ -13,6 +22,13 @@ class Hex < GeoLayer
 
   def net_population_capacity
     population_capacity - population
+  end
+
+  DIRECTIONS.each do |dir, offset|
+    define_method dir do
+      ox, oy = offset
+      world.geo_layers.hexes.where(type: 'Hex', x: x + ox, y: y + oy).first
+    end
   end
 end
 # #require 'geometry'

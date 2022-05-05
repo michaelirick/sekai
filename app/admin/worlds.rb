@@ -47,10 +47,10 @@ ActiveAdmin.register World do
       cells = []
       geo_layer_type = mode.singularize.titleize
       box = world.factory.polygon world.factory.linear_ring([
-        world.factory.point(x - w / 2, y - h / 2),
-        world.factory.point(x - w / 2, y + h / 2),
-        world.factory.point(x + w / 2, y + h / 2),
-        world.factory.point(x + w / 2, y - h / 2)
+        world.factory.point(x - w, y - h),
+        world.factory.point(x - w, y + h),
+        world.factory.point(x + w, y + h),
+        world.factory.point(x + w, y - h)
                                                             ])
       cell = Struct.new(:type, :id, :title, :color, :geometry)
       if mode == 'hexes'
@@ -160,6 +160,15 @@ ActiveAdmin.register World do
       row :resolution_y
       row :circumference
       row :created_at
+    end
+
+    attributes_table 'Approx. Sizes' do
+      row :approx_hex_count
+      row :approx_province_count
+      row :approx_area_count
+      row :approx_region_count
+      row :approx_subcontinent_count
+      row :approx_continent_count
     end
 
     tabs do

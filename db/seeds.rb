@@ -26,6 +26,7 @@ h = Hex.create(world: w, x: 408, y: 273, parent: p, title: 'Neoheim', world: w)
 h = Hex.create(world: w, x: 409, y: 275, parent: p, title: 'North Arriccar', world: w)
 # c.update_geometry! [[0, 0], [8192, 0], [8192, 4096], [0, 4096]]
 w.regenerate_hexes!(x_range: 3542..3901, y_range: 2716..3159)
+w.regenerate_provinces!(x_range: 3542..3901, y_range: 2716..3159)
 # c.generate_hexes!
 #
 # puts 'Seeding hexes...'

@@ -42,6 +42,34 @@ class World < ApplicationRecord
     (3 * Math.sqrt(3)) / 2 * HEX_RADIUS ** 2
   end
 
+  def hex_area_in_world
+    (3 * Math.sqrt(3)) / 2 * hex_radius ** 2
+  end
+
+  def approx_hex_count
+    resolution_y * resolution_x / hex_area_in_world
+  end
+
+  def approx_province_count
+    approx_hex_count / 6
+  end
+
+  def approx_area_count
+    approx_province_count / 4
+  end
+
+  def approx_region_count
+    approx_area_count / 4
+  end
+
+  def approx_subcontinent_count
+    approx_region_count / 4
+  end
+
+  def approx_continent_count
+    approx_subcontinent_count / 4
+  end
+
   # odd-q hexes
   def point_to_hex(x, y)
     q = ((2.0/3 * x) / hex_radius).round
@@ -128,6 +156,54 @@ class World < ApplicationRecord
     new_hexes = new_hexes.uniq
 
     new_hexes
+  end
+
+  def regenerate_provinces!(x_range: nil, y_range: nil)
+    x_range ||= 0..resolution_x
+    y_range ||= 0..resolution_y
+    hex_range_x, hex_range_y = range_to_hex(x_range, y_range)
+    GeoLayer.transaction do
+      puts 'Deleting orphan provinces...'
+      geo_layers.where(type: 'Province', parent_id: nil).delete_all
+
+      puts 'Deleting provinces with hexes in range...'
+      hexes = geo_layers.where(type: 'Hex', x: hex_range_x, y: hex_range_y)
+      ids = hexes.pluck(:parent_id)
+      Province.where(id: ids).delete_all
+
+      puts 'Clearing parents of hexes in range...'
+      hexes.update_all(parent_id: nil, parent_type: nil)
+
+      puts 'Getting hexes...'
+      hex_grid = {}
+      hexes.order(:y, :x).each do |hex|
+        x = hex.x
+        y = hex.y
+        hex_grid[x] ||= {}
+        hex_grid[x][y] = hex
+      end
+
+      hex_groups = []
+      hex_range_x.step(2) do |x|
+        hex_range_y.step(2) do |y|
+          next unless hex_grid[x] && hex_grid[x+1]
+          hex_groups << [
+            hex_grid[x][y],
+            hex_grid[x][y + 1],
+            hex_grid[x + 1][y + 1],
+            hex_grid[x + 1][y + 1]
+          ].compact
+        end
+      end
+
+      hex_groups = hex_groups.compact
+      colors = UniqueColor.allocate_color(self, 'geo_layers', 'color', hex_groups.count)
+      hex_groups.each_with_index do |g, i|
+        p = Province.create(world: self, parent: self, color: colors[i])
+        hexes.where(id: g.map(&:id)).update_all(parent_id: p.id, parent_type: 'GeoLayer')
+        p.reset_geometry!
+      end
+    end
   end
 
   def regenerate_hexes!(x_range: nil, y_range: nil)

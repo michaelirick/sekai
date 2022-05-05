@@ -9,6 +9,8 @@ class GeoLayer < ApplicationRecord
   belongs_to :terrain, optional: true
   attr_accessor :points
 
+  scope :hexes, -> { where type: 'Hex' }
+
   HEX_RADIUS = 6.0469
   BIOME_TYPES = %w[
     polar_desert
