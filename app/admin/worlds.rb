@@ -167,18 +167,19 @@ ActiveAdmin.register World do
       row :created_at
     end
 
-    attributes_table 'Approx. Sizes' do
-      row :approx_hex_count
-      row :approx_province_count
-      row :approx_area_count
-      row :approx_region_count
-      row :approx_subcontinent_count
-      row :approx_continent_count
-    end
-
     tabs do
       tab 'Map' do
         react_component 'Map/index', { world: Worlds::Show.new(w).to_json }
+      end
+      tab 'Approximations' do
+        attributes_table 'Approx. Sizes' do
+          row :approx_hex_count
+          row :approx_province_count
+          row :approx_area_count
+          row :approx_region_count
+          row :approx_subcontinent_count
+          row :approx_continent_count
+        end
       end
     end
   end
