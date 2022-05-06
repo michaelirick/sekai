@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  state_id: 1
+  unit_type: MyString
+  flags: MyString
+  strength: 1
+
+two:
+  title: MyString
+  state_id: 1
+  unit_type: MyString
+  flags: MyString
+  strength: 1

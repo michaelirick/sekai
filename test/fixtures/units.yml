@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  state_id: 1
+  casualties: 1
+  unit_type_id: 1
+  force_id: 1
+
+two:
+  title: MyString
+  state_id: 1
+  casualties: 1
+  unit_type_id: 1
+  force_id: 1

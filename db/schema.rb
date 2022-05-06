@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_05_162659) do
+ActiveRecord::Schema.define(version: 2022_05_06_194653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,6 +131,16 @@ ActiveRecord::Schema.define(version: 2022_05_05_162659) do
     t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
   end
 
+  create_table "forces", force: :cascade do |t|
+    t.string "title"
+    t.integer "location_id"
+    t.string "location_type"
+    t.integer "state_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "world_id"
+  end
+
   create_table "geo_layers", force: :cascade do |t|
     t.string "title"
     t.integer "parent_id"
@@ -203,6 +213,31 @@ ActiveRecord::Schema.define(version: 2022_05_05_162659) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.geometry "geometry", limit: {:srid=>0, :type=>"geometry_collection"}
+    t.integer "world_id"
+  end
+
+# Could not dump table "testest" because of following StandardError
+#   Unknown type 'raster' for column 'rast'
+
+  create_table "unit_types", force: :cascade do |t|
+    t.string "title"
+    t.integer "state_id"
+    t.string "unit_type"
+    t.string "flags"
+    t.integer "strength"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "world_id"
+  end
+
+  create_table "units", force: :cascade do |t|
+    t.string "title"
+    t.integer "state_id"
+    t.integer "casualties"
+    t.integer "unit_type_id"
+    t.integer "force_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.integer "world_id"
   end
 
