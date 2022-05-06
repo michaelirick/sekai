@@ -72,6 +72,25 @@ export class World extends Model {
     })
   }
 
+  polylineDistance (points) {
+    let total = 0
+    points.forEach((p, i) => {
+      if (!points[i + 1]) {
+        return
+      }
+      const [ax, ay] = p
+      const [bx, by] = points[i + 1]
+
+      total += Math.sqrt((bx - ax) ** 2 + (by - ay) ** 2)
+    })
+
+    return total
+  }
+
+  inMiles (number) {
+    return number * this.pixel_length
+  }
+
   hexOptions () {
     return {
       size: this.hexSize,

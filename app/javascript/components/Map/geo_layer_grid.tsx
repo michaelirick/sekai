@@ -1,7 +1,7 @@
 import { extendHex, defineGrid } from 'honeycomb-grid'
 import * as React from 'react'
 import { useState, useEffect, useCallback, useContext } from 'react'
-import { LayerGroup, Marker, Polygon, Popup, useMap, useMapEvents } from 'react-leaflet'
+import { LayerGroup, Marker, Polygon, Polyline, Popup, Tooltip, useMap, useMapEvents } from 'react-leaflet'
 import html from 'utils/html'
 import HexCell from './hex_cell'
 import api from 'utils/api'
@@ -62,7 +62,7 @@ const GeoLayerGrid = (props) => {
             loadHexes()
           })
           .catch(error => console.log('error', error))
-      } else if (mapTool.mapTool === 'editPoints' || mapTool.mapTool === 'selectPoints') {
+      } else if (mapTool.mapTool === 'editPoints' || mapTool.mapTool === 'selectPoints' || mapTool.mapTool === 'measure') {
         const x = e.latlng.lng
         const y = e.latlng.lat
         mapTool.setMapToolPoints([...mapTool.mapToolPoints, [x, y]])
@@ -203,9 +203,10 @@ const GeoLayerGrid = (props) => {
     console.log('GeoLayerGrid#cells', zoom, center, mapMode.mapMode, mapMode.mapMode === 'hexes' && zoom > 2)
     let showLabel = true;
 
-    if (mapMode.mapMode === 'hexes' && zoom < 2) {
-      console.log('showLabel')
+    if (mapMode.mapMode === 'hexes' && mapView.mapZoom < 2) {
+      console.log('showLabel', mapView)
       showLabel = false;
+      return ""
     }
 
     return grid.map((h, i) => {
@@ -245,11 +246,36 @@ const GeoLayerGrid = (props) => {
     )
   }
 
+  const measureLine = () => {
+    if (!mapTool.mapToolPoints) {
+      return
+    }
+    if (mapTool.mapToolPoints && mapTool.mapToolPoints.length === 0) {
+      return
+    }
+    if (mapTool.mapTool !== 'measure') {
+      return
+    }
+    let points = mapTool.mapToolPoints
+    console.log('points', points)
+
+    let total = mapSelection.world.inMiles(mapSelection.world.polylineDistance(points))
+
+    return (
+      <Polyline pathOptions={{ color: 'red' }} positions={points.map(([x, y]) => ({ lat: y, lng: x }))}>
+        <Tooltip permanent direction="center">{total.toFixed(2)} miles</Tooltip>
+      </Polyline>
+    )
+  }
+
+  console.log('messages', mapView.messages)
+
   return <MapSelectionContext.Consumer>
     {(context) => <LayerGroup>
       {hexes(context)}
       {toolPointMarkers()}
       {mapTool.mapTool === 'placeMarker' ? toolPointMarker() : ''}
+      {mapTool.mapTool === 'measure' ? measureLine() : ''}
     </LayerGroup>}
   </MapSelectionContext.Consumer>
 

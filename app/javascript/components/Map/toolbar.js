@@ -44,6 +44,7 @@ export const ToolBar = (props) => {
       <MapTool name="editPoints" label="edit"/>
       <MapTool name="claim" label="chain"/>
       <MapTool name="placeMarker" label="marker"/>
+      <MapTool name="measure" label="tachometer alternate"/>
       <MapTool name="selectParent" label="sitemap" types={SelectParentObjectTypes}/>
     </Menu>
     <Menu>

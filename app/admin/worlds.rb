@@ -60,16 +60,12 @@ ActiveAdmin.register World do
           cells = []
         else
           w = case zoom
-              when 5
-                55
-              when 6
-                25
               when 7
-                15
+                35
               when 8
-                10
+                20
               when 9
-                5
+                10
               when 10
                 5
               else
@@ -118,15 +114,15 @@ ActiveAdmin.register World do
 
 
       end
-      cells = MapLayer.first.polygons.map do |p|
-        cell.new(
-          'test',
-          1,
-          'test',
-          '#333333',
-          RGeo::GeoJSON.decode(p['st_asgeojson'])
-        )
-      end
+      # cells = MapLayer.first.polygons.map do |p|
+      #   cell.new(
+      #     'test',
+      #     1,
+      #     'test',
+      #     '#333333',
+      #     RGeo::GeoJSON.decode(p['st_asgeojson'])
+      #   )
+      # end
       # cells = world.geo_layers.where(type: geo_layer_type)
       cells = cells.map do |c|
         {

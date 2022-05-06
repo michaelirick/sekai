@@ -31,7 +31,8 @@ class Worlds::Show < ApplicationRepresentor
   def extra_attributes
     {
       map_layers: map_layers_attributes,
-      geo_layers: geo_layers_attributes
+      geo_layers: geo_layers_attributes,
+      pixel_length: self.__getobj__.pixel_length.to_f.round(2)
     }
   end
 end

@@ -132,10 +132,19 @@ export const useMapView = () => {
   const [mapCenterX, setMapCenterX] = useState(localStorage.getItem('mapCenterX') || 2048)
   const [mapCenterY, setMapCenterY] = useState(localStorage.getItem('mapCenterY') || 1024)
   const [map, setMap] = useState(null)
+  const [messages, setMessages] = useState([])
   const updateMapCenter = (map, x, y) => {
     map.setView({lng: x, lat: y}, mapZoom);
     setMapCenterX(x)
     setMapCenterY(y)
+  }
+  const addMessage = (type, message, args) => {
+    const newMessage = { type, message, ...args }
+    if (messages.indexOf(newMessage) !== -1) {
+      return
+    }
+    const newMessages = [...messages, newMessage]
+    setMessages(newMessages.filter((item, index) => newMessages.indexOf(item) !== index))
   }
   return {
     mapZoom,
@@ -146,7 +155,10 @@ export const useMapView = () => {
     setMapCenterY,
     updateMapCenter,
     map,
-    setMap
+    setMap,
+    messages,
+    setMessages,
+    addMessage
   }
 }
 
@@ -159,6 +171,9 @@ export const MapViewContext = createContext({
   setMapCenterY: (_) => {},
   updateMapCenter: (_) => {},
   map: null,
-  setMap: (_) => {}
+  setMap: (_) => {},
+  messages: [],
+  setMessages: (_) => {},
+  addMessage: (_) => {}
 })
 
