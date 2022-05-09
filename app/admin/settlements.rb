@@ -1,10 +1,10 @@
 ActiveAdmin.register Settlement do
+  menu parent: 'Govern'
   extend Mappable
   add_reset_geometry!
   add_update_boundaries!
   check_for_world!
   add_pages!
-  menu if: proc{true}
 
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters

@@ -1,4 +1,5 @@
 ActiveAdmin.register Culture do
+  menu parent: 'Culture'
   extend Mappable
   add_reset_geometry!
   add_update_boundaries!

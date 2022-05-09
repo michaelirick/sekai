@@ -35,16 +35,40 @@ export const ToolBar = (props) => {
     />)
   }
 
+  const MapToolDropDown = ({tools}) => {
+    const [tool, icon] = tools[mapTool.mapTool] ? [mapTool.mapTool, tools[mapTool.mapTool]] : Object.entries(tools)
+
+    return (
+      <Menu.Item active={tools[mapTool.mapTool]}>
+        <Dropdown text={<Popup content={tool} trigger={<Icon name={icon}/>}/>}>
+          <Dropdown.Menu>
+            {Object.entries(tools).map(([t, i], _) => {
+              return (<MapTool name={t} label={i}/>)
+            })}
+          </Dropdown.Menu>
+        </Dropdown>
+      </Menu.Item>
+    )
+  }
+
   return <div>
     <Menu>
-      <MapTool name="select" label="mouse pointer"/>
-      <MapTool name="selectPoints" label="expand"/>
+      <MapToolDropDown
+        tools={{
+          select: 'mouse pointer',
+          selectPoints: 'expand'
+        }}
+      />
       <MapTool name="add" label="plus"/>
       <MapTool name="delete" label="delete"/>
       <MapTool name="editPoints" label="edit"/>
       <MapTool name="claim" label="chain"/>
-      <MapTool name="placeMarker" label="marker"/>
-      <MapTool name="measure" label="tachometer alternate"/>
+      <MapToolDropDown
+        tools={{
+          measure: 'tachometer alternate',
+          placeMarker: 'marker'
+        }}
+      />
       <MapTool name="selectParent" label="sitemap" types={SelectParentObjectTypes}/>
     </Menu>
     <Menu>

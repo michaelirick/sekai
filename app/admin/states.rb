@@ -1,10 +1,10 @@
 ActiveAdmin.register State do
+  menu parent: 'Govern'
   extend Mappable
   add_reset_geometry!
   add_update_boundaries!
   check_for_world!
   add_pages!
-  menu if: proc{true}
   config.create_another = true
 
   # See permitted parameters documentation:
